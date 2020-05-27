@@ -1,0 +1,113 @@
+.form-wrapper {
+    width: 100%;
+    max-width: 15rem;
+}
+
+form {
+    width: inherit;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+/* every field should have a bottom margin */
+form > select, input {
+    margin-bottom: 0.8rem;
+}
+
+form > label {
+    margin-bottom: 0.3rem;
+}
+
+form > *:last-child {
+    margin-bottom: 0;
+}
+
+/*TEXT INPUT*/
+input[type=text] {
+    height: 2rem;
+    position: relative;
+    padding: 0 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    color: #282828;
+    outline: none;
+    box-shadow: 0px 4px 20px 0px transparent;
+    transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out, 0.1s padding ease-in-out;
+    -webkit-appearance: none;
+    background-color: #fffffe;
+
+}
+
+input[type=text]:hover {
+    background-color: rgba(242, 244, 246, 1);
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
+}
+
+input[type=file] {
+    font-size: 1rem;
+}
+
+/*SELECT*/
+select {
+    height: 2rem;
+    position: relative;
+    padding: 0 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    color: #282828;
+    outline: none;
+    box-shadow: 0px 4px 20px 0px transparent;
+    transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out, 0.1s padding ease-in-out;
+    background-color: #fffffe;
+}
+
+select:hover {
+    background-color: rgba(242, 244, 246, 1);
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
+}
+
+/*BUTTON*/
+button {
+    max-width: 10rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #00214d;
+    background-color: #00ebc7;
+    padding: 0.5rem 0.8rem;
+    border-radius: 3px;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+}
+
+button:hover {
+    box-shadow: 0 5px 15px -10px rgba(31, 18, 53, 0.6);
+}
+
+button:disabled {
+    background-color: lightgray;
+    cursor: default;
+    opacity: 0.4;
+    box-shadow: none;
+}
+
+button[type=submit] {
+    margin-top: 1rem;
+}
+
+/*VALIDATION*/
+
+.validation-error {
+    font-size: 0.7rem;
+    color: red;
+    font-style: italic;
+    margin-left: 0.5rem;
+    /* negative to match field margin */
+    margin-top: -0.8rem;
+}

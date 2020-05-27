@@ -1,0 +1,16 @@
+{
+  "name": "inky_dash",
+  "version": "1.0.0",
+  "description": "A dashboard for the Inky pHAT e-ink display",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robert Raynsford",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-validator": "^6.4.0",
+    "jimp": "^0.9.3"
+  }
+}

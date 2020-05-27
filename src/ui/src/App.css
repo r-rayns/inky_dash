@@ -1,0 +1,35 @@
+.app {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.content-wrapper {
+    flex-grow: 1;
+    background-color: #f2f4f6;
+    padding-top: 0.2rem;
+    /*padding: 0.2rem 0.2rem 0 0.2rem;*/
+}
+
+@media only screen and (min-width: 640px) {
+    .content-wrapper {
+        /*padding: 0.2rem 0.5rem 0 0.5rem;*/
+    }
+}
+
+@media only screen and (min-width: 980px) {
+    .content-wrapper {
+        /*padding: 0.2rem 3rem 0 3rem;*/
+    }
+}
+
+.route-content {
+    max-width: 80rem;
+}
+
+@media only screen and (min-width: 640px) {
+    .route-content {
+        width: 80%;
+        margin: auto;
+    }
+}
