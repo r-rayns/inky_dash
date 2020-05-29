@@ -45,7 +45,7 @@ export default function DisplaySettingsPage() {
           { imageState.preview
             ? <img src={ `data:image/png;base64,${ imageState.preview }` }
                    alt='Preview display'/>
-            : <p>No image set</p> }
+            : <p>No image selected</p> }
         </DisplayWrapper>
         <label>Current Display:</label>
         <DisplayWrapper loading={ imageState.uploading }>
