@@ -4,8 +4,6 @@ const app = express();
 const port = require("./src/globals/environment").env.PORT;
 const display_routes = require('./src/routes/display');
 
-// TODO build script that copies environment.ts to react project, use Make file?
-
 // serve static files from the react build
 // __dirname is the directory in which this script is executed
 app.use(express.static(path.join(__dirname, 'src/ui/build')));
