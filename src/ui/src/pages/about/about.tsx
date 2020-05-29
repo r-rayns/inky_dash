@@ -8,7 +8,7 @@ export default function AboutPage() {
       <Card>
         <h2>Inky Dash v{ process.env.REACT_APP_VERSION }</h2>
         <p>Inky Dash is an interface for the Raspberry Pi e-paper display, Inky pHAT.</p>
-        <p>Uploaded images must conform with the confines of the Inky pHAT display:
+        <p>Uploaded images must conform with the confines of the Inky pHAT display:</p>
           <ul>
             <li>Dimensions are 212 x 104 pixels.</li>
             <li>
@@ -19,7 +19,6 @@ export default function AboutPage() {
             </li>
             <li>File format is PNG.</li>
           </ul>
-        </p>
       </Card>
       <Card>
         <h3>Links</h3>

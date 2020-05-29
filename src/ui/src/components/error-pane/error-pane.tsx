@@ -15,7 +15,6 @@ export default function ErrorPane(props: any) {
 
     const hide = setTimeout(() => {
       setShowError(false);
-      console.log('time!')
     }, 5000)
 
     return function cleanup() {

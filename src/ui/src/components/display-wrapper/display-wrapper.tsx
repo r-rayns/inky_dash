@@ -7,7 +7,7 @@ export default function DisplayWrapper(props: any) {
       { props.loading && <img src='/loading.gif'
                               className='display-loading'
                               alt='loading...'/> }
-      { props.children }
+      { !props.loading && props.children }
     </div>
   );
 }
