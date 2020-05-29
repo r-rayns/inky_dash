@@ -6,7 +6,7 @@ import sys
 display_colour = str(sys.argv[1])
 border_colour = str(sys.argv[2])
 current_directory = os.path.dirname(os.path.abspath(__file__))
-image_directory = os.path.join(current_directory, "../../current_image")
+image_directory = os.path.join(current_directory, "../current_image")
 
 def main():
     validate_arg_string(display_colour, ['red', 'yellow'])
