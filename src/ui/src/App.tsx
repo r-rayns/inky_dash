@@ -9,7 +9,6 @@ import AboutPage from './pages/about/about';
 
 function App() {
 
-  // https://www.happyhues.co/palettes/2
   return (
     <div className="app">
       <ErrorPane/>
