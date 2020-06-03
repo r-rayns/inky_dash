@@ -10,6 +10,7 @@ coverage
 
 # production
 build
+inky_dash*
 
 #intelliJ
 .idea
