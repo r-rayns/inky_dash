@@ -12,7 +12,7 @@ web server.
    For help setting up the display follow [this tutorial](https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-inky-phat).
 
 ## Install
-1. Download the latest release onto your Pi
+1. Download the latest bundled [release](https://github.com/End-S/inky_dash/releases/download/1.0.0/inky_dash_v1.0.0.tar.gz) onto your Pi
 2. Unpack the tar `tar -zxvf inky_dash_v#.#.# .` (replacing `#` with the relevant version)
 3. Follow steps for [running](#Run)
 
