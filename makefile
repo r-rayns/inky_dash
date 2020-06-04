@@ -1,7 +1,7 @@
 VERSION := $(shell cat ./src/ui/package.json | grep version\": | sed -e 's/\<version\>//g' -e 's/[",: ]//g')
 DIR := inky_dash_v$(VERSION)
 
-package: cleanup build
+package: clean all
 	@mkdir -p $(DIR)
 	@cp app.js $(DIR)
 	@cp -R src $(DIR)
@@ -13,14 +13,11 @@ package: cleanup build
 	@mv $(DIR)/src/build $(DIR)/src/ui/
 	tar -zcf $(DIR).tar.gz $(DIR)
 
-build: node/build ui/build
-	
-node/build:
-	npm install
-	
-ui/build:
-	npm install --prefix src/ui
-	npm run build --prefix src/ui
+all: clean
+	npm run build-all
 
-cleanup:
+clean:
 	@rm -rf inky_dash_v*
+	@rm -rf node_modules
+	@rm -rf src/ui/node_modules
+
