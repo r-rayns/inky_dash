@@ -4,7 +4,10 @@
   "description": "A dashboard for the Inky pHAT e-ink display",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "build-all": "npm install; npm install --prefix src/ui; npm run build-ui",
+    "build-ui": "npm run build --prefix src/ui"
   },
   "author": "Robert Raynsford",
   "license": "MIT",
