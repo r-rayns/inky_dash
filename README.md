@@ -17,9 +17,10 @@ web server.
 3. Follow steps for [running](#Run)
 
 ## Run
-1. On your Pi inside the project root run `npm start`.
-2. On another device browse to your Raspberry Pi on port 8080, e.g.`http://192.168.0.24:8080` 
-3. From here you should be able to upload an image to the Pi and have it displayed.
+1. Change directories to the project root.
+2. If you downloaded the "release" from GitHub run the project with `node app.js`. If you cloned this repo run the project with `npm start`.
+3. On another device browse to your Raspberry Pi on port 8080, e.g.`http://192.168.0.24:8080`.
+4. From here you should be able to upload an image to the Pi and have it displayed.
 
 Uploaded images must conform with the confines of the Inky pHAT display:
 - Dimensions are 212 x 104 pixels.
