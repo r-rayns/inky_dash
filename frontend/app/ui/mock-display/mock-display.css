@@ -1,0 +1,15 @@
+button.slideshow {
+  @apply
+  border-stone-100
+  disabled:border-gray-600
+  border-dashed
+  border-2
+  rounded-sm
+  text-stone-100
+  disabled:text-gray-600
+  bg-transparent
+  hover:bg-stone-100/10
+  disabled:hover:bg-transparent
+  w-10
+  h-10
+}

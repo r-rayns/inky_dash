@@ -1,0 +1,16 @@
+button.step-button {
+  @apply
+  w-8
+  h-8
+  text-white
+  bg-blue-700
+  hover:bg-blue-800
+  focus:ring-4
+  focus:ring-blue-300
+  font-medium 
+  rounded-full
+  dark:bg-orange-600
+  dark:hover:bg-orange-700
+  focus:outline-none
+  dark:focus:ring-orange-800
+}

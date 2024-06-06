@@ -1,0 +1,11 @@
+@keyframes roundtime {
+  to {
+    /* More performant than animating `width` */
+    transform: scaleX(0);
+  }
+}
+
+.loading-bar {
+  animation: roundtime calc(var(--duration) * 1s) linear forwards;
+  transform-origin: left center;
+}

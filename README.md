@@ -1,70 +1,45 @@
 # Inky Dash
-Inky dash is an interface for [Inky pHAT](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811), an e-paper display for the Raspberry Pi, that can be accessed from a browser via a local 
-web server.
+Inky dash is an interface for [Inky pHAT](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811), an e-paper display for the Raspberry Pi, that can be accessed from a browser via a local web server.
+![demo](./demo.gif)
 
 ## Prerequisites
-1. Install the latest version of Node, must be version 11 or greater. 
-    - It's recommended to install Node through the 
-[Node Version Manager](https://github.com/nvm-sh/nvm)
-    - Using NVM run `nvm install node`
-    - If your hardware is armv6, install the last supported version of node (11.15.0) `nvm install 11.15.0`. Newer unoffical builds can be found [here](https://unofficial-builds.nodejs.org/download/release/).    
-2. Ensure the Inky pHAT is correctly setup on your Pi. 
-   For help setting up the display follow [this tutorial](https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-inky-phat).
+### Build the front-end
+1. `cd` into the `frontend` directory
+2. Run `npm install; npm run build`
+3. This will output the build to `./frontend/out`
+4. Move the contents of the build from the `out` directory to `./backend/public`
+### Setup Inky pHAT on your Pi
+1. Ensure the Inky pHAT is correctly setup on your Pi. Typically this should just running:
+`curl https://get.pimoroni.com/inky | bash` as per the [guide](https://learn.pimoroni.com/article/getting-started-with-inky-phat).
+For additional help setting up the display follow [this tutorial](https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-inky-phat).
+2. Reboot your Pi once the setup is complete.
 
-## Install
-1. Download the latest bundled [release](https://github.com/End-S/inky_dash/releases/download/1.0.0/inky_dash_v1.0.0.tar.gz) onto your Pi
-2. Unpack the tar `tar -zxvf inky_dash_v#.#.# .` (replacing `#` with the relevant version)
-3. Follow steps for [running](#Run)
+## Running 🏃
+1. Compress your `inky_dash` directory and transfer it across to your Raspberry Pi.
+2. SSH into your Raspberry Pi.
+3. Once the transfer is complete, extract `inky_dash` onto the home directory of you Raspberry Pi.
+4. Consider creating a Python Virtual Environment, to keep things tidy: `mkdir ~/venv`
+5. `cd venv`
+6. `python3 -m venv inky-dash`
+7. Change directories to the project root.
+8. Install the required Python libraries`pip3 install -r requirements.txt`
+9. If required, setup ufw and allow port 8080
+10. From the project root run: `python3 run.py &` or 
+11. You should now hopefully be able to access the Inky Dash UI via the network IP of your Pi on port 8080
 
-## Run
-1. Change directories to the project root.
-2. If you downloaded the "release" from GitHub run the project with `node app.js`. If you cloned this repo run the project with `npm start`.
-3. On another device browse to your Raspberry Pi on port 8080, e.g.`http://192.168.0.24:8080`.
-4. From here you should be able to upload an image to the Pi and have it displayed.
+## Trouble Shooting 🎯
+To see additional logs run with the `--dev` flag:
 
+```bash
+python3 run.py --dev
+```
+- If there are issues with spidev: `sudo apt install python3-dev`
+- If there are issues with numpy: `sudo apt install libopenblas0`
+
+
+## Image Constraints
 Uploaded images must conform with the confines of the Inky pHAT display:
-- Dimensions are 212 x 104 pixels.
+- Dimensions are 212 x 104 pixels (I have not yet got around to supporting the newer 250x122 dimensions).
 - Colour palette is white, black and (red or yellow) in that order, see [here](https://github.com/pimoroni/inky/blob/master/tools/inky-palette.gpl).
 - File format is PNG.
-
-**Auto start**
-
-There are numerous solutions to running Node scripts on boot, here are a few possibilities:
-
-- [forever](https://www.npmjs.com/package/forever) & [forever-service](https://www.npmjs.com/package/forever-service)
-- [pm2](https://www.npmjs.com/package/pm2)
-- [rc.local](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md) 
-- [systemd](https://www.raspberrypi.org/documentation/linux/usage/systemd.md)
-
-A quick and dirty way could be placing a line in rc.local to run the node server, similar to:
-```
-su pi -c '/home/pi/.nvm/versions/node/v11.15.0/bin/node /home/pi/inky_dash_v1.0.0/app.js < /dev/null &'
-```
-You have to be explicit with the node binary as the user's PATH variables are not accessible during boot up.
-
-## Build
-1. Clone this directory onto your Raspberry Pi using Git clone
-2. From the project root run `npm build-all`
-
-***Note**: On hardware with low RAM such as the Pi Zero 
-it may be quicker to build on a more powerful machine 
-and copy across the files*
-
-
-## Additional Info
-
-**Tech Stack:**
-- **Node.js + Express** handles REST API and serves the interface.
-- **React + Redux** used in construction of the interface.
-
-**Requirements**
-- **Node.js** v11+
-
-##### Why Express, React, Redux, etc...?
-It may have been more suitable to have created Inky Dash 
-using a Python web framework such as Flask, but the 
-primary purpose of this project was so I could get more 
-experience with the Express framework and React library.
-
-
-
+- File is 100KB or less in size.
