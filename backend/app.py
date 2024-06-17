@@ -1,4 +1,3 @@
-import atexit
 import logging
 from flask import Flask, send_from_directory
 from backend.api.display_api import display_api
@@ -27,12 +26,11 @@ def base():
 
 @app.route("/<path:filename>")
 def static_files(filename):
-    logger.info(f"Requesting {filename}")
+    logger.info(f"Requesting {filename} {os.getcwd()}")
     if filename.endswith('/'):
         filename = filename + 'index.html'
     # serve any static files requested by the client from the public directory
     return send_from_directory("public", filename)
-
 
 # def stop():
 #     print("STOP")

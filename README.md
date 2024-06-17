@@ -27,6 +27,13 @@ For additional help setting up the display follow [this tutorial](https://learn.
 10. From the project root run: `python3 run.py &` or 
 11. You should now hopefully be able to access the Inky Dash UI via the network IP of your Pi on port 8080
 
+## Building 📦
+PyInstaller can be used to create a single binary file which can run Inky Dash.
+Ensure that the build process is executed on the CPU architecture that matches your target environment.
+1. From the project root run `pyinstaller run.spec`
+2. This should create a binary called run in the dist directory
+3. You can run the binary to start Inky Dash e.g. `./dist/run.py`
+
 ## Trouble Shooting 🎯
 To see additional logs run with the `--dev` flag:
 

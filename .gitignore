@@ -1,5 +1,5 @@
 .vscode
-./backend/public/*
+backend/public
 ./frontend/out/
 node_modules/
 __pycache__
@@ -7,4 +7,6 @@ __pycache__
 .next
 next-env.d.ts
 store.json
-inky_dash.log
+inky_dash.log*
+dist
+build
