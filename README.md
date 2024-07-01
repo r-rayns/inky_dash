@@ -8,31 +8,65 @@ Inky dash is an interface for [Inky pHAT](https://shop.pimoroni.com/products/ink
 2. Run `npm install; npm run build`
 3. This will output the build to `./frontend/out`
 4. Move the contents of the build from the `out` directory to `./backend/public`
-### Setup Inky pHAT on your Pi
-1. Ensure the Inky pHAT is correctly setup on your Pi. Typically this should just running:
+### Setup Inky pHAT on the Raspberry Pi
+1. Ensure the Inky pHAT is correctly setup on the Raspberry Pi. Typically this should just be a case of running:
 `curl https://get.pimoroni.com/inky | bash` as per the [guide](https://learn.pimoroni.com/article/getting-started-with-inky-phat).
 For additional help setting up the display follow [this tutorial](https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-inky-phat).
-2. Reboot your Pi once the setup is complete.
+2. Reboot the Raspberry Pi once setup is complete.
 
 ## Running 🏃
-1. Compress your `inky_dash` directory and transfer it across to your Raspberry Pi.
-2. SSH into your Raspberry Pi.
-3. Once the transfer is complete, extract `inky_dash` onto the home directory of you Raspberry Pi.
-4. Consider creating a Python Virtual Environment, to keep things tidy: `mkdir ~/venv`
-5. `cd venv`
-6. `python3 -m venv inky-dash`
+1. Compress the `inky_dash` directory and transfer it across to the Raspberry Pi.
+2. SSH into the Raspberry Pi.
+3. Once the transfer is complete, extract `inky_dash` into the Raspberry Pi's home directory.
+4. Consider creating a Python Virtual Environment, to keep things tidy: `mkdir ~/venv`.
+5. `cd venv`.
+6. `python3 -m venv inky-dash`.
 7. Change directories to the project root.
-8. Install the required Python libraries`pip3 install -r requirements.txt`
-9. If required, setup ufw and allow port 8080
-10. From the project root run: `python3 run.py &` or 
-11. You should now hopefully be able to access the Inky Dash UI via the network IP of your Pi on port 8080
+8. Install the required Python libraries`pip3 install -r requirements.txt`.
+9. If required, setup ufw and allow port 8080.
+10. From the project root run: `python3 run.py &`.
+11. Hopefully the Inky Dash UI should now be accessible on port 8080 of the Raspberry Pi.
 
 ## Building 📦
 PyInstaller can be used to create a single binary file which can run Inky Dash.
-Ensure that the build process is executed on the CPU architecture that matches your target environment.
+Ensure that the build process is executed on the CPU architecture that matches the target environment.
 1. From the project root run `pyinstaller run.spec`
-2. This should create a binary called run in the dist directory
-3. You can run the binary to start Inky Dash e.g. `./dist/run.py`
+2. This should create a binary called `run` inside the `dist` directory
+3. To start Inky Dash run the binary e.g. `./dist/run.py`
+
+## Running as a service 📎
+
+A systemd file can be used to run inky dash as a service.
+
+1. Create a new file called `inky_dash.service` in `/etc/systemd/system/`.
+
+2. Copy the example below into the new file. Check the `ExecStart` path points to the Inky Dash binary and the `WorkingDirectory` points to the parent directory of the binary. Replace `your_username` with the correct username.
+
+```
+[Unit]
+Description=Inky Dash Service
+After=network.target
+
+[Service]
+ExecStart=/home/your_username/inky_dash/dist/run
+WorkingDirectory=/home/your_username/inky_dash/dist
+User=your_username
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+3. Save the systemd service file.
+
+4. Refresh systemd then enable and start the service
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable inky_dash.service
+sudo systemctl start inky_dash.service
+```
+
 
 ## Trouble Shooting 🎯
 To see additional logs run with the `--dev` flag:
@@ -44,7 +78,7 @@ python3 run.py --dev
 - If there are issues with numpy: `sudo apt install libopenblas0`
 
 
-## Image Constraints
+## Image Constraints 🖼️
 Uploaded images must conform with the confines of the Inky pHAT display:
 - Dimensions are 212 x 104 pixels (I have not yet got around to supporting the newer 250x122 dimensions).
 - Colour palette is white, black and (red or yellow) in that order, see [here](https://github.com/pimoroni/inky/blob/master/tools/inky-palette.gpl).

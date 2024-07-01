@@ -21,11 +21,12 @@ class DisplayService():
 
     def store_settings(self, settings: DisplaySettings):
         with open("store.json", "w") as file:
-            json.dump(settings.model_dump_json(), file)
+            json.dump(settings.model_dump(), file, ensure_ascii=False, indent=4)
 
     def restore_settings(self):
         settings_json = self.retrieve_settings()
-        if settings_json:
+        if isinstance(settings_json, dict):
+          logger.info("Existing settings detected, attempting to restore settings...")
           settings = DisplaySettings(**settings_json)
           self.set_display(settings)
 

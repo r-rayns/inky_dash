@@ -57,5 +57,5 @@ if __name__ == '__main__':
         'reload': True if args.dev else False  # Enable auto-reload in development mode
     }
 
-    # src.app module will be dynamically imported for each worker
+    # backend.app module will be dynamically imported for each worker
     StandaloneApplication("backend.app", options).run()

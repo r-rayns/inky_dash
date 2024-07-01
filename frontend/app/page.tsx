@@ -2,9 +2,9 @@
 import { DisplaySettings } from "@/lib/display-service";
 import { pluraliseUnitIfNeeded } from "@/lib/utils";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import StepRange from "./ui/step-range/step-range";
-import MockDisplay from "./ui/mock-display/mock-display";
 import { defaultSettings, useSettings } from "./providers/settings-provider";
+import MockDisplay from "./ui/mock-display/mock-display";
+import StepRange from "./ui/step-range/step-range";
 
 export default function Home() {
   const minChangeDelay = 30;
@@ -15,7 +15,6 @@ export default function Home() {
 
   useEffect(() => {
     if (displaySettings) {
-      console.log("data", displaySettings);
       // existing data retrieved, override defaults
       setDisplayForm({ ...displaySettings });
     }

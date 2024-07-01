@@ -5,13 +5,10 @@ import {
   DisplaySettingsResponse,
   setDisplay,
 } from "@/lib/display-service";
-import { fetchWithErrorHandling } from "@/lib/fetcher";
-import { assign, clone, merge } from "lodash-es";
-import { createContext, useContext, useEffect, useState } from "react";
-import useSWR, { SWRConfig } from "swr";
-import { v4 as uuid } from "uuid";
-import { AddToastFn } from "./toast-provider";
 import { constructUrl } from "@/lib/utils";
+import { createContext, useContext, useEffect, useState } from "react";
+import useSWR from "swr";
+import { AddToastFn } from "./toast-provider";
 
 // base64 for a blank white png image
 export const blankImage =
@@ -27,12 +24,14 @@ export const defaultSettings: DisplaySettings = {
 interface SettingsContextDefaults {
   displaySettings: DisplaySettings;
   updateDisplay: (settings: DisplaySettings) => Promise<Boolean>;
+  isLoading: boolean;
 }
 
 // placeholder implementations
 const SettingsContext = createContext<SettingsContextDefaults>({
   displaySettings: defaultSettings,
   updateDisplay: async (settings: DisplaySettings) => false,
+  isLoading: false
 });
 
 export const useSettings = () => useContext(SettingsContext);
@@ -46,15 +45,14 @@ export const SettingsProvider = ({
 }>) => {
   const [displaySettings, setDisplaySettings] =
     useState<DisplaySettings>(defaultSettings);
-  const { data, error } = useSWR<DisplaySettingsResponse>(
+  const { data, error, isLoading } = useSWR<DisplaySettingsResponse>(
     constructUrl("display"),
     {
       revalidateIfStale: true,
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
-      errorRetryCount: 0, // TODO remove once toasts auto close and don't duplicate based on title
       onSuccess: () => {
-        addToast("Succesfully loaded display settings, woop", {
+        addToast("Succesfully loaded display settings", {
           type: ToastType.SUCCESS,
           duration: 2 as second,
         });
@@ -94,7 +92,7 @@ export const SettingsProvider = ({
   }
 
   return (
-    <SettingsContext.Provider value={{ displaySettings, updateDisplay }}>
+    <SettingsContext.Provider value={{ displaySettings, updateDisplay, isLoading }}>
       {children}
     </SettingsContext.Provider>
   );

@@ -41,7 +41,6 @@ class DisplaySettings(BaseModel):
                 # check image is less than 100KB + an extra 10KB allowance
                 if byte_estimate > (110 * 1024):
                     raise ValueError("Image is greater than 100KB")
-                # TODO check image is below 5MB
         except (TypeError, ValueError) as e:
             raise ValueError(f"Invalid base64 string: {str(e)}")
         return pngImages

@@ -1,14 +1,18 @@
 import logging
+from backend.lib.logger_setup import setup_inky_logger
 from flask import Flask, send_from_directory
 from backend.api.display_api import display_api
 from backend.lib.ascii import print_logo
 from backend.lib.container import Container
-import backend.lib.logger_setup
 import os
+from dependency_injector.wiring import inject, Provide
 from flask_cors import CORS
 
+from backend.services.display_service import DisplayService
+
+setup_inky_logger()
 # Initialise the Container class for Dependency Injection to work
-Container()
+container = Container()
 app = Flask(__name__)
 # app.container = container
 logger = logging.getLogger('inky_dash')
@@ -32,7 +36,11 @@ def static_files(filename):
     # serve any static files requested by the client from the public directory
     return send_from_directory("public", filename)
 
-# def stop():
-#     print("STOP")
-# atexit.register(stop)
 app.register_blueprint(display_api, url_prefix='/api')
+
+def initial_restore():
+    display_service = container.display_service()
+    display_service.restore_settings()
+
+
+initial_restore()

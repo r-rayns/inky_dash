@@ -1,7 +1,7 @@
 "use client";
 import { second } from '@/lib/branded-types';
 import { fetchWithErrorHandling } from "@/lib/fetcher";
-import { assign, clone, merge } from "lodash-es";
+import { assign, clone } from "lodash-es";
 import { createContext, useContext, useState } from "react";
 import { SWRConfig } from "swr";
 import { v4 as uuid } from "uuid";
