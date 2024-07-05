@@ -2,19 +2,18 @@
 Inky dash is an interface for [Inky pHAT](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811), an e-paper display for the Raspberry Pi, that can be accessed from a browser via a local web server.
 ![demo](./demo.gif)
 
-## Prerequisites
-### Build the front-end
-1. `cd` into the `frontend` directory
-2. Run `npm install; npm run build`
-3. This will output the build to `./frontend/out`
-4. Move the contents of the build from the `out` directory to `./backend/public`
+## Running 🏃
 ### Setup Inky pHAT on the Raspberry Pi
 1. Ensure the Inky pHAT is correctly setup on the Raspberry Pi. Typically this should just be a case of running:
 `curl https://get.pimoroni.com/inky | bash` as per the [guide](https://learn.pimoroni.com/article/getting-started-with-inky-phat).
 For additional help setting up the display follow [this tutorial](https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-inky-phat).
 2. Reboot the Raspberry Pi once setup is complete.
-
-## Running 🏃
+### Build the front-end
+1. `cd` into the `frontend` directory
+2. Run `npm install; npm run build`
+3. This will output the build to `./frontend/out`
+4. Move the contents of the build from the `out` directory to `./backend/public`
+### Run Inky on the Raspberry Pi
 1. Compress the `inky_dash` directory and transfer it across to the Raspberry Pi.
 2. SSH into the Raspberry Pi.
 3. Once the transfer is complete, extract `inky_dash` into the Raspberry Pi's home directory.
@@ -27,12 +26,14 @@ For additional help setting up the display follow [this tutorial](https://learn.
 10. From the project root run: `python3 run.py &`.
 11. Hopefully the Inky Dash UI should now be accessible on port 8080 of the Raspberry Pi.
 
-## Building 📦
+## Building a binary 📦
 PyInstaller can be used to create a single binary file which can run Inky Dash.
 Ensure that the build process is executed on the CPU architecture that matches the target environment.
 1. From the project root run `pyinstaller run.spec`
 2. This should create a binary called `run` inside the `dist` directory
 3. To start Inky Dash run the binary e.g. `./dist/run.py`
+
+**You can alternatively use the pre-compiled binary attached to the release (if one is available for your CPU architecture)**
 
 ## Running as a service 📎
 
