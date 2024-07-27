@@ -17,19 +17,17 @@ For additional help setting up the display follow [this tutorial](https://learn.
 1. Compress the `inky_dash` directory and transfer it across to the Raspberry Pi.
 2. SSH into the Raspberry Pi.
 3. Once the transfer is complete, extract `inky_dash` into the Raspberry Pi's home directory.
-4. Consider creating a Python Virtual Environment, to keep things tidy: `mkdir ~/venv`.
-5. `cd venv`.
-6. `python3 -m venv inky-dash`.
-7. Change directories to the project root.
-8. Install the required Python libraries`pip3 install -r requirements.txt`.
-9. If required, setup ufw and allow port 8080.
-10. From the project root run: `python3 run.py &`.
-11. Hopefully the Inky Dash UI should now be accessible on port 8080 of the Raspberry Pi.
+4. This project uses [Poetry](https://python-poetry.org/), so you do not need to create a new Python virtual environment manually
+5. Change directories to the project root.
+6. Install the required Python libraries using Poetry: `poetry install`.
+7. If required, setup ufw and allow port 8080.
+8. From the project root run: `poetry run python3 run.py &`.
+9. Hopefully the Inky Dash UI should now be accessible on port 8080 of the Raspberry Pi.
 
 ## Building a binary 📦
 PyInstaller can be used to create a single binary file which can run Inky Dash.
 Ensure that the build process is executed on the CPU architecture that matches the target environment.
-1. From the project root run `pyinstaller run.spec`
+1. From the project root run `poetry run pyinstaller run.spec`
 2. This should create a binary called `run` inside the `dist` directory
 3. To start Inky Dash run the binary e.g. `./dist/run.py`
 
@@ -73,8 +71,9 @@ sudo systemctl start inky_dash.service
 To see additional logs run with the `--dev` flag:
 
 ```bash
-python3 run.py --dev
+poetry run python3 run.py --dev
 ```
+
 - If there are issues with spidev: `sudo apt install python3-dev`
 - If there are issues with numpy: `sudo apt install libopenblas0`
 
