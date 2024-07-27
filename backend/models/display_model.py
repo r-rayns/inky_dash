@@ -35,9 +35,7 @@ class DisplaySettings(BaseModel):
                 header = pngBase64[0:10]
                 if header != 'iVBORw0KGg':
                     raise ValueError("Image is not in PNG format")
-                print(f'base64Length {len(pngBase64)} {type(pngBase64)}')
                 byte_estimate = (len(pngBase64) * (3/4)) - 2
-                print(f'bytess {bytes}')
                 # check image is less than 100KB + an extra 10KB allowance
                 if byte_estimate > (110 * 1024):
                     raise ValueError("Image is greater than 100KB")

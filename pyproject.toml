@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "inky-dash"
-version = "2.3.0"
+version = "2.3.1"
 description = "Inky dash is an interface for Inky displays, a line of e-paper displays for the Raspberry Pi, that can be accessed from a browser via a local web server."
 authors = ["Robert <robert@rrayns.co.uk>"]
 readme = "README.md"

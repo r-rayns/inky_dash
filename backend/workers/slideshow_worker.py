@@ -1,10 +1,8 @@
-import atexit
 import logging
 import base64
 import io
 import os
 import threading
-import time
 from PIL import Image
 from backend.models.display_model import DisplaySettings
 from inky import InkyPHAT
@@ -27,7 +25,7 @@ class SlideshowWorker:
         return cls._instance
 
     def __init__(self):
-        logger.info('Created SlideshowWorker')
+        logger.info("Created SlideshowWorker")
         self.images = []
         self.delay_seconds = 30
         self.current_image_index = 0
@@ -36,10 +34,11 @@ class SlideshowWorker:
         self.display = None
         self.stop_event = threading.Event()
         # ensure thread is stopped when the application exits
-        signal.signal(signal.SIGINT, self.shutdown)
         signal.signal(signal.SIGTERM, self.shutdown)
 
     def shutdown(self, signum, frame):
+        logger.info("Application has received a signal to shut down")
+        self._instance = None
         self.stop()
 
     def start(self, display_settings: DisplaySettings):
@@ -89,7 +88,7 @@ class SlideshowWorker:
 
         if os.getenv("DESKTOP", "False").lower() == "true":
             logger.info(
-                "Running in a desktop environment don't attempt to set the display")
+                "Running in a desktop environment, we won't attempt to set the display")
         else:
             display.show()
 

@@ -14,9 +14,10 @@ setup_inky_logger()
 # Initialise the Container class for Dependency Injection to work
 container = Container()
 app = Flask(__name__)
-# app.container = container
 logger = logging.getLogger('inky_dash')
+
 print_logo()
+
 if os.getenv("DEV", "False").lower() == "true":
     logger.info("Enabling CORs for development mode")
     CORS(app, origins=['*'])
@@ -36,9 +37,12 @@ def static_files(filename):
     # serve any static files requested by the client from the public directory
     return send_from_directory("public", filename)
 
+
 app.register_blueprint(display_api, url_prefix='/api')
 
+
 def initial_restore():
+    # attempt to restore any previous settings
     display_service = container.display_service()
     display_service.restore_settings()
 

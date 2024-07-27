@@ -1,5 +1,6 @@
 import argparse
 import multiprocessing
+import signal
 import gunicorn.app.base
 import os
 from gunicorn.config import Config
@@ -8,8 +9,10 @@ from gunicorn.config import Config
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Start the Gunicorn server.')
-parser.add_argument('--dev', action='store_true', help='Enable development mode')
-parser.add_argument('--desktop', action='store_true', help='When running in a desktop environment, actions to update the Inky display will not be attempted')
+parser.add_argument('--dev', action='store_true',
+                    help='Enable development mode')
+parser.add_argument('--desktop', action='store_true',
+                    help='When running in a desktop environment, actions to update the Inky display will not be attempted')
 
 args = parser.parse_args()
 
@@ -24,8 +27,18 @@ if args.desktop:
 else:
     os.environ["DESKTOP"] = "False"
 
+
 def number_of_workers():
     return (multiprocessing.cpu_count() * 2) + 1
+
+
+def worker_exit(server, worker):
+    # The spawned worker thread in the SlideshowWorker class causes a delay in server reloading until a timeout occurs.
+    # Send a SIGTERM signal to the worker to allow SlideshowWorker to stop the thread and let the server reload.
+
+    os.kill(worker.pid, signal.SIGTERM)
+    pass
+
 
 class StandaloneApplication(gunicorn.app.base.BaseApplication):
     def __init__(self, app_module, options={}):
@@ -48,13 +61,16 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
         module = __import__(self.app_module, fromlist=['app'])
         return module.app
 
+
 if __name__ == '__main__':
     options = {
         'bind': '%s:%s' % ('0.0.0.0', '8080'),
-        'workers': 1, #number_of_workers(),
+        'workers': 1,  # number_of_workers(),
         'timeout': 120,
         'loglevel': 'debug' if args.dev else 'info',
-        'reload': True if args.dev else False  # Enable auto-reload in development mode
+        # Enable auto-reload in development mode
+        'reload': True if args.dev else False,
+        'worker_exit': worker_exit
     }
 
     # backend.app module will be dynamically imported for each worker
