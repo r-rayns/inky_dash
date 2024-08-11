@@ -20,7 +20,7 @@ export default function Nav() {
               "underline decoration-orange-500": pathname === link.href,
             })}
           >
-            <span className="text-xl text-slate-300">{link.name}</span>
+            <span className="text-lg md:text-xl text-slate-300">{link.name}</span>
           </Link>
         );
       })}

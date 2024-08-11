@@ -1,3 +1,4 @@
+import { DisplayType, Palette } from './display-types';
 import { FetchResponse, fetchWithErrorHandling } from "./fetcher";
 import { constructUrl } from "./utils";
 
@@ -13,6 +14,7 @@ export async function setDisplay(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        type: displaySettings.type,
         colour_palette: displaySettings.colourPalette,
         border_colour: displaySettings.borderColour,
         change_delay: displaySettings.changeDelay,
@@ -25,10 +27,11 @@ export async function setDisplay(
   });
 }
 
-export type ValidPalletteColours = "red" | "yellow";
+export type ValidPalletteColours = Palette.RED | Palette.YELLOW | Palette.SEVEN_COLOUR;
 export type ValidBorderColours = "white" | "black";
 
 export interface DisplaySettings {
+  type: DisplayType;
   colourPalette: ValidPalletteColours;
   borderColour: ValidBorderColours;
   changeDelay: number;
@@ -36,6 +39,7 @@ export interface DisplaySettings {
 }
 
 export interface DisplaySettingsResponse {
+  type: DisplayType;
   colour_palette: ValidPalletteColours;
   border_colour: ValidBorderColours;
   change_delay: number;
