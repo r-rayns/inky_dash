@@ -14,26 +14,28 @@ class DisplayService():
 
     def set_display(self, settings: DisplaySettings, store=False):
         logger.info("Attempting to set the Inky display...")
-        logger.info(f"Settings: {settings.colour_palette}")
+        logger.info(f"Settings: {settings.type} ({settings.colour_palette})")
         self.slideshow_worker.start(settings)
         if store:
             self.store_settings(settings)
 
     def store_settings(self, settings: DisplaySettings):
         with open("store.json", "w") as file:
-            json.dump(settings.model_dump(), file, ensure_ascii=False, indent=4)
+            json.dump(settings.model_dump(), file,
+                      ensure_ascii=False, indent=4)
 
     def restore_settings(self):
         settings_json = self.retrieve_settings()
         if isinstance(settings_json, dict):
-          logger.info("Existing settings detected, attempting to restore settings...")
-          settings = DisplaySettings(**settings_json)
-          self.set_display(settings)
+            logger.info(
+                "Existing settings detected, attempting to restore settings...")
+            settings = DisplaySettings(**settings_json)
+            self.set_display(settings)
 
     def retrieve_settings(self):
-      try:
-        with open("store.json", "r") as file:
-            return json.load(file)
-      except FileNotFoundError:
+        try:
+            with open("store.json", "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
             logger.info("No settings found...")
             return False

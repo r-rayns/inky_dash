@@ -4,11 +4,20 @@ import io
 import os
 import threading
 from PIL import Image
-from backend.models.display_model import DisplaySettings
-from inky import InkyPHAT
+from backend.models.display_model import DisplaySettings, DisplayType
+from inky import auto, mock, InkyPHAT, InkyPHAT_SSD1608, Inky7Colour, Inky_Impressions_7, InkyWHAT, InkyWHAT_SSD1683
+from typing import Tuple, Union
 import signal
 
 logger = logging.getLogger('inky_dash')
+
+# InkyDisplay = Union[InkyPHAT, InkyPHAT_SSD1608,
+# Inky7Colour, Inky_Impressions_7]
+
+InkyDisplay = Union[InkyPHAT, InkyPHAT_SSD1608, InkyWHAT,
+                    Inky7Colour, InkyWHAT_SSD1683, Inky_Impressions_7,
+                    mock.InkyMockWHAT, mock.InkyMockPHAT, mock.InkyMockImpression,
+                    mock.InkyMockPHATSSD1608]
 
 
 class SlideshowWorker:
@@ -31,7 +40,7 @@ class SlideshowWorker:
         self.current_image_index = 0
         self.running = False
         self.thread = None
-        self.display = None
+        self.display: InkyDisplay
         self.stop_event = threading.Event()
         # ensure thread is stopped when the application exits
         signal.signal(signal.SIGTERM, self.shutdown)
@@ -42,23 +51,46 @@ class SlideshowWorker:
         self.stop()
 
     def start(self, display_settings: DisplaySettings):
-        self.images = display_settings.images
-        self.display = InkyPHAT(display_settings.colour_palette)
-        self.delay_seconds = display_settings.change_delay
-        if not self.running:
-            logger.info('Starting slideshow...')
-            self.current_image_index = 0
-            self.running = True
-            # reset the stop event
-            self.stop_event.clear()
-            # create and start the thread
-            self.thread = threading.Thread(target=self.run)
-            self.thread.start()
-        else:
+        if self.running:
             logger.info(
                 "Slideshow is already running, restarting with latest settings...")
             self.stop()
-            self.start(display_settings)
+
+        self.images = display_settings.images
+        self.delay_seconds = display_settings.change_delay
+
+        try:
+            self.display = auto(ask_user=False)
+        except Exception as e:
+            logger.error(f"Could not auto detect Inky Device: {e}")
+            logger.info(
+                "Manual initialisation of Inky Device will be attempted")
+            self.display = self.resolve_display_from_settings(display_settings)
+
+        if isinstance(self.display, (InkyWHAT, InkyWHAT_SSD1683)):
+            raise Exception("Inky WHAT is not a supported display type")
+
+        logger.info('Starting slideshow...')
+        self.current_image_index = 0
+        self.running = True
+        # reset the stop event
+        self.stop_event.clear()
+        # create and start the thread
+        self.thread = threading.Thread(target=self.run)
+        self.thread.start()
+
+    def resolve_display_from_settings(self, display_settings: DisplaySettings) -> InkyDisplay:
+        if display_settings.type == DisplayType.PHAT_104:
+            return InkyPHAT(display_settings.colour_palette)
+        elif display_settings.type == DisplayType.PHAT_122:
+            return InkyPHAT_SSD1608(display_settings.colour_palette)
+        elif display_settings.type == DisplayType.IMPRESSION_400:
+            return Inky7Colour(resolution=(640, 400))
+        elif display_settings.type == DisplayType.IMPRESSION_448:
+            return Inky7Colour(resolution=(600, 448))
+        else:
+            # otherwise the only other displays we support are the 7 colour
+            return Inky_Impressions_7()
 
     def stop(self):
         self.stop_event.set()
@@ -82,8 +114,21 @@ class SlideshowWorker:
             self.stop_event.wait(self.delay_seconds)
             # time.sleep(self.delay_seconds)
 
-    def _display_base64_image(self, display, base64_image):
+    def _display_base64_image(self, display: InkyDisplay, base64_image: str):
         image = self._load_base64_image(base64_image)
+        if image.width > display.resolution[0]:
+            logger.info("Image is wider than display width, cropping image")
+            image = self.crop_image_width(image, display.resolution)
+        if image.height > display.resolution[1]:
+            logger.info("Image is higher than display height, cropping image")
+            image = self.crop_image_height(image, display.resolution)
+        if image.width < display.resolution[0] or image.height < display.resolution[1]:
+            image = self.pad_image(display.resolution, image)
+
+        if os.getenv("DEV", "False").lower() == "true":
+          # when in dev save the image to disk for debugging purposes
+          image.save("result.png")
+
         display.set_image(image)
 
         if os.getenv("DESKTOP", "False").lower() == "true":
@@ -92,7 +137,7 @@ class SlideshowWorker:
         else:
             display.show()
 
-    def _load_base64_image(self, base64_image):
+    def _load_base64_image(self, base64_image) -> Image.Image:
         # convert the base64 to bytes
         byte_data = base64.b64decode(base64_image)
         # create a stream to provide a file like interface for our image
@@ -101,3 +146,46 @@ class SlideshowWorker:
         image = Image.open(image_stream)
 
         return image
+
+    def pad_image(self, target_resolution: Tuple[int, int], image: Image.Image) -> Image.Image:
+        logger.info("Image is below target resolution, padding image")
+        target_width, target_height = target_resolution
+        # Calculate the padding needed
+        pad_left = (target_width - image.width) // 2
+        pad_top = (target_height - image.height) // 2
+
+        # Mode P for palette based images
+        if image.mode == "P":
+            # we must find the index of white in the palette to use as the padding colour
+            white_index = self.find_white_index(image.getpalette())
+            # Create a new white image with the target dimensions, use the mode of the original image
+            padded_image = Image.new(image.mode, (target_width, target_height), white_index)
+            padded_image.putpalette(image.getpalette())
+        else:
+            # non palette based default to RGB
+            padded_image = Image.new("RGB", (target_width, target_height), (255, 255, 255))
+
+        # Paste the original image onto the new image
+        padded_image.paste(image, (pad_left, pad_top))
+
+        return padded_image
+
+    def crop_image_width(self, image: Image.Image, target_resolution: Tuple[int, int]) -> Image.Image:
+        left_crop = (image.width - target_resolution[0]) // 2
+        right_crop = left_crop + target_resolution[0]
+        return image.crop((left_crop, 0, right_crop, image.height))
+
+    def crop_image_height(self, image: Image.Image, target_resolution: Tuple[int, int]) -> Image.Image:
+        top_crop = (image.height - target_resolution[1]) // 2
+        bottom_crop = top_crop + target_resolution[1]
+        return image.crop((0, top_crop, image.width, bottom_crop))
+
+    def find_white_index(self, palette: list[int] | None) -> int:
+        if palette is None:
+            return 0
+
+        for i in range(0, len(palette), 3):
+            if palette[i] == 255 and palette[i + 1] == 255 and palette[i + 2] == 255:
+                return i
+
+        return 0

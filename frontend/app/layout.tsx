@@ -20,12 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} max-w-prose p-2 md:p-0 m-auto bg-slate-200 dark:bg-gray-800`}
+        className={`${inter.className} flex h-screen bg-slate-200 dark:bg-gray-800`}
       >
-        <div>
-          <header className="text-center">
+        <div className='p-2 md:p-0 w-full flex flex-col items-center'>
+          <header className="max-w-prose">
             <h1
-              className={`${silkscreen.className} flex justify-center items-center`}
+              className={`${silkscreen.className} flex items-center`}
             >
               Inky <OctopusIcon className="w-12 md:w-24 inline" /> Dash
             </h1>
