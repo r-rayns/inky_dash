@@ -63,7 +63,9 @@ export default function Page() {
     // Allow rgbquant to build a colour histogram of the image for dithering
     quant.sample(uint8ClampedArray);
     // Dither the image
-    return quant.reduce(uint8ClampedArray);
+    const ditherRes = quant.reduce(uint8ClampedArray);
+
+    return Buffer.from(ditherRes);
   }
 
   async function download() {
@@ -109,7 +111,7 @@ export default function Page() {
       const base64Png = await image.getBase64("image/png");
       setDisplaySettings({
         ...displaySettings,
-        images: [...displaySettings.images, stripMetadataFromBase64(base64Png)],
+        images: [stripMetadataFromBase64(base64Png), ...displaySettings.images],
       });
       addToast("Image added to slideshow", {
         type: ToastType.INFO,
