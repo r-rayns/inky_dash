@@ -5,9 +5,15 @@ import {
   DisplaySettingsResponse,
   setDisplay,
 } from "@/lib/display-service";
-import { DisplayType, Palette } from '@/lib/display-types';
+import { DisplayType, Palette } from "@/lib/display-types";
 import { constructUrl } from "@/lib/utils";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import useSWR from "swr";
 import { AddToastFn } from "./toast-provider";
 
@@ -25,6 +31,7 @@ export const defaultSettings: DisplaySettings = {
 
 interface SettingsContextDefaults {
   displaySettings: DisplaySettings;
+  setDisplaySettings: (settings: SetStateAction<DisplaySettings>) => void;
   updateDisplay: (settings: DisplaySettings) => Promise<Boolean>;
   isLoading: boolean;
 }
@@ -32,8 +39,9 @@ interface SettingsContextDefaults {
 // placeholder implementations
 const SettingsContext = createContext<SettingsContextDefaults>({
   displaySettings: defaultSettings,
+  setDisplaySettings: (settings: SetStateAction<DisplaySettings>) => undefined,
   updateDisplay: async (settings: DisplaySettings) => false,
-  isLoading: false
+  isLoading: false,
 });
 
 export const useSettings = () => useContext(SettingsContext);
@@ -64,7 +72,6 @@ export const SettingsProvider = ({
 
   useEffect(() => {
     if (data) {
-      console.log("settings provider data", data);
       // existing data retrieved, override defaults
       setDisplaySettings({
         type: data.type ?? DisplayType.PHAT_104,
@@ -95,7 +102,9 @@ export const SettingsProvider = ({
   }
 
   return (
-    <SettingsContext.Provider value={{ displaySettings, updateDisplay, isLoading }}>
+    <SettingsContext.Provider
+      value={{ displaySettings, setDisplaySettings, updateDisplay, isLoading }}
+    >
       {children}
     </SettingsContext.Provider>
   );

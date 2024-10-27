@@ -109,6 +109,14 @@ button.default {
   dark:focus:ring-orange-800;
 }
 
+button.default:disabled {
+  @apply bg-gray-200
+  opacity-50
+  cursor-not-allowed
+  text-gray-500
+  border-gray-200
+}
+
 /* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
