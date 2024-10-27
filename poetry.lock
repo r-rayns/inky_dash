@@ -184,13 +184,13 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "flask-cors"
-version = "4.0.1"
+version = "5.0.0"
 description = "A Flask extension adding a decorator for CORS support"
 optional = false
 python-versions = "*"
 files = [
-    {file = "Flask_Cors-4.0.1-py2.py3-none-any.whl", hash = "sha256:f2a704e4458665580c074b714c4627dd5a306b333deb9074d0b1794dfa2fb677"},
-    {file = "flask_cors-4.0.1.tar.gz", hash = "sha256:eeb69b342142fdbf4766ad99357a7f3876a2ceb77689dc10ff912aac06c389e4"},
+    {file = "Flask_Cors-5.0.0-py2.py3-none-any.whl", hash = "sha256:b9e307d082a9261c100d8fb0ba909eec6a228ed1b60a8315fd85f783d61910bc"},
+    {file = "flask_cors-5.0.0.tar.gz", hash = "sha256:5aadb4b950c4e93745034594d9f3ea6591f734bb3662e16e255ffbf5e89c88ef"},
 ]
 
 [package.dependencies]
@@ -810,4 +810,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "750fba4efb0386d74fb40eb0aa13d52616b8014564c806cf687f69efa53dd4a0"
+content-hash = "87c606cb47e22db57165c13e22e8c31ec444d74ab2157a5b9cbeb5c3d1bf1695"
