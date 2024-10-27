@@ -184,7 +184,7 @@ export default function Page() {
         })}
       >
         <h3>Result</h3>
-        <Image ref={imgRef} src="" alt="The dithered output of the image" />
+        <Image ref={imgRef} src="data:image/png;base64," width={display.width} height={display.height} alt="The dithered output of the image" />
         <div className="flex w-full my-2 gap-2 justify-end">
           <button
             className="default"
