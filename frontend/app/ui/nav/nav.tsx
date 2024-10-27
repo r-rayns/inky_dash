@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { name: "Display", href: "/" },
+  { name: "Prepare Image", href: "/prepare-image/" },
   { name: "About", href: "/about/" },
 ];
 export default function Nav() {
   const pathname = usePathname();
   return (
-    <div className='flex flex-row mb-4 gap-4 '>
+    <div className='flex flex-row justify-center mb-4 gap-4 '>
       {links.map((link) => {
         return (
           <Link

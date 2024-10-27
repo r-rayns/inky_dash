@@ -1,4 +1,4 @@
-export async function toBase64(
+export async function blobToBase64(
   file: Blob,
   includeMetadata = false
 ): Promise<string> {
@@ -16,13 +16,17 @@ export async function toBase64(
         resolve(reader.result);
       } else {
         // remove metadata then return
-        resolve(reader.result.split(",")[1]);
+        resolve(stripMetadataFromBase64(reader.result));
       }
     };
     reader.onerror = (error) => reject(error);
 
     reader.readAsDataURL(file);
   });
+}
+
+export function stripMetadataFromBase64(base64: string): string {
+  return base64.split(",")[1];
 }
 
 export function constructUrl(apiPath: string): string {

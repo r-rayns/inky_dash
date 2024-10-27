@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <section className="text-slate-300 max-w-prose">
+    <section className="text-slate-300 w-full max-w-prose">
       <h2>Inky Dash - v{process.env.npm_package_version}</h2>
       <p>
         Inky Dash is an interface for the Raspberry Pi e-paper display, Inky

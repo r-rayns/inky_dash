@@ -11,9 +11,6 @@ import signal
 
 logger = logging.getLogger('inky_dash')
 
-# InkyDisplay = Union[InkyPHAT, InkyPHAT_SSD1608,
-# Inky7Colour, Inky_Impressions_7]
-
 InkyDisplay = Union[InkyPHAT, InkyPHAT_SSD1608, InkyWHAT,
                     Inky7Colour, InkyWHAT_SSD1683, Inky_Impressions_7,
                     mock.InkyMockWHAT, mock.InkyMockPHAT, mock.InkyMockImpression,
@@ -112,7 +109,6 @@ class SlideshowWorker:
                 self.current_image_index + 1) % len(self.images)
             # sleep for the alloted delay until the next image is displayed
             self.stop_event.wait(self.delay_seconds)
-            # time.sleep(self.delay_seconds)
 
     def _display_base64_image(self, display: InkyDisplay, base64_image: str):
         image = self._load_base64_image(base64_image)
