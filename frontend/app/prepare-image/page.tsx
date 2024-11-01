@@ -29,7 +29,7 @@ export default function Page() {
     setCroppedAreaPixels(croppedAreaPixels);
   }
 
-  async function cropAndDither() {
+  async function cropUpload() {
     if (b64Image && croppedAreaPixels) {
       // Read in the base64 of the uploaded image
       const jImage = await Jimp.read(Buffer.from(b64Image, "base64"));
@@ -38,8 +38,6 @@ export default function Page() {
       jImage.crop({ x, y, w, h });
       // Resize the image to the constraints of the chosen display
       jImage.resize({ w: display.width, h: display.height });
-
-      jImage.bitmap.data = await dither(jImage.bitmap.data);
 
       if (imgRef.current) {
         imgRef.current.src = await jImage.getBase64("image/png");
@@ -53,8 +51,8 @@ export default function Page() {
     const displayPalette = getRgbPalette(displaySettings.colourPalette);
     const quant = new RgbQuant({
       colors: displayPalette.length,
-      palette: displayPalette,
       dithKern: "FloydSteinberg",
+      palette: displayPalette,
     });
 
     // Convert the bitmap to a Uint8ClampedArray ready for rgbquant
@@ -84,9 +82,9 @@ export default function Page() {
     let file: File | null = null;
     if (inputElement?.files?.length) {
       file = inputElement?.files[0];
-      if (file.size > 5 * 1024 ** 2) {
-        // max file size 5MB
-        addToast("Image too large, max file size is 5MB", {
+      if (file.size > 15 * 1024 ** 2) {
+        // max file size 15MB
+        addToast("Image too large, max file size is 15MB", {
           type: ToastType.ERROR,
         });
         console.error("Image too large", file.size);
@@ -95,9 +93,14 @@ export default function Page() {
       }
 
       await blobToBase64(file, false)
-        .then((result) => {
-          // update the image
-          setB64Image(result);
+        .then(async (result) => {
+          // Read in the base64 of the uploaded image
+          const jImage = await Jimp.read(Buffer.from(result, "base64"));
+          // Dither the image and convert it back to base64
+          jImage.bitmap.data = await dither(jImage.bitmap.data);
+          const base64Png = await jImage.getBase64("image/png");
+          // Update the base64 image, stripping metadata
+          setB64Image(stripMetadataFromBase64(base64Png));
         })
         .catch(() => {
           console.error("Error converting image to base64");
@@ -172,10 +175,10 @@ export default function Page() {
         <button
           className="default"
           disabled={!b64Image}
-          onClick={cropAndDither}
+          onClick={cropUpload}
           aria-label="Crop and dither the image"
         >
-          Crop & Dither
+          Crop
         </button>
       </div>
       <div
@@ -184,7 +187,13 @@ export default function Page() {
         })}
       >
         <h3>Result</h3>
-        <Image ref={imgRef} src="data:image/png;base64," width={display.width} height={display.height} alt="The dithered output of the image" />
+        <Image
+          ref={imgRef}
+          src="data:image/png;base64,"
+          width={display.width}
+          height={display.height}
+          alt="The dithered output of the image"
+        />
         <div className="flex w-full my-2 gap-2 justify-end">
           <button
             className="default"

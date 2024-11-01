@@ -1,9 +1,20 @@
 declare module "rgbquant" {
   export class RGBQuant {
     constructor(options: {
-      colors: number;
-      palette: readonly [number, number, number][];
-      dithKern: string;
+      colors?: number;
+      method?: 1 | 2;
+      boxSize?: [number, number];
+      boxPxls?: number;
+      initColors?: number;
+      minHueCols?: number;
+      dithKern?: string;
+      dithDelta?: number;
+      dithSerp?: boolean;
+      palette?: readonly [number, number, number][];
+      reIndex?: boolean;
+      useCache?: boolean;
+      cacheFreq?: number;
+      colorDist?: 'euclidean' | 'manhattan';
     });
 
     sample(img: Uint8ClampedArray): void
