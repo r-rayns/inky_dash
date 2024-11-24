@@ -37,6 +37,7 @@ spidev = "3.6"
 tomli = "2.0.1"
 typing-extensions = "4.10.0"
 werkzeug = "2.3.7"
+rpi-gpio = "^0.7.1"
 
 
 [build-system]

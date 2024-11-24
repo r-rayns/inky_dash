@@ -122,8 +122,8 @@ class SlideshowWorker:
             image = self.pad_image(display.resolution, image)
 
         if os.getenv("DEV", "False").lower() == "true":
-          # when in dev save the image to disk for debugging purposes
-          image.save("result.png")
+            # when in dev save the image to disk for debugging purposes
+            image.save("result.png")
 
         display.set_image(image)
 
@@ -155,11 +155,13 @@ class SlideshowWorker:
             # we must find the index of white in the palette to use as the padding colour
             white_index = self.find_white_index(image.getpalette())
             # Create a new white image with the target dimensions, use the mode of the original image
-            padded_image = Image.new(image.mode, (target_width, target_height), white_index)
+            padded_image = Image.new(
+                image.mode, (target_width, target_height), white_index)
             padded_image.putpalette(image.getpalette())
         else:
             # non palette based default to RGB
-            padded_image = Image.new("RGB", (target_width, target_height), (255, 255, 255))
+            padded_image = Image.new(
+                "RGB", (target_width, target_height), (255, 255, 255))
 
         # Paste the original image onto the new image
         padded_image.paste(image, (pad_left, pad_top))

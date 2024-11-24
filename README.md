@@ -33,6 +33,41 @@ Ensure that the build process is executed on the CPU architecture that matches t
 
 **You can alternatively use the pre-compiled binary attached to the release (if one is available for your CPU architecture)**
 
+### Alternative build process using Requirements.txt
+If you are unable to use Poetry or it is not working, you can manually setup a virtual environment, install all the dependencies and run pyinstaller.
+
+- Create a directory to contain your Python virtual environments (if you don't already have one).
+
+```
+mkdir ~/venv
+cd ~/venv
+```
+
+- Generate a new virtual environment.
+
+```
+python3 -m venv ~/venv/inky-dash
+```
+
+- Activate the virtual environment.
+
+```
+source ~/venv/inky-dash/bin/activate
+```
+
+- Install the requirements.
+
+```
+cd ~/inky_dash
+pip install -r requirements.txt
+```
+
+*The requirements.txt file has been generated using Poetry export:*
+
+```bash
+poetry export --without-hashes -f requirements.txt -o requirements.txt
+```
+
 ## Running as a service 📎
 
 A systemd file can be used to run inky dash as a service.
