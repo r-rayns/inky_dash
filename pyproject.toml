@@ -36,7 +36,7 @@ smbus2 = "0.4.3"
 spidev = "3.6"
 tomli = "2.0.1"
 typing-extensions = "4.10.0"
-werkzeug = "2.3.7"
+werkzeug = "3.0.6"
 rpi-gpio = "^0.7.1"
 
 
