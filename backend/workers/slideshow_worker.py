@@ -4,7 +4,7 @@ import io
 import os
 import threading
 from PIL import Image
-from backend.models.display_model import DisplaySettings, DisplayType
+from backend.models.display_model import BorderColour, DisplaySettings, DisplayType
 from inky import auto, mock, InkyPHAT, InkyPHAT_SSD1608, Inky7Colour, Inky_Impressions_7, InkyWHAT, InkyWHAT_SSD1683
 from typing import Tuple, Union
 import signal
@@ -67,6 +67,12 @@ class SlideshowWorker:
         if isinstance(self.display, (InkyWHAT, InkyWHAT_SSD1683)):
             raise Exception("Inky WHAT is not a supported display type")
 
+        if display_settings.border_colour == BorderColour.BLACK:
+            border_colour = self.display.BLACK
+        else:
+            border_colour = self.display.WHITE
+
+        self.display.set_border(display_settings.border_colour)
         logger.info('Starting slideshow...')
         self.current_image_index = 0
         self.running = True
