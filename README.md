@@ -119,3 +119,17 @@ Uploaded images must conform with the confines of the Inky pHAT display:
 - Colour palette is white, black and (red or yellow) in that order, see [here](https://github.com/pimoroni/inky/blob/master/tools/inky-palette.gpl).
 - File format is PNG.
 - File is 100KB or less in size.
+
+## Testing 🧪
+Pytest is the test runner for this project. Run the tests with:
+
+```bash
+cd inky_dash
+pytest
+```
+
+Or if you are using Poetry:
+
+```bash
+poetry run pytest
+```

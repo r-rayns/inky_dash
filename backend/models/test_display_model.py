@@ -7,77 +7,77 @@ valid_base64_png = "iVBORw0KGgoAAAANSUhEUgAAANQAAABoAgMAAAD0uDaFAAACgnpUWHRSYXcg
 
 
 def test_valid_display_settings():
-    images = [valid_base64_png]
-    try:
-        validated_settings = DisplaySettings(type=DisplayType.PHAT_104,
-                                             colour_palette=ColourPalette.RED,
-                                             border_colour=BorderColour.BLACK,
-                                             change_delay=200,
-                                             images=images)
-        assert validated_settings.images == images
-        assert validated_settings.colour_palette == ColourPalette.RED
-        assert validated_settings.border_colour == BorderColour.BLACK
-        assert validated_settings.change_delay == 200
-    except ValidationError:
-        pytest.fail("DisplaySettings raised a ValidationError unexpectedly!")
+  images = [valid_base64_png]
+  try:
+    validated_settings = DisplaySettings(type=DisplayType.PHAT_104,
+                                         colour_palette=ColourPalette.RED,
+                                         border_colour=BorderColour.BLACK,
+                                         change_delay=200,
+                                         images=images)
+    assert validated_settings.images == images
+    assert validated_settings.colour_palette == ColourPalette.RED
+    assert validated_settings.border_colour == BorderColour.BLACK
+    assert validated_settings.change_delay == 200
+  except ValidationError:
+    pytest.fail("DisplaySettings raised a ValidationError unexpectedly!")
 
 
 def test_non_png_image():
-    base64_jpg = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAABAAEDAREAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6AP/9k="
-    with pytest.raises(ValidationError):
-        DisplaySettings(type=DisplayType.PHAT_104,
-                        colour_palette=ColourPalette.RED,
-                        border_colour=BorderColour.BLACK,
-                        change_delay=200,
-                        images=[base64_jpg])
+  base64_jpg = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAABAAEDAREAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6AP/9k="
+  with pytest.raises(ValidationError):
+    DisplaySettings(type=DisplayType.PHAT_104,
+                    colour_palette=ColourPalette.RED,
+                    border_colour=BorderColour.BLACK,
+                    change_delay=200,
+                    images=[base64_jpg])
 
 
 def test_invalid_palette():
-    with pytest.raises(ValidationError):
-        DisplaySettings(type=DisplayType.PHAT_122,
-                        colour_palette="blue",  # type: ignore
-                        border_colour=BorderColour.BLACK,
-                        change_delay=200,
-                        images=[valid_base64_png])
+  with pytest.raises(ValidationError):
+    DisplaySettings(type=DisplayType.PHAT_122,
+                    colour_palette="blue",  # type: ignore
+                    border_colour=BorderColour.BLACK,
+                    change_delay=200,
+                    images=[valid_base64_png])
 
 
 def test_invalid_border():
-    with pytest.raises(ValidationError):
-        DisplaySettings(type=DisplayType.IMPRESSION_400,
-                        colour_palette=ColourPalette.SEVEN_COLOUR,
-                        border_colour="blue",  # type: ignore
-                        change_delay=200,
-                        images=[valid_base64_png])
+  with pytest.raises(ValidationError):
+    DisplaySettings(type=DisplayType.IMPRESSION_400,
+                    colour_palette=ColourPalette.SEVEN_COLOUR,
+                    border_colour="blue",  # type: ignore
+                    change_delay=200,
+                    images=[valid_base64_png])
 
 
 def test_delay_too_short():
-    with pytest.raises(ValidationError):
-        DisplaySettings(type=DisplayType.PHAT_104,
-                        colour_palette=ColourPalette.RED,
-                        border_colour=BorderColour.BLACK,
-                        change_delay=1,
-                        images=[valid_base64_png])
+  with pytest.raises(ValidationError):
+    DisplaySettings(type=DisplayType.PHAT_104,
+                    colour_palette=ColourPalette.RED,
+                    border_colour=BorderColour.BLACK,
+                    change_delay=1,
+                    images=[valid_base64_png])
 
 
 def test_delay_too_long():
-    with pytest.raises(ValidationError):
-        DisplaySettings(type=DisplayType.PHAT_104,
-                        colour_palette=ColourPalette.RED,
-                        border_colour=BorderColour.BLACK,
-                        change_delay=3601,
-                        images=[valid_base64_png])
+  with pytest.raises(ValidationError):
+    DisplaySettings(type=DisplayType.PHAT_104,
+                    colour_palette=ColourPalette.RED,
+                    border_colour=BorderColour.BLACK,
+                    change_delay=3601,
+                    images=[valid_base64_png])
 
 
 def test_png_too_large():
-    # png header in hexadecimal
-    png_header = b'\x89PNG\r\n\x1a\n'
-    # large byte array representing an image over 1000KB
-    large_data = png_header + bytearray(1500 * 1024)  # 1500KB+
-    # encode to base64
-    large_png_base64 = base64.b64encode(large_data).decode('utf-8')
-    with pytest.raises(ValidationError):
-        DisplaySettings(type=DisplayType.PHAT_104,
-                        colour_palette=ColourPalette.RED,
-                        border_colour=BorderColour.BLACK,
-                        change_delay=30,
-                        images=[large_png_base64])
+  # png header in hexadecimal
+  png_header = b'\x89PNG\r\n\x1a\n'
+  # large byte array representing an image over 1000KB
+  large_data = png_header + bytearray(1500 * 1024)  # 1500KB+
+  # encode to base64
+  large_png_base64 = base64.b64encode(large_data).decode('utf-8')
+  with pytest.raises(ValidationError):
+    DisplaySettings(type=DisplayType.PHAT_104,
+                    colour_palette=ColourPalette.RED,
+                    border_colour=BorderColour.BLACK,
+                    change_delay=30,
+                    images=[large_png_base64])

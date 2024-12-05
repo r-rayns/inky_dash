@@ -1,14 +1,24 @@
-.vscode
+# build/output directories
 backend/public
 ./frontend/out/
+dist
+build
+
+# dependencies
 node_modules/
 __pycache__
 .pytest_cache
-.next
-next-env.d.ts
-store.json
+
+# logs
 inky_dash.log*
-dist
-build
-result.png
 TODO.md
+
+# stores
+store.json
+
+# debug
+result.png
+
+# IDE
+.vscode
+.idea
