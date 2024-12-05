@@ -6,6 +6,7 @@ import { ToastProvider } from "./providers/toast-provider";
 import { OctopusIcon } from "./ui/icons/octopus";
 import Nav from "./ui/nav/nav";
 import Toast from "./ui/toast/toast";
+import {ReactNode} from "react";
 
 export const metadata: Metadata = {
   title: "Inky Dash",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">

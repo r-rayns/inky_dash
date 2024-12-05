@@ -1,4 +1,3 @@
-"use client";
 import { second } from "@/lib/branded-types";
 import {
   DisplaySettings,
@@ -8,14 +7,14 @@ import {
 import { DisplayType, Palette } from "@/lib/display-types";
 import { constructUrl } from "@/lib/utils";
 import {
-  createContext,
+  createContext, ReactNode,
   SetStateAction,
   useContext,
   useEffect,
   useState,
 } from "react";
 import useSWR from "swr";
-import { AddToastFn } from "./toast-provider";
+import {AddToastFn, ToastType} from "./toast-provider";
 
 // base64 for a blank white png image
 export const blankImage =
@@ -26,7 +25,7 @@ export const defaultSettings: DisplaySettings = {
   borderColour: "white",
   colourPalette: Palette.RED,
   changeDelay: 60,
-  images: [blankImage],
+  images: [],
 };
 
 interface SettingsContextDefaults {
@@ -50,7 +49,7 @@ export const SettingsProvider = ({
   children,
   addToast,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
   addToast: AddToastFn;
 }>) => {
   const [displaySettings, setDisplaySettings] =
@@ -62,7 +61,7 @@ export const SettingsProvider = ({
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
       onSuccess: () => {
-        addToast("Succesfully loaded display settings", {
+        addToast("Successfully loaded display settings", {
           type: ToastType.SUCCESS,
           duration: 2 as second,
         });
@@ -78,7 +77,7 @@ export const SettingsProvider = ({
         borderColour: data.border_colour ?? "white",
         colourPalette: data.colour_palette ?? Palette.RED,
         changeDelay: data.change_delay ?? 60,
-        images: data.images ?? [blankImage],
+        images: data.images ?? [],
       });
     }
   }, [data]);
@@ -91,7 +90,7 @@ export const SettingsProvider = ({
       })
     );
     if (res) {
-      addToast("Succesfully submitted display settings", {
+      addToast("Successfully submitted display settings", {
         type: ToastType.SUCCESS,
       });
       setDisplaySettings(settings);
@@ -109,20 +108,3 @@ export const SettingsProvider = ({
     </SettingsContext.Provider>
   );
 };
-
-export interface Toast {
-  id: string;
-  message: string;
-  options: ToastOptions;
-}
-
-export interface ToastOptions {
-  type: ToastType;
-  duration: second;
-}
-
-export enum ToastType {
-  ERROR = "error",
-  SUCCESS = "success",
-  INFO = "info",
-}

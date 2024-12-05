@@ -1,20 +1,21 @@
 "use client";
-import { ToastType, useSettings } from "@/app/providers/settings-provider";
-import { displayClassByType, getRgbPalette } from "@/lib/display-types";
-import { blobToBase64, stripMetadataFromBase64 } from "@/lib/utils";
+import {useSettings} from "@/app/providers/settings-provider";
+import {displayClassByType, getRgbPalette} from "@/lib/display-types";
+import {blobToBase64, stripMetadataFromBase64} from "@/lib/utils";
 import clsx from "clsx";
-import { Jimp } from "jimp";
+import {Jimp} from "jimp";
 import Image from "next/image";
-import { useRef, useState } from "react";
-import Cropper, { Area } from "react-easy-crop";
+import {ChangeEvent, useRef, useState} from "react";
+import Cropper, {Area} from "react-easy-crop";
 import RgbQuant from "rgbquant";
-import { useToast } from "../providers/toast-provider";
+import {ToastType, useToast} from "../providers/toast-provider";
+import {Button} from "@/components/ui/button";
 
 export default function Page() {
-  const { displaySettings, setDisplaySettings } = useSettings();
-  const { addToast } = useToast();
+  const {displaySettings, setDisplaySettings} = useSettings();
+  const {addToast} = useToast();
 
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [crop, setCrop] = useState({x: 0, y: 0});
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [zoom, setZoom] = useState(1);
   const [b64Image, setB64Image] = useState<string | null>(null);
@@ -34,10 +35,10 @@ export default function Page() {
       // Read in the base64 of the uploaded image
       const jImage = await Jimp.read(Buffer.from(b64Image, "base64"));
       // Crop the image to the selected cropped area
-      const { x, y, width: w, height: h } = croppedAreaPixels;
-      jImage.crop({ x, y, w, h });
+      const {x, y, width: w, height: h} = croppedAreaPixels;
+      jImage.crop({x, y, w, h});
       // Resize the image to the constraints of the chosen display
-      jImage.resize({ w: display.width, h: display.height });
+      jImage.resize({w: display.width, h: display.height});
 
       if (imgRef.current) {
         imgRef.current.src = await jImage.getBase64("image/png");
@@ -50,9 +51,9 @@ export default function Page() {
     // Get the RGB palette of the chosen display
     const displayPalette = getRgbPalette(displaySettings.colourPalette);
     const quant = new RgbQuant({
-      colors: displayPalette.length,
-      dithKern: "FloydSteinberg",
       palette: displayPalette,
+      dithKern: 'FloydSteinberg',
+      colors: displayPalette.length,
     });
 
     // Convert the bitmap to a Uint8ClampedArray ready for rgbquant
@@ -77,7 +78,7 @@ export default function Page() {
     }
   }
 
-  async function uploadImage(event: React.ChangeEvent<HTMLInputElement>) {
+  async function uploadImage(event: ChangeEvent<HTMLInputElement>) {
     const inputElement: HTMLInputElement = event?.currentTarget;
     let file: File | null = null;
     if (inputElement?.files?.length) {
@@ -152,10 +153,13 @@ export default function Page() {
           />
         ) : (
           <div
-            className="bg-slate-300 dark:bg-gray-900 h-full 
-          flex justify-center items-center border-dashed 
+            className="bg-slate-300 dark:bg-gray-900 h-full
+          flex justify-center items-center border-dashed
           border-4 border-slate-100 dark:border-gray-700
           hover:bg-slate-200 dark:hover:bg-gray-800 cursor-pointer"
+            aria-label="Upload an image"
+            tabIndex={0}
+            onKeyDown={simulateFileInputClick}
             onClick={simulateFileInputClick}
           >
             <span>Upload An Image ⬆️</span>
@@ -166,20 +170,21 @@ export default function Page() {
         <div
           className="bg-slate-300 dark:bg-gray-900 h-auto
           hover:bg-slate-200 dark:hover:bg-gray-950 cursor-pointer"
+          tabIndex={0}
+          onKeyDown={simulateFileInputClick}
           onClick={simulateFileInputClick}
         >
           <span>Choose File 📂</span>
         </div>
       ) : null}
       <div className="flex w-full my-2 gap-2 justify-end">
-        <button
-          className="default"
+        <Button
           disabled={!b64Image}
           onClick={cropUpload}
           aria-label="Crop and dither the image"
         >
           Crop
-        </button>
+        </Button>
       </div>
       <div
         className={clsx({
@@ -195,20 +200,18 @@ export default function Page() {
           alt="The dithered output of the image"
         />
         <div className="flex w-full my-2 gap-2 justify-end">
-          <button
-            className="default"
+          <Button
             onClick={addToSlideshow}
             aria-label="Add prepared image to the slideshow"
           >
             Add to slideshow
-          </button>
-          <button
-            className="default"
+          </Button>
+          <Button
             onClick={download}
             aria-label="Download prepared image"
           >
             Download
-          </button>
+          </Button>
         </div>
       </div>
     </section>

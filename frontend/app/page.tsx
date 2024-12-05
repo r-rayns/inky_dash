@@ -1,40 +1,41 @@
 "use client";
-import { DisplaySettings } from "@/lib/display-service";
-import { displayClassByType, DisplayType, isDisplayType, Palette } from "@/lib/display-types";
-import { pluraliseUnitIfNeeded } from "@/lib/utils";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { defaultSettings, useSettings } from "./providers/settings-provider";
+import {DisplaySettings} from "@/lib/display-service";
+import {displayClassByType, DisplayType, isDisplayType, Palette} from "@/lib/display-types";
+import {pluraliseUnitIfNeeded} from "@/lib/utils";
+import {ChangeEvent, FormEvent, useEffect, useState} from "react";
+import {defaultSettings, useSettings} from "./providers/settings-provider";
 import MockDisplay from "./ui/mock-display/mock-display";
-import StepRange from "./ui/step-range/step-range";
+import {Button} from "@/components/ui/button";
+import {Slider} from "@/components/ui/slider";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Label} from "@/components/ui/label";
+import StepRange from "@/components/ui/step-range";
 
 export default function Home() {
   const minChangeDelay = 30;
   const maxChangeDelay = 3600;
-  const { displaySettings, updateDisplay } = useSettings();
+  const {displaySettings, updateDisplay} = useSettings();
   const [displayForm, setDisplayForm] =
     useState<DisplaySettings>(defaultSettings);
 
-  // these includes will re-evaluate on each render such as a form value changing
-  const hasRedPalette = displayClassByType[displayForm.type].palettes.includes(
-    Palette.RED
-  );
-  const hasYellowPalette = displayClassByType[
-    displayForm.type
-  ].palettes.includes(Palette.YELLOW);
-  const hasSevenColourPalette = displayClassByType[
-    displayForm.type
-  ].palettes.includes(Palette.SEVEN_COLOUR);
+  // ".includes" will re-evaluate on each render such as a form value changing
+  const hasRedPalette = displayClassByType[displayForm.type]
+    .palettes.includes(Palette.RED);
+  const hasYellowPalette = displayClassByType[displayForm.type]
+    .palettes.includes(Palette.YELLOW);
+  const hasSevenColourPalette = displayClassByType[displayForm.type]
+    .palettes.includes(Palette.SEVEN_COLOUR);
 
   useEffect(() => {
     if (displaySettings) {
-      // existing data retrieved, override defaults
-      setDisplayForm({ ...displaySettings });
+      // Existing data retrieved, override defaults
+      setDisplayForm({...displaySettings});
     }
   }, [displaySettings]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await updateDisplay({ ...displayForm });
+    await updateDisplay({...displayForm});
   }
 
   const handleDisplaySettingsChange = (key: keyof DisplaySettings, value: unknown) => {
@@ -43,9 +44,9 @@ export default function Home() {
         ...prevState,
         [key]: value,
       }
-      if(key === "type" && isDisplayType(value)) {
+      if (key === "type" && isDisplayType(value)) {
         const availablePalettes = displayClassByType[value].palettes;
-        if(availablePalettes.includes(displayForm.colourPalette)) {
+        if (availablePalettes.includes(displayForm.colourPalette)) {
           updatedState.colourPalette = displayForm.colourPalette
         } else {
           updatedState.colourPalette = availablePalettes[0];
@@ -94,65 +95,81 @@ export default function Home() {
         onSubmit={onSubmit}
       >
         <div className="max-w-prose w-full">
-          <label htmlFor="inky-display-select">Select your Inky Display:</label>
-          <select
-            id="inky-display-select"
+          <Label htmlFor="inky-display-select">Select your Inky Display:</Label>
+          <Select
             name="inkyDisplay"
             value={displayForm.type}
-            onChange={(e) =>
-              handleDisplaySettingsChange("type", e.target.value)
-            }
-          >
-            <option value={DisplayType.PHAT_104}>Inky pHAT (212x104)</option>
-            <option value={DisplayType.PHAT_122}>Inky pHAT (250x122)</option>
-            <option value={DisplayType.IMPRESSION_400}>
-              Inky Impression 4&quot; (640x400)
-            </option>
-            <option value={DisplayType.IMPRESSION_448}>
-              Inky Impression 5.7&quot; (600x448)
-            </option>
-            <option value={DisplayType.IMPRESSION_480}>
-              Inky Impression 7.3&quot; (800x480)
-            </option>
-          </select>
-          <label htmlFor="colour-palette-select">
+            onValueChange={(value) => {
+              if (value) {
+                handleDisplaySettingsChange("type", value)
+              }
+            }}>
+            <SelectTrigger id="inky-display-select">
+              <SelectValue placeholder="Display Type"/>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={DisplayType.PHAT_104}>
+                Inky pHAT (212x104)
+              </SelectItem>
+              <SelectItem value={DisplayType.PHAT_122}>
+                Inky pHAT (250x122)
+              </SelectItem>
+              <SelectItem value={DisplayType.IMPRESSION_400}>
+                Inky Impression 4&quot; (640x400)
+              </SelectItem>
+              <SelectItem value={DisplayType.IMPRESSION_448}>
+                Inky Impression 5.7&quot; (600x448)
+              </SelectItem>
+              <SelectItem value={DisplayType.IMPRESSION_480}>
+                Inky Impression 7.3&quot; (800x480)
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <Label htmlFor="colour-palette-select">
             Select your colour palette:
-          </label>
-          <select
-            id="colour-palette-select"
+          </Label>
+          <Select
             name="colourPalette"
             value={displayForm.colourPalette}
-            onChange={(e) =>
-              handleDisplaySettingsChange("colourPalette", e.target.value)
-            }
+            onValueChange={(value) => {
+              if (value) {
+                handleDisplaySettingsChange("colourPalette", value)
+              }
+            }}
           >
-            <option value={Palette.RED} disabled={!hasRedPalette}>
-              Red ❤️
-            </option>
-            <option value={Palette.YELLOW} disabled={!hasYellowPalette}>
-              Yellow 💛
-            </option>
-            <option
-              value={Palette.SEVEN_COLOUR}
-              disabled={!hasSevenColourPalette}
-            >
-              7 Colour 🌈
-            </option>
-          </select>
-
-          <label htmlFor="border-colour-select">Select a border colour:</label>
-          <select
-            id="border-colour-select"
+            <SelectTrigger id="colour-palette-select">
+              <SelectValue placeholder="Colour Palette"/>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={Palette.RED} disabled={!hasRedPalette}>
+                Red ❤️
+              </SelectItem>
+              <SelectItem value={Palette.YELLOW} disabled={!hasYellowPalette}>
+                Yellow 💛
+              </SelectItem>
+              <SelectItem value={Palette.SEVEN_COLOUR} disabled={!hasSevenColourPalette}>
+                7 Colour 🌈
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <Label htmlFor="border-colour-select">Select a border colour:</Label>
+          <Select
             name="borderColour"
             value={displayForm.borderColour}
-            onChange={(e) =>
-              handleDisplaySettingsChange("borderColour", e.target.value)
-            }
+            onValueChange={(value) => {
+              if (value) {
+                handleDisplaySettingsChange("borderColour", value)
+              }
+            }}
           >
-            <option value="white">White 🤍</option>
-            <option value="black">Black 🖤</option>
-          </select>
-
+            <SelectTrigger id="border-colour-select">
+              <SelectValue placeholder="Border Colour"/>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="white">White 🤍</SelectItem>
+              <SelectItem value="black">Black 🖤</SelectItem>
+            </SelectContent>
+          </Select>
           <label htmlFor="change-delay-input">
             Change image every {formatSeconds(displayForm.changeDelay)}
           </label>
@@ -160,17 +177,15 @@ export default function Home() {
             onIncrement={() => stepChangeDelay()}
             onDecrement={() => stepChangeDelay(false)}
             id="change-delay-input"
-            className="grow"
             name="changeDelay"
-            type="range"
             min={minChangeDelay}
             max={maxChangeDelay}
-            step="1"
-            value={displayForm.changeDelay}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            step={1}
+            value={[displayForm.changeDelay ?? 0]}
+            onValueChange={([value]) =>
               handleDisplaySettingsChange(
                 "changeDelay",
-                parseInt(e.target.value, 10)
+                value
               )
             }
           />
@@ -183,9 +198,9 @@ export default function Home() {
           inkyDisplay={displayClassByType[displayForm.type]}
         ></MockDisplay>
         <div className="max-w-prose w-full flex justify-end py-2">
-          <button type="submit" className="default">
+          <Button type="submit" disabled={displayForm.images.length <= 0}>
             Submit
-          </button>
+          </Button>
         </div>
       </form>
     </>

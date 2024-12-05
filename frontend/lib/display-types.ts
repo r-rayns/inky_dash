@@ -96,7 +96,7 @@ export function getRgbPalette(paletteType: Palette): readonly RGB[] {
       const blue: RGB = [30, 29, 174];
       const red: RGB = [205, 36, 37];
       const yellow: RGB = [231, 222, 35];
-      const orange: RGB = [216, 123, 36];
+      const orange: RGB =  [216, 123, 36];
       return [black, white, green, blue, red, yellow, orange];
     }
   }

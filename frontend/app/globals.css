@@ -2,147 +2,121 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
-  @apply text-5xl 
-  md:text-6xl 
-  font-bold 
-  text-orange-400 
-  py-2
-  md:py-3;
-}
-
-h2 {
-  @apply text-lg
-  my-2
-  font-bold
-  text-slate-200
-}
-
-h3 {
-  @apply text-base
-  text-slate-100
-  font-bold
-  my-1;
-}
-
-p {
-  @apply text-base
-  my-1;
-}
-
-a {
-  @apply text-blue-300
-  hover:text-blue-500;
-}
-
-ul {
-  @apply list-inside
-  list-disc
-  ml-4
-}
-
-select {
-  @apply bg-gray-50
-  border-2
-  border-gray-300
-  text-gray-900
-  text-sm
-  rounded-lg
-  focus:outline-none
-  focus:border-orange-500
-  block
-  w-full
-  h-10
-  px-1
-  md:px-2.5
-  dark:bg-gray-700
-  dark:border-gray-600
-  dark:placeholder-gray-400
-  dark:text-white
-  dark:focus:border-orange-500;
-}
-
-input[type="number"] {
-  @apply bg-gray-50
-  border
-  border-gray-300
-  text-gray-900
-  text-sm
-  rounded-lg
-  focus:ring-blue-500
-  focus:border-blue-500
-  block
-  w-full
-  p-2.5
-  dark:bg-gray-700
-  dark:border-gray-600
-  dark:placeholder-gray-400
-  dark:text-white
-  dark:focus:ring-blue-500
-  dark:focus:border-blue-500;
-}
-
-label {
-  @apply block
-  mb-2
-  text-sm
-  font-medium
-  text-gray-900
-  dark:text-white;
-}
-
-button.default {
-  @apply w-fit
-  text-white
-  bg-blue-700
-  hover:bg-blue-800
-  focus:ring-4
-  focus:ring-blue-300
-  font-medium 
-  rounded-lg
-  text-sm
-  px-5
-  py-2.5
-  dark:bg-orange-600
-  dark:hover:bg-orange-700
-  focus:outline-none
-  dark:focus:ring-orange-800;
-}
-
-button.default:disabled {
-  @apply bg-gray-200
-  opacity-50
-  cursor-not-allowed
-  text-gray-500
-  border-gray-200
-}
-
-/* :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-} */
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 207 9.3% 19%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 21 90% 61%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 21 89.7% 77.1%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 215 13.8% 34.1%;
+    --ring: 21 90.2% 46%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  h1 {
+    @apply
+    text-5xl
+    md:text-6xl
+    font-bold
+    text-orange-400
+    py-2
+    md:py-3;
+  }
+
+  h2 {
+    @apply
+    text-lg
+    my-2
+    font-bold
+    text-slate-200;
+  }
+
+  h3 {
+    @apply text-base
+    text-slate-100
+    font-bold
+    my-1;
+  }
+
+  p {
+    @apply text-base
+    my-1;
+  }
+
+  a {
+    @apply
+    text-blue-300
+    hover:text-blue-500;
+  }
+
+  ul {
+    @apply list-inside
+    list-disc
+    ml-4
+  }
+}

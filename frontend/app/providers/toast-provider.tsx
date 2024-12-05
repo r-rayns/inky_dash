@@ -2,7 +2,7 @@
 import { second } from '@/lib/branded-types';
 import { fetchWithErrorHandling } from "@/lib/fetcher";
 import { assign, clone } from "lodash-es";
-import { createContext, useContext, useState } from "react";
+import {createContext, ReactNode, useContext, useState} from "react";
 import { SWRConfig } from "swr";
 import { v4 as uuid } from "uuid";
 
@@ -30,7 +30,7 @@ export const useToast = () => useContext(ToastContext);
 export const ToastProvider = ({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [timersByToastId, setTimersByToastId] = useState<

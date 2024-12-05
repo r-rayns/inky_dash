@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
 export async function blobToBase64(
   file: Blob,
   includeMetadata = false
@@ -68,3 +71,7 @@ export const fetcher = async (...args: [string | URL, RequestInit?]) => {
 
   return data;
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
