@@ -1,17 +1,23 @@
-import { DisplayType, Palette } from './display-types';
-import { FetchResponse, fetchWithErrorHandling } from "./fetcher";
-import { constructUrl } from "./utils";
+import {
+  DisplayType,
+  Palette
+} from './display-types';
+import {
+  FetchResponse,
+  fetchWithErrorHandling
+} from './fetcher';
+import { constructUrl } from './utils';
 
 export async function setDisplay(
   displaySettings: DisplaySettings,
   alertFn: (message: string) => void
 ): Promise<FetchResponse<SetDisplayResponse> | null | void> {
   return fetchWithErrorHandling<SetDisplayResponse>(
-    constructUrl("display"),
+    constructUrl('display'),
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         type: displaySettings.type,
@@ -23,12 +29,19 @@ export async function setDisplay(
     },
     alertFn
   ).catch((error: Error) => {
-    console.error("Error setting display", error);
+    console.error('Error setting display', error);
   });
 }
 
+// export async function getDisplay(): Promise<FetchResponse<DisplaySettingsResponse>> {
+//   const response = await fetchWithErrorHandling<DisplaySettingsResponse>(constructUrl('display'), {
+//     method: 'GET'
+//   })
+//   return response
+// }
+
 export type ValidPalletteColours = Palette.RED | Palette.YELLOW | Palette.SEVEN_COLOUR;
-export type ValidBorderColours = "white" | "black";
+export type ValidBorderColours = 'white' | 'black';
 
 export interface DisplaySettings {
   type: DisplayType;

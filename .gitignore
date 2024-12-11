@@ -15,6 +15,9 @@ TODO.md
 
 # stores
 store.json
+feed.json
+settings.json
+sildeshow.json
 
 # debug
 result.png
