@@ -1,5 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import {
+  type ClassValue,
+  clsx
+} from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export async function blobToBase64(
   file: Blob,
@@ -19,7 +22,7 @@ export async function blobToBase64(
         resolve(reader.result);
       } else {
         // remove metadata then return
-        resolve(stripMetadataFromBase64(reader.result));
+        resolve(stripDataUriFromBase64(reader.result));
       }
     };
     reader.onerror = (error) => reject(error);
@@ -28,7 +31,7 @@ export async function blobToBase64(
   });
 }
 
-export function stripMetadataFromBase64(base64: string): string {
+export function stripDataUriFromBase64(base64: string): string {
   return base64.split(",")[1];
 }
 
@@ -55,18 +58,27 @@ export function pluraliseUnitIfNeeded(
   return unit;
 }
 
+export function prependImageDataUri(rawBase64: string): string {
+  let dataUri = '';
+  if(rawBase64.startsWith('iVBORw0KGg')) {
+    // Image is a PNG
+    dataUri = `data:image/png;base64,`
+  } else if(rawBase64.startsWith('/9j/')) {
+    // Image is a JPEG
+    dataUri = `data:image/jpeg;base64,`
+  }
+
+  return `${dataUri}${rawBase64}`
+}
+
 export const fetcher = async (...args: [string | URL, RequestInit?]) => {
   const res = await fetch(...args);
   const data = await res.json();
   if (!res.ok) {
     const message = data.message ?? "";
-    const error = new Error(
-      `An error occurred while fetching the data. ${message}`
+    throw new Error(
+      `An error occurred while fetching the data. ${ message }`
     );
-    // Attach extra info to the error object.
-    // error.info = await res.json()
-    // error.status = res.status
-    throw error;
   }
 
   return data;

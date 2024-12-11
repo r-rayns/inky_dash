@@ -5,27 +5,22 @@ export default function Page() {
     <section className="text-slate-300 w-full max-w-prose">
       <h2>Inky Dash - v{process.env.npm_package_version}</h2>
       <p>
-        Inky Dash is an interface for the Raspberry Pi e-paper display, Inky
-        pHAT. It does not support the original Inky pHAT (v1) devices as it uses
-        the latest Inky python library.
+        Inky Dash is an interface for Pimoroni's line of Raspberry Pi ePaper displays.
       </p>
       <p>
-        Uploaded images must conform with the confines of the Inky pHAT display:
+        The following displays are supported:
       </p>
       <ul>
-        <li>Dimensions are 212 x 104 pixels.</li>
-        <li>
-          Colour{" "}
-          <Link
-            href="https://github.com/pimoroni/inky/blob/master/tools/inky-palette.gpl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            palette
-          </Link>{" "}
-          is white, black and (red or yellow) in that order.
-        </li>
-        <li>File format is PNG.</li>
+        <li><Link href="https://shop.pimoroni.com/products/inky-phat?variant=12549254217811" target="_blank"
+                  rel="noopener noreferrer">Inky pHAT (212 x 104)</Link></li>
+        <li><Link href="https://shop.pimoroni.com/products/inky-phat?variant=12549254217811" target="_blank"
+                  rel="noopener noreferrer">Inky pHAT (250 x 122)</Link></li>
+        <li><Link href="https://shop.pimoroni.com/products/inky-impression-4?variant=39599238807635" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 4"</Link></li>
+        <li><Link href="https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 5.7"</Link></li>
+        <li><Link href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 7.3"</Link></li>
       </ul>
       <h3>Links</h3>
       <ul>

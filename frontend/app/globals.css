@@ -14,18 +14,18 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 215 27.9% 16.9%;
     --foreground: 0 0% 100%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 207 9.3% 19%;
+    --card: 215 27.9% 15%;
+    --card-foreground: 0 0% 100%;
+    --popover: 215 27.9% 15%;
     --popover-foreground: 0 0% 100%;
     --primary: 21 90% 61%;
     --primary-foreground: 0 0% 98%;
     --secondary: 21 89.7% 77.1%;
     --secondary-foreground: 0 0% 10%;
     --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    --muted-foreground: 240 5% 64.9%;
     --accent: 0 0% 96.1%;
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
@@ -80,7 +80,7 @@ body {
 
   h1 {
     @apply
-    text-5xl
+    text-4xl
     md:text-6xl
     font-bold
     text-orange-400
@@ -103,6 +103,13 @@ body {
     my-1;
   }
 
+  h4 {
+    @apply text-base
+    text-slate-100
+    font-semibold
+    my-1;
+  }
+
   p {
     @apply text-base
     my-1;
@@ -118,5 +125,9 @@ body {
     @apply list-inside
     list-disc
     ml-4
+  }
+
+  .accordion-content p {
+    @apply text-sm;
   }
 }
