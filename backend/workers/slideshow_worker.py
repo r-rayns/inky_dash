@@ -1,102 +1,38 @@
-import os
-import signal
-import threading
-
-from backend.lib.display_utilis import resolve_display_from_settings, detect_inky_display, InkyDisplay
-from backend.lib.image_utilis import crop_image_width, crop_image_height, pad_image, base64_to_pil_image
+from backend.lib.image_utilis import base64_to_pil_image
 from backend.lib.logger_setup import logger
 from backend.models.display_model import DisplaySettings
 from backend.models.slideshow_model import SlideshowConfiguration
+from backend.workers.display_worker_abstract import DisplayWorkerAbstract
 
 
-class SlideshowWorker:
+class SlideshowWorker(DisplayWorkerAbstract):
   images: list[str]
   delay_seconds: int
   current_image_index: int
-  running: bool
-  thread: threading.Thread or None
-  display: InkyDisplay or None
-  stop_event: threading.Event
 
   def __init__(self):
+    super().__init__("slideshow_worker")
     logger.info("Created SlideshowWorker")
     self.images = []
     self.delay_seconds = 30
     self.current_image_index = 0
-    self.running = False
-    self.thread = None
-    self.display: InkyDisplay or None = None
-    self.stop_event = threading.Event()
-    # ensure thread is stopped when the application exits
-    signal.signal(signal.SIGTERM, self.shutdown)
 
-  def shutdown(self, signum, frame):
-    logger.info("Slideshow is running and application has received a signal to shut down")
-    self.stop()
-
-  def start(self, slideshow_configuration: SlideshowConfiguration, display_settings: DisplaySettings):
-    if self.running:
-      logger.info(
-        "Slideshow is already running, restarting with latest settings...")
-      self.stop()
-
+  def start_slideshow(self, slideshow_configuration: SlideshowConfiguration, display_settings: DisplaySettings):
     self.images = slideshow_configuration.images
     self.delay_seconds = slideshow_configuration.change_delay
-
-    self.display = detect_inky_display()
-    if not self.display:
-      logger.info("Manual initialisation of Inky Device will be attempted")
-      self.display = resolve_display_from_settings(display_settings)
-
-    logger.info('Starting slideshow...')
     self.current_image_index = 0
-    self.running = True
-    # reset the stop event
-    self.stop_event.clear()
-    # create and start the thread
-    self.thread = threading.Thread(target=self.run)
-    self.thread.start()
+    self.start(display_settings)
 
-  def stop(self):
-    self.stop_event.set()
-    self.running = False
-    logger.info("Stopping slideshow worker thread...")
-    if self.thread:
-      self.thread.join()  # wait for thread to close
-      self.thread = None
+  def get_current_image_in_base64(self) -> str | None:
+    return self.images[self.current_image_index]
 
   def run(self):
-    # while self.running and self.display != None:
     while not self.stop_event.is_set():
       current_image = self.images[self.current_image_index]
-      logger.info(
-        f"Displaying image number #{self.current_image_index} {self.running}")
-      self._display_base64_image(self.display, current_image)
+      logger.info(f"Displaying image number #{self.current_image_index}. Running is: {self.running}")
+      image = base64_to_pil_image(current_image)
+      self.display_image(self.display, image)
       # increment the image index
-      self.current_image_index = (
-                                   self.current_image_index + 1) % len(self.images)
+      self.current_image_index = (self.current_image_index + 1) % len(self.images)
       # sleep for the allotted delay until the next image is displayed
       self.stop_event.wait(self.delay_seconds)
-
-  def _display_base64_image(self, display: InkyDisplay, base64_image: str):
-    image = base64_to_pil_image(base64_image)
-    if image.width > display.resolution[0]:
-      logger.info("Image is wider than display width, cropping image")
-      image = crop_image_width(image, display.resolution)
-    if image.height > display.resolution[1]:
-      logger.info("Image is higher than display height, cropping image")
-      image = crop_image_height(image, display.resolution)
-    if image.width < display.resolution[0] or image.height < display.resolution[1]:
-      image = pad_image(display.resolution, image)
-
-    if os.getenv("DEV", "False").lower() == "true":
-      # when in dev save the image to disk for debugging purposes
-      image.save("result.png")
-
-    display.set_image(image)
-
-    if os.getenv("DESKTOP", "False").lower() == "true":
-      logger.info(
-        "Running in a desktop environment, we won't attempt to set the display")
-    else:
-      display.show()

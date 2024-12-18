@@ -1,26 +1,25 @@
-from typing import Tuple
-
-from PIL import Image
 from inky import auto, mock, InkyPHAT, InkyPHAT_SSD1608, Inky7Colour, Inky_Impressions_7, InkyWHAT, InkyWHAT_SSD1683
 
 from backend.lib.logger_setup import logger
-from backend.models.display_model import DisplaySettings, DisplayType, ColourPalette
+from backend.models.display_model import DisplaySettings, DisplayType, ColourPalette, DetectionError
 
-InkyDisplay = (InkyPHAT or InkyPHAT_SSD1608 or InkyWHAT or
-               Inky7Colour or InkyWHAT_SSD1683 or Inky_Impressions_7 or
-               mock.InkyMockWHAT or mock.InkyMockPHAT or mock.InkyMockImpression or
+InkyDisplay = (InkyPHAT | InkyPHAT_SSD1608 | InkyWHAT |
+               Inky7Colour | InkyWHAT_SSD1683 | Inky_Impressions_7 |
+               mock.InkyMockWHAT | mock.InkyMockPHAT | mock.InkyMockImpression |
                mock.InkyMockPHATSSD1608)
 
 
-def detect_inky_display() -> InkyDisplay or None:
-  display: InkyDisplay or None = None
+def detect_inky_display() -> InkyDisplay | DetectionError | None:
+  display: InkyDisplay | DetectionError | None = None
   try:
     display: InkyDisplay = auto(ask_user=False)
   except Exception as e:
     logger.error(f"Could not auto detect Inky Device: {e}")
 
   if isinstance(display, (InkyWHAT, InkyWHAT_SSD1683)):
-    raise Exception("Inky WHAT is not a supported display type")
+    logger.error("Inky WHAT is not a supported display type")
+    # Set to false for unsupported display
+    display = DetectionError.UNSUPPORTED
 
   return display
 

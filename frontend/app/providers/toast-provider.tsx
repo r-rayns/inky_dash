@@ -1,10 +1,10 @@
 "use client";
-import { second } from '@/lib/branded-types';
-import { fetchWithErrorHandling } from "@/lib/fetcher";
-import { assign, clone } from "lodash-es";
+import {second} from '@/lib/branded-types';
+import {fetchWithErrorHandling} from "@/lib/fetcher";
+import {assign, clone} from "lodash-es";
 import {createContext, ReactNode, useContext, useState} from "react";
-import { SWRConfig } from "swr";
-import { v4 as uuid } from "uuid";
+import {SWRConfig} from "swr";
+import {v4 as uuid} from "uuid";
 
 interface ToastContextDefaults {
   toasts: Toast[];
@@ -17,10 +17,10 @@ const ToastContext = createContext<ToastContextDefaults>({
   toasts: [],
   addToast: (message: string, toastOptions: Partial<ToastOptions> = {}) => {
     const options: ToastOptions = assign(
-      { type: ToastType.INFO, duration: 5 },
+      {type: ToastType.INFO, duration: 5},
       toastOptions
     );
-    return { id: "", message, options };
+    return {id: "", message, options};
   },
   removeToast: (id: string) => false,
 });
@@ -28,8 +28,8 @@ const ToastContext = createContext<ToastContextDefaults>({
 export const useToast = () => useContext(ToastContext);
 
 export const ToastProvider = ({
-  children,
-}: Readonly<{
+                                children,
+                              }: Readonly<{
   children: ReactNode;
 }>) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -42,10 +42,10 @@ export const ToastProvider = ({
     toastOptions: Partial<ToastOptions> = {}
   ): Toast {
     const options: ToastOptions = assign(
-      { type: ToastType.SUCCESS, duration: 10 },
+      {type: ToastType.SUCCESS, duration: 10},
       toastOptions
     );
-    const toast = { id: uuid(), message, options };
+    const toast = {id: uuid(), message, options};
     const durationTimer = setTimeout(
       () => removeToast(toast.id),
       toast.options.duration * 1000
@@ -76,16 +76,21 @@ export const ToastProvider = ({
   }
 
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext.Provider value={{toasts, addToast, removeToast}}>
       <SWRConfig // configs can be nested should we wish to modify it outside this provider
         value={{
           fetcher: (url, options) =>
-            fetchWithErrorHandling(url, options, (message: string) => {
-              addToast(message, { type: ToastType.ERROR });
-            }),
+            fetchWithErrorHandling(url, options,
+              (message: string) => { // Error message handler
+                addToast(message, {type: ToastType.ERROR});
+              },
+              (message: string) => { // Info message handler
+                addToast(message, {type: ToastType.INFO})
+              }
+            ),
           onSuccess(data, key, config) {
             if (data?.message) {
-              addToast(data.message, { type: ToastType.INFO });
+              addToast(data.message, {type: ToastType.INFO});
             }
           },
           onError: (error, key) => {

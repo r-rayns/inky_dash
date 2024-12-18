@@ -1,4 +1,5 @@
 import os
+import signal
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
@@ -43,3 +44,10 @@ app.register_blueprint(image_feed_api, url_prefix='/api')
 
 # Initialise the singleton services
 Container.initialise_singletons(container)
+
+def thread_shutdown_handler(signum, frame):
+  # Ensure threads are stopped when the application exits or restarts
+  container.slideshow_worker().shutdown(signum, frame)
+  container.image_feed_worker().shutdown(signum, frame)
+
+signal.signal(signal.SIGTERM, thread_shutdown_handler)

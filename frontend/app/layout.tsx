@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex h-screen bg-slate-200 dark:bg-gray-800`}
+        className={`${inter.className} flex h-screen bg-background`}
       >
         <div className='p-2 md:p-0 w-full flex flex-col items-center'>
           <header className="max-w-prose">

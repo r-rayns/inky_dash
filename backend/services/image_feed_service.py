@@ -11,7 +11,7 @@ from backend.workers.image_feed_worker import ImageFeedWorker
 
 
 class ImageFeedService(ModeAbstract):
-  image_feed_configuration: ImageFeedConfiguration or None = None
+  image_feed_configuration: ImageFeedConfiguration | None = None
   image_feed_worker: ImageFeedWorker
 
   @inject
@@ -33,7 +33,8 @@ class ImageFeedService(ModeAbstract):
     logger.info("Attempting to start image feed on the Inky display...")
     logger.info(
       f"Settings: {display_settings.type} ({display_settings.colour_palette}) - interval: {self.image_feed_configuration.polling_interval} seconds")
-    self.image_feed_worker.start(self.image_feed_configuration, display_settings)
+    self.image_feed_worker.start_image_feed(self.image_feed_configuration, display_settings)
+    self.display_settings_service.active_worker = self.image_feed_worker
 
   def update_image_feed(self, configuration: ImageFeedConfiguration):
     # Update the image feed configuration attribute
@@ -60,7 +61,7 @@ class ImageFeedService(ModeAbstract):
                 ensure_ascii=False, indent=4)
     logger.info("Configuration stored")
 
-  def restore_image_feed(self) -> ImageFeedConfiguration or None:
+  def restore_image_feed(self) -> ImageFeedConfiguration | None:
     feed_configuration_json = self.read_stored_feed_configuration()
     if isinstance(feed_configuration_json, dict):
       logger.info("Existing image feed configuration found")

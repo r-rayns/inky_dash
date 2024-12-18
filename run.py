@@ -33,8 +33,8 @@ def number_of_workers():
 
 
 def worker_exit(server, worker):
-    # The spawned worker thread in the SlideshowWorker class causes a delay in server reloading until a timeout occurs.
-    # Send a SIGTERM signal to the worker to allow SlideshowWorker to stop the thread and let the server reload.
+    # Spawned worker threads cause a delay in server reloading until a timeout occurs.
+    # Send a SIGTERM signal which app.py listens for and shuts down the workers to allow them to stop the thread and let the server reload.
 
     os.kill(worker.pid, signal.SIGTERM)
     pass
@@ -42,7 +42,7 @@ def worker_exit(server, worker):
 
 class StandaloneApplication(gunicorn.app.base.BaseApplication):
     def __init__(self, app_module, options={}):
-        self.options = options or {}
+        self.options = options | {}
         self.app_module = app_module
         super().__init__()
 

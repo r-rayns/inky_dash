@@ -1,5 +1,10 @@
 from enum import Enum
+
 from pydantic import BaseModel, Field
+
+
+class DetectionError:
+  UNSUPPORTED = "unsupported"
 
 
 class DisplayType(str, Enum):
@@ -36,3 +41,13 @@ class DisplaySettings(BaseModel):
     ..., description=f"Border colour options: {', '.join([colour for colour in BorderColour])}")
   mode: DisplayMode = Field(
     DisplayMode.SLIDESHOW, description=f"Display mode options: {', '.join([mode for mode in DisplayMode])}")
+
+
+class DisplaySettingsUpdate(BaseModel):
+  type: DisplayType = Field(
+    None, description=f"Display type options: {', '.join([display for display in DisplayType])}")
+  colour_palette: ColourPalette | None = Field(
+    None, description=f"Colour palette options: {', '.join([palette for palette in ColourPalette])}")
+  border_colour: BorderColour = Field(
+    None, description=f"Border colour options: {', '.join([colour for colour in BorderColour])}")
+  mode: DisplayMode = Field(None, description=f"Display mode options: {', '.join([mode for mode in DisplayMode])}")

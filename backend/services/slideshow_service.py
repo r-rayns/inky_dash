@@ -35,7 +35,8 @@ class SlideshowService(ModeAbstract):
     logger.info("Attempting to start slideshow on the Inky display...")
     logger.info(
       f"Settings: {display_settings.type} ({display_settings.colour_palette}) - delay: {self.slideshow_configuration.change_delay} seconds")
-    self.slideshow_worker.start(self.slideshow_configuration, display_settings)
+    self.slideshow_worker.start_slideshow(self.slideshow_configuration, display_settings)
+    self.display_settings_service.active_worker = self.slideshow_worker
 
   def update_slideshow(self, configuration: SlideshowConfiguration):
     # Update the slideshow configuration attribute
@@ -62,7 +63,7 @@ class SlideshowService(ModeAbstract):
                 ensure_ascii=False, indent=4)
     logger.info("Configuration stored")
 
-  def restore_slideshow(self) -> SlideshowConfiguration or None:
+  def restore_slideshow(self) -> SlideshowConfiguration | None:
     slideshow_configuration_json = self.read_stored_slideshow_configuration()
     if isinstance(slideshow_configuration_json, dict):
       logger.info("Existing slideshow configuration found")

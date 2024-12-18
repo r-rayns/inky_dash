@@ -7,8 +7,6 @@ class ImageFeedConfiguration(BaseModel):
                                 le=86400)
   image_feed_url: str = Field(..., description="Image feed URL")
 
-  # RR TODO AnyUrl
-
   @field_validator('image_feed_url')
   @classmethod
   def validate_url(cls, url):
