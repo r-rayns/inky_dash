@@ -122,40 +122,44 @@ export default function Page() {
               </SelectItem>
             </SelectContent>
           </Select>
-          <Label htmlFor="border-colour-select">Select a border colour:</Label>
-          <Select
-            name="borderColour"
-            value={displayForm?.borderColour}
-            onValueChange={(value) => {
-              if (value) {
-                handleDisplaySettingsChange("borderColour", value)
-              }
-            }}
-          >
-            <SelectTrigger id="border-colour-select">
-              <SelectValue placeholder="Border Colour"/>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={BorderColour.WHITE}>White 🤍</SelectItem>
-              <SelectItem value={BorderColour.BLACK}>Black 🖤</SelectItem>
-            </SelectContent>
-          </Select>
-          <Label htmlFor="mode-radio">Select the display mode:</Label>
+          <Label htmlFor="border-colour-radio">Border colour:</Label>
           <RadioGroup
+              id="border-colour-radio"
+              value={displayForm?.borderColour}
+              onValueChange={(value) => {
+                if (value) {
+                  handleDisplaySettingsChange("borderColour", value)
+                }
+              }}
+              className="flex flex-row ml-4 py-2"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value={BorderColour.WHITE} id="border-colour-r1"/>
+              <Label htmlFor="border-colour-r1">White</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value={BorderColour.BLACK} id="border-colour-r2"/>
+              <Label htmlFor="border-colour-r2">Black</Label>
+            </div>
+          </RadioGroup>
+          <Label htmlFor="mode-radio">Display mode:</Label>
+          <RadioGroup
+            id="mode-radio"
             value={displayForm?.mode}
             onValueChange={(value) => {
               if (value) {
                 handleDisplaySettingsChange("mode", value)
               }
             }}
+            className="flex flex-row ml-4 py-2"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value={DisplayMode.SLIDESHOW} id="r1"/>
-              <Label htmlFor="r1">Slideshow</Label>
+              <RadioGroupItem value={DisplayMode.SLIDESHOW} id="mode-r1"/>
+              <Label htmlFor="mode-r1">Slideshow</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value={DisplayMode.IMAGE_FEED} id="r2"/>
-              <Label htmlFor="r2">Image Feed</Label>
+              <RadioGroupItem value={DisplayMode.IMAGE_FEED} id="mode-r2"/>
+              <Label htmlFor="mode-r2">Image Feed</Label>
             </div>
           </RadioGroup>
         </div>
