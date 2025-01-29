@@ -15,9 +15,13 @@ TODO.md
 
 # stores
 store.json
+feed.json
+settings.json
+slideshow.json
 
 # debug
 result.png
+dither-result.png
 
 # IDE
 .vscode

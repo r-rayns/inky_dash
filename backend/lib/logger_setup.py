@@ -20,10 +20,13 @@ def setup_inky_logger():
 
   # create formatter and add it to the handlers
   formatter = logging.Formatter(
-    '[%(asctime)s +0000] [%(process)d] [%(name)s] [%(levelname)s] - %(message)s')
+    '[%(asctime)s +0000] [%(process)d] [%(filename)s] [%(levelname)s] - %(message)s')
   file_handler.setFormatter(formatter)
   console_handler.setFormatter(formatter)
 
   # add the handlers to the logger
   logger.addHandler(file_handler)
   logger.addHandler(console_handler)
+
+logger = logging.getLogger('inky_dash')
+
