@@ -20,7 +20,7 @@ Inky Dash provides two different display modes.
 Slideshow mode automatically cycles through a collection of images at a chosen interval. You can select
 which images to display and set the transition timing.
 
-![slideshow-demo](./slideshow-demo.mp4)
+https://github.com/user-attachments/assets/18f9485c-5c60-4445-974b-3e416f7d7dd1
 
 ### Image Feed
 
@@ -31,7 +31,7 @@ displaying the latest version at your chosen interval.
 The source image should match your display's specifications in terms of resolution and color palette. The display will
 only update when the downloaded image differs from the currently displayed image.
 
-![image-feed-demo](./image-feed-demo.mp4)
+https://github.com/user-attachments/assets/ad384973-0740-40ff-a416-5300f17c5afd
 
 ## Running 🏃
 
