@@ -35,8 +35,12 @@ https://github.com/user-attachments/assets/ad384973-0740-40ff-a416-5300f17c5afd
 
 ## Running 🏃
 
-The best way to run Inky Dash on your Raspberry Pi is to download either the Arm v6 or Arm v7 binary from the releases
+The best way to run Inky Dash on your Raspberry Pi is to download the relevant binary from the releases
 and [set up a systemd service](#Running-the-binary-as-a-service).
+
+If you have a Raspberry Pi Zero or a Raspberry Pi 1 you'll want the ARMv6 binary.
+If you have a Raspberry Pi Zero 2 or a Raspberry Pi 2, 3, 4 or 5 you'll want the ARMv8 binary.
+
 Alternatively you can follow the steps outlined under [manual setup](#Manual-setup-).
 
 ## Manual setup 🛠️
