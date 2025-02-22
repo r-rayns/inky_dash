@@ -14,6 +14,7 @@ class ImageFeedWorker(DisplayWorkerAbstract):
   polling_interval: int
   image_feed_url: str | None
   current_image: Image.Image | None
+  displaying_image: Image.Image | None
 
   def __init__(self):
     super().__init__("image_feed_worker")
@@ -21,6 +22,7 @@ class ImageFeedWorker(DisplayWorkerAbstract):
     self.polling_interval = 120
     self.image_feed_url = None
     self.current_image = None
+    self.displaying_image = None
 
   def start_image_feed(self, image_feed_configuration: ImageFeedConfiguration, display_settings: DisplaySettings):
     self.polling_interval = image_feed_configuration.polling_interval
@@ -29,8 +31,8 @@ class ImageFeedWorker(DisplayWorkerAbstract):
     self.start(display_settings)
 
   def get_current_image_in_base64(self) -> str | None:
-    if isinstance(self.current_image, Image.Image):
-      return pil_image_to_base64(self.current_image)
+    if isinstance(self.displaying_image, Image.Image):
+      return pil_image_to_base64(self.displaying_image)
 
   def run(self):
     while not self.stop_event.is_set():
@@ -48,7 +50,7 @@ class ImageFeedWorker(DisplayWorkerAbstract):
         self.current_image = image
 
         if previous_image_base64 != current_image_base64:
-          self.display_image(self.display, image)
+          self.displaying_image = self.display_image(self.display, image)
           logger.info(f"Displaying image from feed {self.image_feed_url}")
         else:
           logger.info(f"Image from feed {self.image_feed_url} has not changed, no need to update display")

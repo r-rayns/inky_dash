@@ -70,8 +70,10 @@ def pil_image_to_base64(image: Image.Image) -> str:
   # Convert image to bytes and create a byte stream
   byte_data = image.tobytes()
   image_stream = io.BytesIO(byte_data)
-  # Convert image to its original format, e.g. PNG or JPEG etc...
-  image.save(image_stream, format=image.format)
+  # set image to original format else default to PNG
+  image_format = image.format if image.format else 'PNG'
+  # Convert image to its original format (if possible), e.g. PNG or JPEG etc...
+  image.save(image_stream, image_format)
   # Convert the byte stream to base64
   img_str = base64.b64encode(image_stream.getvalue())
   return img_str.decode("utf-8")
