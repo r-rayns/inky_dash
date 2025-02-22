@@ -4,8 +4,10 @@ from abc import ABC, abstractmethod
 
 from PIL import Image
 
-from backend.lib.display_utilis import InkyDisplay, detect_inky_display, resolve_display_from_settings
-from backend.lib.image_utilis import crop_image_width, crop_image_height, pad_image
+from backend.lib.display_utilis import InkyDisplay, detect_inky_display, resolve_display_from_settings, \
+  resolve_supported_palette_from_inky_instance, resolve_display_type_from_inky_instance, construct_phat_palette, \
+  construct_impression_palette
+from backend.lib.image_utilis import crop_image_width, crop_image_height, pad_image, dither
 from backend.lib.logger_setup import logger
 from backend.models.display_model import DisplaySettings, DetectionError, DisplayType, BorderColour
 
@@ -72,11 +74,21 @@ class DisplayWorkerAbstract(ABC):
       self.thread.join()  # wait for thread to close
       self.thread = None
 
-  def display_image(self, display: InkyDisplay, image: Image.Image):
+  def display_image(self, display: InkyDisplay, image: Image.Image) -> Image.Image:
 
     if image.mode != "P":
-      logger.info(f"Image is not in palette mode ({image.mode}), attempt to convert it")
-      image = image.convert("P")
+      logger.info(f"Image is not in palette mode ({image.mode}), attempt to dither it")
+      display_type = resolve_display_type_from_inky_instance(display)
+      palette: list[int]
+
+      # Construct a palette to apply in the dithering process
+      if display_type == DisplayType.PHAT_104 or display_type == DisplayType.PHAT_122:
+        supported_palette = resolve_supported_palette_from_inky_instance(display)
+        palette = construct_phat_palette(supported_palette)
+      else:
+        palette = construct_impression_palette()
+      # Dither the image
+      image = dither(image, palette)
 
     if image.width > display.resolution[0]:
       logger.info("Image is wider than display width, cropping image")
@@ -99,3 +111,5 @@ class DisplayWorkerAbstract(ABC):
       logger.info("Running in a desktop environment, we won't attempt to set the display")
     else:
       display.show()
+
+    return image
