@@ -35,9 +35,7 @@ export default function Page() {
           <p>
             Image Feed mode allows your display to automatically update with images from a specified web location. When
             enabled, the display periodically checks a URL that points to a PNG or JPEG image, downloading and
-            displaying
-            the latest version at your chosen interval. The source image should match your display's specifications in
-            terms of resolution and color palette.</p>
+            displaying the latest version at your chosen interval.</p>
           <p>You can configure both the source URL and how frequently it checks for updates through the <Link
             href="/image-feed-configuration">image feed configuration</Link> page. The display will only update when the
             downloaded image differs from the currently displayed image. Before the feed becomes active,
