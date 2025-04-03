@@ -1,0 +1,14 @@
+#!/bin/bash
+# Ensure we are in the frontend directory where package.json is located
+cd frontend
+# Lint the frontend
+npm run lint
+# Lint the backend if flake8 returns a non-zero exit code we fail the pre-commit
+cd ../backend
+if command -v poetry &> /dev/null; then
+    poetry run flake8 . || exit 1
+else
+    flake8 . || exit 1
+fi
+
+echo "✅ Pre-commit checks passed"

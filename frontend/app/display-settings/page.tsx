@@ -40,7 +40,7 @@ export default function Page() {
       // Trigger validation after setting all fields
       void settingsForm.trigger();
     }
-  }, [displaySettings]);
+  }, [displaySettings, settingsForm]);
 
   useEffect(() => {
     const colourPalette = settingsForm.getValues('colourPalette');
@@ -52,7 +52,7 @@ export default function Page() {
       // Trigger validation
       void settingsForm.trigger();
     }
-  }, [typeValue]);
+  }, [displayClass?.palettes, settingsForm, typeValue]);
 
   const onSubmit = async (values: SettingsForm) => {
     const success = await submit({...values});
@@ -103,7 +103,7 @@ export default function Page() {
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <FormDescription>Select the type of Inky Display you're using.</FormDescription>
+                <FormDescription>Select the type of Inky Display you&#39;re using.</FormDescription>
                 <FormMessage/>
               </FormItem>
             )}

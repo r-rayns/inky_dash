@@ -47,7 +47,7 @@ export default function Page() {
         imageFeedUrl: imageFeedData.image_feed_url
       })
     }
-  }, [imageFeedData]);
+  }, [form, imageFeedData]);
 
   const onSubmit = async (values: ImageFeedForm) => {
     let success = false;

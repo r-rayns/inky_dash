@@ -52,7 +52,7 @@ export const SlideshowProvider = ({children, addToast}: { children: ReactNode, a
       setSlideshowConfig(updatedConfig);
       slideshowForm.reset(updatedConfig)
     }
-  }, [slideshowData]);
+  }, [slideshowData, slideshowForm]);
 
   async function submitSlideshowConfiguration(updatedConfig: SlideshowConfiguration): Promise<boolean> {
     let success = false;

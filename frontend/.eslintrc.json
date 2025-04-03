@@ -1,3 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals"]
+  // next/typescript currently broken: https://github.com/vercel/next.js/issues/69184
+  //, "next/typescript"]
 }

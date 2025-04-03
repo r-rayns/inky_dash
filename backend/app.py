@@ -20,36 +20,38 @@ app = Flask(__name__)
 print_logo()
 
 if os.getenv("DEV", "False").lower() == "true":
-  logger.info("Enabling CORs for development mode")
-  CORS(app, origins=['*'])
+    logger.info("Enabling CORs for development mode")
+    CORS(app, origins=["*"])
 
 
 @app.route("/")
 def base():
-  # Serve site entry point from the base route
-  return send_from_directory("public", "index.html")
+    # Serve site entry point from the base route
+    return send_from_directory("public", "index.html")
 
 
 @app.route("/<path:filename>")
 def static_files(filename):
-  logger.info(f"Requesting {filename} {os.getcwd()}")
-  if filename.endswith('/'):
-    filename = filename + 'index.html'
-  # Serve any static files requested by the client from the public directory
-  return send_from_directory("public", filename)
+    logger.info(f"Requesting {filename} {os.getcwd()}")
+    if filename.endswith("/"):
+        filename = filename + "index.html"
+    # Serve any static files requested by the client from the public directory
+    return send_from_directory("public", filename)
 
 
-app.register_blueprint(settings_api, url_prefix='/api')
-app.register_blueprint(slideshow_api, url_prefix='/api')
-app.register_blueprint(image_feed_api, url_prefix='/api')
-app.register_blueprint(utils_api, url_prefix='/api')
+app.register_blueprint(settings_api, url_prefix="/api")
+app.register_blueprint(slideshow_api, url_prefix="/api")
+app.register_blueprint(image_feed_api, url_prefix="/api")
+app.register_blueprint(utils_api, url_prefix="/api")
 
 # Initialise the singleton services
 Container.initialise_singletons(container)
 
+
 def thread_shutdown_handler(signum, frame):
-  # Ensure threads are stopped when the application exits or restarts
-  container.slideshow_worker().shutdown(signum, frame)
-  container.image_feed_worker().shutdown(signum, frame)
+    # Ensure threads are stopped when the application exits or restarts
+    container.slideshow_worker().shutdown(signum, frame)
+    container.image_feed_worker().shutdown(signum, frame)
+
 
 signal.signal(signal.SIGTERM, thread_shutdown_handler)

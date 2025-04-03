@@ -5,7 +5,7 @@ export default function Page() {
     <section className="text-slate-300 w-full max-w-prose">
       <h2>Inky Dash - v{process.env.npm_package_version}</h2>
       <p>
-        Inky Dash is an interface for Pimoroni's line of Raspberry Pi ePaper displays.
+        Inky Dash is an interface for Pimoroni&#39;s line of Raspberry Pi ePaper displays.
       </p>
       <p>
         The following displays are supported:
@@ -16,11 +16,11 @@ export default function Page() {
         <li><Link href="https://shop.pimoroni.com/products/inky-phat?variant=12549254217811" target="_blank"
                   rel="noopener noreferrer">Inky pHAT (250 x 122)</Link></li>
         <li><Link href="https://shop.pimoroni.com/products/inky-impression-4?variant=39599238807635" target="_blank"
-                  rel="noopener noreferrer">Inky Impression 4"</Link></li>
+                  rel="noopener noreferrer">Inky Impression 4&#34;</Link></li>
         <li><Link href="https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371" target="_blank"
-                  rel="noopener noreferrer">Inky Impression 5.7"</Link></li>
+                  rel="noopener noreferrer">Inky Impression 5.7&#34;</Link></li>
         <li><Link href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723" target="_blank"
-                  rel="noopener noreferrer">Inky Impression 7.3"</Link></li>
+                  rel="noopener noreferrer">Inky Impression 7.3&#34;</Link></li>
       </ul>
       <h3>Links</h3>
       <ul>

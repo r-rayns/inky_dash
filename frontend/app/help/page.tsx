@@ -9,8 +9,8 @@ export default function Page() {
         <AccordionTrigger>Automatic display detection failed</AccordionTrigger>
         <AccordionContent>
           <p>
-            When Inky Dash loads it attempts to automatically detect the display using the "auto" method from Pimoroni's
-            Python library. If this fails the display is defaulted to "Inky pHAT (212 x 104)".
+            When Inky Dash loads it attempts to automatically detect the display using the &#34;auto&#34; method from Pimoroni&#39;s
+            Python library. If this fails the display is defaulted to &#34;Inky pHAT (212 x 104)&#34;.
             Using the <Link href="/display-settings">settings</Link> page you can attempt to manually select the display
             to use.
           </p>

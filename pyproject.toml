@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "inky-dash"
-version = "2.3.1"
+version = "2.3.2"
 description = "Inky dash is an interface for Inky displays, a line of e-paper displays for the Raspberry Pi, that can be accessed from a browser via a local web server."
 authors = ["Robert <robert@rrayns.co.uk>"]
 readme = "README.md"
@@ -40,6 +40,9 @@ werkzeug = "2.3.7"
 rpi-gpio = "^0.7.1"
 requests = "^2.32.3"
 
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.2.0"
 
 [build-system]
 requires = ["poetry-core"]

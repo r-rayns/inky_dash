@@ -31,6 +31,7 @@ const Select = React.forwardRef<
     {children}
   </SelectPrimitive.Root>
 ));
+Select.displayName = SelectPrimitive.Root.displayName
 
 const SelectGroup = SelectPrimitive.Group
 
