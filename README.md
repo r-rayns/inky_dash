@@ -328,15 +328,16 @@ Pytest is the test runner for this project. Run the tests with:
 
 ```bash
 cd inky_dash
-python3 -m pytest
+pytest
 ```
 
 Or if you are using Poetry:
 
 ```bash
-poetry run python3 -m pytest
+poetry run pytest
 ```
 
 ## Attribution 🏷️
 
 - The stand I use for my Pi Zero 2 W was 3D printed using an Adafruit [design](https://github.com/adafruit/Adafruit_Learning_System_Guides/tree/main/Pi_Zero_Stand).
+

@@ -7,8 +7,10 @@ npm run lint
 cd ../backend
 if command -v poetry &> /dev/null; then
     poetry run flake8 . || exit 1
+    poetry run pytest
 else
     flake8 . || exit 1
+    pytest
 fi
 
 echo "✅ Pre-commit checks passed"

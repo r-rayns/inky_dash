@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from display_model import DisplaySettings, ColourPalette, BorderColour, DisplayType, DisplayMode
+from backend.models.display_model import DisplaySettings, ColourPalette, BorderColour, DisplayType, DisplayMode
 
 
 def test_valid_display_settings():
