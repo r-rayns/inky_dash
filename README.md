@@ -116,9 +116,9 @@ cd frontend
 npm install; npm run build
 ```
 
-The build will be output to the `./frontend/out` directory.
+The build will be output to the `./frontend/dist` directory.
 
-Move the contents of the build from the `out` directory to the `./backend/public` directory
+Move the contents of the build from the `dist` directory to the `./backend/public` directory
 
 ### 3. Transfer the project to the Raspberry Pi
 
