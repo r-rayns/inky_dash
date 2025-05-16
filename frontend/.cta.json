@@ -1,0 +1,15 @@
+{
+  "framework": "react",
+  "typescript": true,
+  "projectName": "inky-dash",
+  "mode": "file-router",
+  "tailwind": true,
+  "packageManager": "npm",
+  "toolchain": "eslint+prettier",
+  "variableValues": {},
+  "git": true,
+  "version": 1,
+  "existingAddOns": [
+    "shadcn"
+  ]
+}

@@ -9,12 +9,10 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
 # production
 /build
+dist
+dist-ssr
 
 # misc
 .DS_Store
@@ -27,6 +25,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+*.local
 
 # vercel
 .vercel
@@ -37,3 +36,4 @@ next-env.d.ts
 
 #IDE
 .idea
+.vscode
