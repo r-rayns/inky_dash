@@ -313,6 +313,14 @@ poetry run python3 run.py --dev
 
 ## Development 🧑‍💻
 
+### Install dependencies using Poetry
+
+To install all the dependencies for the first time, using Poetry, run the following:
+
+```bash
+poetry install
+```
+
 ### Updating dependencies
 
 Dependencies are managed using [Poetry](https://python-poetry.org/). The requirements.txt file has been generated using
@@ -321,6 +329,8 @@ Poetry export:
 ```bash
 poetry export --without-hashes -f requirements.txt -o requirements.txt
 ```
+
+Poetry export is a plugin but is listed as a dependency of this project so it should not require additional setup outside of running `poetry install`.
 
 ### Testing
 
