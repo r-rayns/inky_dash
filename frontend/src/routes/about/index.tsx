@@ -37,6 +37,10 @@ function AboutPage() {
                   rel="noopener noreferrer">Inky Impression 5.7&#34;</a></li>
         <li><a href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723" target="_blank"
                   rel="noopener noreferrer">Inky Impression 7.3&#34;</a></li>
+        <li><a href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435244411" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 7.3&#34; (2025 Edition)</a></li>
+        <li><a href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435277179" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 13.3&#34;</a></li>
       </ul>
       <h3>Links</h3>
       <ul>

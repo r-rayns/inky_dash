@@ -10,6 +10,8 @@ The following displays are supported:
 - [Inky Impression 4"](https://shop.pimoroni.com/products/inky-impression-4?variant=39599238807635)
 - [Inky Impression 5.7"](https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371)
 - [Inky Impression 7.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723)
+- [Inky Impression 7.3 2025 ed."](https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435244411)
+- [Inky Impression 13.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435277179)
 
 ## Features ✨
 
