@@ -15,5 +15,5 @@ class ModeAbstract(ABC):
         self.display_settings_service.subscribe(self.on_settings_update)
 
     @abstractmethod
-    def on_settings_update(self, settings: DisplaySettings):
+    def on_settings_update(self, settings: DisplaySettings, display_has_changed: bool = False):
         pass

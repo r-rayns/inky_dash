@@ -52,7 +52,13 @@ class DisplaySettingsService:
     def subscribe(self, callback: Callable[[DisplaySettings], None]):
         self.settings_update_callbacks.append(callback)
 
-    def update_settings(self, settings: DisplaySettings or DisplaySettingsUpdate, emit_update: bool = True):
+    def update_settings(self, settings: DisplaySettings | DisplaySettingsUpdate, emit_update: bool = True):
+        display_has_changed = False
+        current_display_type = self.display_settings.type
+        if current_display_type != settings.type:
+            logger.info(f"Display type has changed from {current_display_type} to {settings.type}.")
+            display_has_changed = True
+
         # Update the display settings, merge existing settings with the updated settings
         self.display_settings = DisplaySettings(**{
             **self.display_settings.model_dump(),
@@ -66,11 +72,11 @@ class DisplaySettingsService:
         logger.info("Settings stored")
 
         if emit_update:
-            self.emit_settings_update(settings)
+            self.emit_settings_update(settings, display_has_changed)
 
-    def emit_settings_update(self, settings: DisplaySettings):
+    def emit_settings_update(self, settings: DisplaySettings, display_has_changed: bool = False):
         for callback in self.settings_update_callbacks:
-            callback(settings)
+            callback(settings, display_has_changed)
 
     def restore_settings(self) -> DisplaySettings | None:
         settings_json = DisplaySettingsService.retrieve_settings_from_file()

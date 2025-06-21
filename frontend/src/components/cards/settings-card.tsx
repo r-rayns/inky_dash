@@ -134,6 +134,7 @@ export default function SettingsCard({display, displaySettings, isLoading, ...pr
   )
 }
 
+// No need to handle the ref currently, as this component does not use it.
 interface SettingsCardProps extends ComponentPropsWithoutRef<typeof Card> {
   display: InkyDisplay | null
   displaySettings: DisplaySettings | null

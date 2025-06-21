@@ -10,9 +10,16 @@ class DetectionError:
 class DisplayType(str, Enum):
     PHAT_104 = "phat104"
     PHAT_122 = "phat122"
+    # 4"
     IMPRESSION_400 = "impression400"
+    # 5.7"
     IMPRESSION_448 = "impression448"
+    # 7.3"
     IMPRESSION_480 = "impression480"
+    # 7.3" 2025 ed.
+    SPECTRA_480 = "spectra480"
+    # 13.3"
+    SPECTRA_1200 = "spectra1200"
 
 
 class ColourPalette(str, Enum):
@@ -20,6 +27,7 @@ class ColourPalette(str, Enum):
     YELLOW = "yellow"
     BLACK = "black"
     SEVEN_COLOUR = "7Colour"
+    SPECTRA = "spectra"
 
 
 class BorderColour(str, Enum):

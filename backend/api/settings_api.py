@@ -42,7 +42,7 @@ def apply_settings(display_settings_service: DisplaySettingsService = Provide[Co
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to update display: {err}")
-        return error_response("Failed to update display", [str(err)])
+        return error_response("Failed to update display", err)
 
 
 @settings_api.route("/detect-display", methods=["GET"])

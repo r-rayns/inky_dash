@@ -49,7 +49,7 @@ class ImageFeedService(ModeAbstract):
         if self.display_settings_service.display_settings.mode == DisplayMode.IMAGE_FEED:
             self.start_image_feed()
 
-    def on_settings_update(self, settings: DisplaySettings):
+    def on_settings_update(self, settings: DisplaySettings, display_has_changed: bool = False):
         logger.info("Settings have changed")
         if settings.mode == DisplayMode.IMAGE_FEED and self.image_feed_configuration is not None:
             logger.info("Image feed mode is active, restart image feed")

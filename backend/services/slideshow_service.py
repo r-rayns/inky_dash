@@ -3,7 +3,7 @@ import json
 from dependency_injector.wiring import inject, Provide
 
 from backend.lib.logger_setup import logger
-from backend.lib.place_holder_image import place_holder_image
+from backend.lib.place_holder_image import generate_place_holder_image
 from backend.models.display_model import DisplaySettings, DisplayMode
 from backend.models.slideshow_model import SlideshowConfiguration
 from backend.services.display_mode_abstract import ModeAbstract
@@ -11,7 +11,7 @@ from backend.workers.slideshow_worker import SlideshowWorker
 
 
 class SlideshowService(ModeAbstract):
-    slideshow_configuration: SlideshowConfiguration = SlideshowConfiguration(images=[place_holder_image],
+    slideshow_configuration: SlideshowConfiguration = SlideshowConfiguration(images=[],
                                                                              change_delay=1800)
     slideshow_worker: SlideshowWorker
 
@@ -48,8 +48,16 @@ class SlideshowService(ModeAbstract):
         if self.display_settings_service.display_settings.mode == DisplayMode.SLIDESHOW:
             self.start_slideshow()
 
-    def on_settings_update(self, settings: DisplaySettings):
+    def on_settings_update(self, settings: DisplaySettings, display_has_changed: bool = False):
         logger.info("Settings have changed")
+
+        if display_has_changed:
+            place_holder_image = generate_place_holder_image(self.display_settings_service.display_settings)
+            logger.info("Display has changed, clearing slideshow configuration")
+            self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image],
+                                                                  change_delay=1800)
+            self.store_slideshow_configuration(self.slideshow_configuration)
+
         if settings.mode == DisplayMode.SLIDESHOW:
             logger.info("Slideshow mode is active, restart slideshow")
             self.start_slideshow()
@@ -61,7 +69,7 @@ class SlideshowService(ModeAbstract):
         with open("slideshow.json", "w") as file:
             json.dump(slideshow_configuration.model_dump(), file,
                       ensure_ascii=False, indent=4)
-        logger.info("Configuration stored")
+        logger.info("Slideshow Configuration stored")
 
     def restore_slideshow(self) -> SlideshowConfiguration | None:
         slideshow_configuration_json = self.read_stored_slideshow_configuration()

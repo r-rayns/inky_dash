@@ -54,8 +54,8 @@ def test_change_delay_too_long():
 def test_png_too_large():
     # png header in hexadecimal
     png_header = b"\x89PNG\r\n\x1a\n"
-    # large byte array representing an image over 1000KB
-    large_data = png_header + bytearray(1500 * 1024)  # 1500KB+
+    # large byte array representing an image over 15100KB
+    large_data = png_header + bytearray(16000 * 1024)  # 15100KB+
     # encode to base64
     large_png_base64 = base64.b64encode(large_data).decode("utf-8")
     with pytest.raises(ValidationError):

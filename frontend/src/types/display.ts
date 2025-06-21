@@ -1,8 +1,8 @@
 export interface DisplaySettings {
-  type: DisplayType;
-  colourPalette: ValidPaletteColours;
-  borderColour: ValidBorderColours;
-  mode: DisplayMode;
+  type: DisplayType
+  colourPalette: ValidPaletteColours
+  borderColour: ValidBorderColours
+  mode: DisplayMode
 }
 
 export enum DisplayType {
@@ -11,21 +11,24 @@ export enum DisplayType {
   IMPRESSION_400 = 'impression400',
   IMPRESSION_448 = 'impression448',
   IMPRESSION_480 = 'impression480',
+  SPECTRA_480 = 'spectra480',
+  SPECTRA_1200 = 'spectra1200',
 }
 
 export enum DetectionError {
-  UNSUPPORTED = 'unsupported'
+  UNSUPPORTED = 'unsupported',
 }
 
 export enum Palette {
   RED = 'red',
   YELLOW = 'yellow',
   SEVEN_COLOUR = '7Colour',
+  SPECTRA = 'spectra',
 }
 
 export enum BorderColour {
   WHITE = 'white',
-  BLACK = 'black'
+  BLACK = 'black',
 }
 
 export enum DisplayMode {
@@ -33,13 +36,17 @@ export enum DisplayMode {
   IMAGE_FEED = 'image_feed',
 }
 
-export type RGB = [ number, number, number ];
-export type ValidPaletteColours = Palette.RED | Palette.YELLOW | Palette.SEVEN_COLOUR;
-export type ValidBorderColours = BorderColour.WHITE | BorderColour.BLACK;
+export type RGB = [number, number, number]
+export type ValidPaletteColours =
+  | Palette.RED
+  | Palette.YELLOW
+  | Palette.SEVEN_COLOUR
+  | Palette.SPECTRA
+export type ValidBorderColours = BorderColour.WHITE | BorderColour.BLACK
 
 export const DefaultSettings = {
   type: DisplayType.PHAT_104,
   colourPalette: Palette.RED,
   mode: DisplayMode.SLIDESHOW,
-  borderColour: BorderColour.BLACK
-} as const;
+  borderColour: BorderColour.BLACK,
+} as const

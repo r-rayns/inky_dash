@@ -16,7 +16,7 @@ class SlideshowConfiguration(BaseModel):
                 is_valid_base64(pngBase64, True)
                 if not is_valid_png(pngBase64) and not is_valid_jpg(pngBase64):
                     raise ValueError("Image is not in PNG or JPG/JPEG format")
-                is_valid_file_size(pngBase64, 1100, True)
+                is_valid_file_size(pngBase64, 15100, True)
         except (TypeError, ValueError) as e:
             raise ValueError(f"Invalid base64 string: {str(e)}")
         return png_images

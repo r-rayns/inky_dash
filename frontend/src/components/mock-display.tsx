@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowBigLeft, ArrowBigRight, ImagePlus, Trash2 } from "lucide-react";
 import { Link } from '@tanstack/react-router';
-import { isEqual } from 'es-toolkit';
 import type { InkyDisplay } from "@/lib/display-types";
 import { Button } from "@/components/ui/button";
 import { SpinnerIcon } from "@/components/icons/spinner";
@@ -10,39 +9,16 @@ import { useSettings } from '@/providers/settings-provider.tsx';
 export default function MockDisplay({
                                       value,
                                       onChange,
-                                      inkyDisplay,
                                     }: MockDisplayProps) {
+  // Use prop directly as source of truth - avoids state synchronization complexity
+  const images: Array<string> = value;
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [actualDimensions, setActualDimensions] = useState<{
     width: number;
     height: number;
   }>({width: 0, height: 0});
-  const [images, setImages] = useState<Array<string>>(value);
-  const [width, setWidth] = useState<number>(inkyDisplay.width);
-  const [height, setHeight] = useState<number>(inkyDisplay.height);
   const {settingsIsLoading} = useSettings();
-  // Ref to track images at the time of the last update, used to compare with new values to decide if an update is required
-  const lastUpdatedImagesRef = useRef<Array<string>>([]);
   const mockDisplayRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!isEqual(images, lastUpdatedImagesRef.current)) {
-      onChange(images);
-      lastUpdatedImagesRef.current = images;
-    }
-  }, [images, onChange]);
-
-  useEffect(() => {
-    if (!isEqual(value, lastUpdatedImagesRef.current)) {
-      setImages(value);
-      lastUpdatedImagesRef.current = value;
-    }
-  }, [value]);
-
-  useEffect(() => {
-    setWidth(inkyDisplay.width);
-    setHeight(inkyDisplay.height);
-  }, [inkyDisplay]);
 
   useEffect(() => {
     if (images.length) {
@@ -77,7 +53,7 @@ export default function MockDisplay({
     if (images.length > 0) {
       const updatedImages = [...images];
       updatedImages.splice(imageIndex, 1);
-      setImages(updatedImages);
+      onChange(updatedImages);
     }
 
     if (imageIndex > 0) {
@@ -88,13 +64,11 @@ export default function MockDisplay({
   return (
     <>
       <div
-        className="w-full relative overflow-auto mx-auto"
-        style={{maxWidth: `${width}px`}}
+        className="w-auto max-w-full relative overflow-auto mx-auto"
         ref={mockDisplayRef}
       >
         <div
-          className={`bg-white flex overflow-auto max-w-full`}
-          style={{height: `${height}px`, maxHeight: `${height}px`}}
+          className={`bg-white flex overflow-auto max-w-full max-h-[500px]`}
         >
           {settingsIsLoading ? (
               <div role="status" className="flex m-auto items-center">

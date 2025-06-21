@@ -1,3 +1,13 @@
+import os
+from typing import Tuple
+from PIL import Image, ImageDraw, ImageFont
+from backend.lib.image_utilis import pil_image_to_base64
+from backend.lib.logger_setup import logger
+from backend.lib.display_utilis import InkyDisplay, construct_palette_from_display_type, \
+    resolve_display_from_settings, resolve_display_type_from_inky_instance
+from backend.models.display_model import DisplaySettings, DisplayType
+
+
 place_holder_image = (
     "iVBORw0KGgoAAAANSUhEUgAAANQAAABoCAYAAACJ1t4WAAAFyklEQVR4Ae3BC5LiAHYAwSoF979yeWQH6xkWuvkIAd0v0/5gj"
     "LGJhTHGZhbGGJtZGGNsZmGMsZmFMcZmFsYYm1kYY2xmYYyxmYUxxmYW3pjKKZVTKmO8gwNvRuVvKqdUxnhHC2OMzSyMMTazMM"
@@ -21,3 +31,86 @@ place_holder_image = (
     "h/JeKR1U8quIeKl+p2FPFb7Ewzqq4V8VWKp6hYk8VFT/dgXFRxUrlGhXPUKFyjYprVaxUblVxj4qVyi0qPoH9wbiaSoVKxauo"
     "VDyLSsXeVCo+lf3BGGMTC2OMzSyMMTazMMbYzMIYYzMLY4zNLIwxNrMwxtjMwhhjMwtjjM0sjDE2szDG2Mz/AMxevsRxwVPWA"
     "AAAAElFTkSuQmCC")
+
+silkscreen_pixel = os.path.abspath(os.path.join(os.path.dirname(__file__), "../assets/Silkscreen-Bold.ttf"))
+noto_emoji = os.path.abspath(os.path.join(os.path.dirname(__file__), "../assets/NotoEmoji-Regular.ttf"))
+
+"""
+# Returns a base64 encoded placeholder image.
+# This image is used when no other image is available.
+"""
+
+
+def generate_place_holder_image(display_settings: DisplaySettings) -> str:
+    logger.info("Generating a placeholder image")
+    display = resolve_display_from_settings(display_settings)
+
+    # Create a new placeholder image with the same dimensions as the display
+    placeholder_image = Image.new("P", (display.width, display.height), display.WHITE)
+    palette = construct_palette_from_display_type(display_settings.type, display_settings.colour_palette)
+    placeholder_image.putpalette(palette)
+
+    draw = ImageDraw.Draw(placeholder_image)
+    draw_placeholder_text(draw, display)
+    draw_placeholder_emoji(draw, display)
+
+    placeholder_image.save("placeholder_image.png", "PNG")
+
+    return pil_image_to_base64(placeholder_image)
+
+
+def draw_placeholder_text(draw: ImageDraw, display: InkyDisplay):
+    display_type = resolve_display_type_from_inky_instance(display)
+    is_small_display = display_type in (DisplayType.PHAT_104, DisplayType.PHAT_122)
+
+    text_font_size = 24 if is_small_display else 64
+
+    text_font = ImageFont.truetype(silkscreen_pixel, text_font_size)
+    text = "Inky Dash"
+    text_width, text_height = text_dimensions(text, text_font, draw)
+
+    text_x = (display.width - text_width) / 2
+    text_y = (display.height - text_height * 2) / 2
+
+    if is_small_display:
+        text_y = 10
+
+    draw.text(
+        (text_x, text_y),
+        text,
+        fill=display.BLACK,
+        font=text_font)
+
+
+def draw_placeholder_emoji(draw: ImageDraw, display: InkyDisplay):
+    display_type = resolve_display_type_from_inky_instance(display)
+    is_small_display = display_type in (DisplayType.PHAT_104, DisplayType.PHAT_122)
+
+    emoji_font_size = 78 if not is_small_display else 48
+
+    emoji_font = ImageFont.truetype(noto_emoji, emoji_font_size)
+    emoji = "🐙"
+    emoji_width, emoji_height = text_dimensions(emoji, emoji_font, draw)
+
+    emoji_x = (display.width - emoji_width) / 2
+    emoji_y = (display.height + emoji_height) / 2
+    emoji_fill_colour = getattr(display, 'RED', 1)
+
+    if is_small_display:
+        emoji_y = 50
+        emoji_fill_colour = getattr(display, 'BLACK', 1)
+
+    draw.text(
+        (emoji_x, emoji_y),
+        emoji,
+        fill=emoji_fill_colour,
+        font=emoji_font)
+
+
+def text_dimensions(text: str, text_font, draw: ImageDraw) -> Tuple[int, int]:
+
+    text_bbox = draw.textbbox((0, 0), text, font=text_font)
+    text_width = text_bbox[2] - text_bbox[0]  # right minus left
+    text_height = text_bbox[3] - text_bbox[1]  # bottom minus top
+
+    return text_width, text_height

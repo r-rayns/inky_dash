@@ -43,7 +43,7 @@ def is_valid_jpg(base64_image: str, throw_exception: bool = False) -> bool:
     return is_jpg
 
 
-# Check image is less than 1000KB + an extra 100KB allowance
+# Check file size is less than the given KB allowance
 def is_valid_file_size(base64_image: str, kb_allowance: int, throw_exception: bool = False) -> bool:
     is_within_size = False
     byte_estimate = (len(base64_image) * (3 / 4)) - 2
@@ -51,7 +51,7 @@ def is_valid_file_size(base64_image: str, kb_allowance: int, throw_exception: bo
         is_within_size = True
 
     if not is_within_size and throw_exception:
-        raise ValueError("Image is greater than 1000KB")
+        raise ValueError(f"Image is greater than {kb_allowance} KB")
 
     return is_within_size
 
