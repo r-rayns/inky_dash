@@ -26,6 +26,10 @@ class SlideshowService(ModeAbstract):
             self.slideshow_configuration = stored_slideshow_configuration
             logger.info("Slideshow configuration was restored from file")
 
+        if len(self.slideshow_configuration.images) < 1:
+            logger.info("Slideshow has no images...")
+            self.default_to_placeholder_image()
+
         if self.display_settings_service.display_settings.mode == DisplayMode.SLIDESHOW:
             self.start_slideshow()
 
@@ -70,6 +74,14 @@ class SlideshowService(ModeAbstract):
             json.dump(slideshow_configuration.model_dump(), file,
                       ensure_ascii=False, indent=4)
         logger.info("Slideshow Configuration stored")
+
+    def default_to_placeholder_image(self):
+        place_holder_image = generate_place_holder_image(self.display_settings_service.display_settings)
+        change_delay = self.slideshow_configuration.change_delay
+        logger.info("Defaulting slideshow to placeholder image")
+        self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image],
+                                                              change_delay=change_delay)
+        self.store_slideshow_configuration(self.slideshow_configuration)
 
     def restore_slideshow(self) -> SlideshowConfiguration | None:
         slideshow_configuration_json = self.read_stored_slideshow_configuration()

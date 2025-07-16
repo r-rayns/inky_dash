@@ -74,7 +74,7 @@ if __name__ == "__main__":
         "bind": "%s:%s" % ("0.0.0.0", "8080"),
         "workers": 1,  # number_of_workers(),
         "timeout": 120,
-        "loglevel": "debug" if args.dev else "info",
+        "loglevel":  "debug" if args.dev else "info",
         # Enable auto-reload in development mode
         "reload": True if args.dev else False,
         "worker_exit": worker_exit

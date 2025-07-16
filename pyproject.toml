@@ -39,6 +39,7 @@ typing-extensions = "4.10.0"
 werkzeug = "3.0.6"
 rpi-gpio = "^0.7.1"
 requests = "^2.32.3"
+colorama = "^0.4.6"
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.8"

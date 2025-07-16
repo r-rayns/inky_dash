@@ -13,6 +13,19 @@ The following displays are supported:
 - [Inky Impression 7.3 2025 ed."](https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435244411)
 - [Inky Impression 13.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435277179)
 
+## Important 📌
+
+To support the new Inky Impression 7.3" and Inky Impression 13.3" displays the Inky library has been updated to the latest version (v2.1.0).
+
+As a consequence of this change you may find setting an image no longer works, as in nothing changes on the display. It's possible this is accompanied by the following error message:
+
+```bash
+Woah there, some pins we need are in use!
+     Chip Select: (line 8, GPIO8) currently claimed by spi0 CS0
+```
+
+If you do experience this, try adding `dtoverlay=spi0-0cs` to the end of your `/boot/firmware/config.txt` file, saving it and rebooting. As per the [advice](https://github.com/pimoroni/inky?tab=readme-ov-file#install-stable-library-from-pypi-and-configure-manually) in the official Inky repo.
+
 ## Features ✨
 
 Inky Dash provides two different display modes.
@@ -24,11 +37,11 @@ which images to display and set the transition timing.
 
 https://github.com/user-attachments/assets/68a7088d-d6e4-4474-94b9-65278ce625c9
 
-*Video of Slideshow mode in action*
+_Video of Slideshow mode in action_
 
 ![Inky pHAT 212x104 display in Slideshow mode](examples/212x104-example.png)
 
-*Inky pHAT 212x104 display in Slideshow mode*
+_Inky pHAT 212x104 display in Slideshow mode_
 
 ### Image Feed
 
@@ -40,7 +53,7 @@ The display will only update when the downloaded image differs from the currentl
 
 https://github.com/user-attachments/assets/7950718a-322a-4d3b-8344-30b2bd62b36c
 
-*Video of Image Feed mode in action*
+_Video of Image Feed mode in action_
 
 #### Image Feed Projects
 
@@ -52,7 +65,7 @@ designed to generate images that can be easily integrated with this mode.
 
 ![Inky Impression 4" displaying the energy mix image feed](examples/impression-4-image-feed.png)
 
-*Inky Impression 4" displaying the energy mix image feed*
+_Inky Impression 4" displaying the energy mix image feed_
 
 #### Make your own
 
@@ -297,16 +310,29 @@ sudo service inky_dash start
 
 ## Trouble Shooting 🎯
 
-You may need to install additional dependencies if you are running into issues:
+You may need to install additional dependencies if you are running into issues when setting up on your Raspberry Pi:
 
 - If there are issues with spidev: `sudo apt install python3-dev`
 - If there are issues with numpy: `sudo apt install libopenblas0`
+
+### Additional logs
 
 To see additional logs run with the `--dev` flag:
 
 ```bash
 poetry run python3 run.py --dev
 ```
+
+### Poetry install errors
+
+If when running Poetry install, you see an AttributeError:
+
+```bash
+AttributeError
+module 'posixpath' has no attribute 'ALLOW_MISSING'
+```
+
+This could potentially be related to the following [issue](https://bugs.launchpad.net/ubuntu/+source/python3.13/+bug/2116293). If this happens try re-installing Poetry
 
 ## Flags
 
@@ -352,4 +378,3 @@ poetry run pytest
 ## Attribution 🏷️
 
 - The stand I use for my Pi Zero 2 W was 3D printed using an Adafruit [design](https://github.com/adafruit/Adafruit_Learning_System_Guides/tree/main/Pi_Zero_Stand).
-

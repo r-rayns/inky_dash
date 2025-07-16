@@ -104,6 +104,8 @@ class DisplayWorkerAbstract(ABC):
         if os.getenv("DESKTOP", "False").lower() == "true":
             logger.info("Running in a desktop environment, we won't attempt to set the display")
         else:
+            logger.info("Updating Inky display...")
             display.show()
+            logger.info("Inky display image updated!")
 
         return image

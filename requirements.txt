@@ -4,7 +4,7 @@ blinker==1.6.2 ; python_version >= "3.10" and python_version < "3.13"
 certifi==2025.6.15 ; python_version >= "3.10" and python_version < "3.13"
 charset-normalizer==3.4.2 ; python_version >= "3.10" and python_version < "3.13"
 click==8.1.7 ; python_version >= "3.10" and python_version < "3.13"
-colorama==0.4.6 ; python_version >= "3.10" and python_version < "3.13" and (platform_system == "Windows" or sys_platform == "win32")
+colorama==0.4.6 ; python_version >= "3.10" and python_version < "3.13"
 dependency-injector==4.43.0 ; python_version >= "3.10" and python_version < "3.13"
 exceptiongroup==1.2.1 ; python_version >= "3.10" and python_version < "3.13"
 flask-cors==6.0.1 ; python_version >= "3.10" and python_version < "3.13"

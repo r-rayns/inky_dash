@@ -5,7 +5,7 @@ a = Analysis(
     ['run.py'],
     pathex=[],
     binaries=[],
-    datas=[('backend/public','backend/public')],
+    datas=[('backend/public','backend/public'), ('backend/assets', 'backend/assets')],
     hiddenimports=['gunicorn.workers.sync', 'gunicorn.glogging', 'pkg_resources', 'pkg_resources.extern', 'dependency_injector', 'dependency_injector.errors', 'six', 'backend.app'],
     hookspath=[],
     hooksconfig={},
