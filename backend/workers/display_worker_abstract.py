@@ -1,5 +1,6 @@
 import os
 import threading
+import gc
 from abc import ABC, abstractmethod
 
 from PIL import Image
@@ -67,9 +68,14 @@ class DisplayWorkerAbstract(ABC):
             self.stop()
 
     def stop(self):
+        logger.info(f"Stopping {self.worker_name} thread...")
+        logger.info(f"Delete display instance for {self.worker_name} and run garbage collection to free up GPIO pins")
+        # If we do not clear the display instance, the GPIO pins will not be released for the next worker
+        self.display = None
+        gc.collect()
+        # Stop the thread
         self.stop_event.set()
         self.running = False
-        logger.info(f"Stopping {self.worker_name} thread...")
         if self.thread:
             self.thread.join()  # wait for thread to close
             self.thread = None
@@ -105,7 +111,12 @@ class DisplayWorkerAbstract(ABC):
             logger.info("Running in a desktop environment, we won't attempt to set the display")
         else:
             logger.info("Updating Inky display...")
-            display.show()
-            logger.info("Inky display image updated!")
+            try:
+                display.show()
+                logger.info("Inky display image updated!")
+            except Exception as e:
+                logger.error(f"Failed to update Inky display: {e}")
+            except SystemExit as e:
+                logger.error(f"SystemExit encountered while updating Inky display: {e}")
 
         return image
