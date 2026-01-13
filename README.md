@@ -238,6 +238,13 @@ PyInstaller can be used to create a single binary file that can be used to run I
 Make sure the frontend is built so that there us a `backend/public` directory and then from the project root run:
 
 ```bash
+uv run pyinstaller run.spec
+```
+
+Or if not using uv:
+
+```bash
+source ~/venv/inky-dash/bin/activate
 pyinstaller run.spec
 ```
 
