@@ -5,8 +5,7 @@ from backend.lib.logger_setup import logger
 from flask import jsonify
 
 
-def error_response(message: str, errors:  Union[Exception, ValidationError],
-                   response_code=400):
+def error_response(message: str, errors: Union[Exception, ValidationError], response_code=400):
     if isinstance(errors, ValidationError):
         formatted_errors = formatValidationErrors(errors.errors())
         logger.error(f"Validation Errors: {formatted_errors}")
@@ -20,7 +19,8 @@ def error_response(message: str, errors:  Union[Exception, ValidationError],
 
 def formatValidationErrors(validationErrors: List[ErrorDetails]) -> List[str]:
     formatted_errors = []
+    # Loop over the errors and put them into the format <field_name> <error_message>
     for error in validationErrors:
-        formatted_error = f"\"{error['loc'][0]}\" {error['msg']}"
+        formatted_error = f'"{error["loc"][0]}" {error["msg"]}'
         formatted_errors.append(formatted_error)
     return formatted_errors

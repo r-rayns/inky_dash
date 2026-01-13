@@ -38,4 +38,4 @@ def dither_image(display_settings_service: DisplaySettingsService = Provide["dis
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to dither image: {err}")
-        return error_response("Error dithering the image", [str(err)])
+        return error_response("Error dithering the image", err)

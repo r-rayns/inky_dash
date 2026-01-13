@@ -11,12 +11,14 @@ from backend.workers.slideshow_worker import SlideshowWorker
 
 
 class SlideshowService(ModeAbstract):
-    slideshow_configuration: SlideshowConfiguration = SlideshowConfiguration(images=[],
-                                                                             change_delay=1800)
+    slideshow_configuration: SlideshowConfiguration = SlideshowConfiguration(images=[], change_delay=1800)
     slideshow_worker: SlideshowWorker
 
     @inject
-    def __init__(self, slideshow_worker: SlideshowWorker = Provide["slideshow_worker"], ):
+    def __init__(
+        self,
+        slideshow_worker: SlideshowWorker = Provide["slideshow_worker"],
+    ):
         super().__init__()
         logger.info("Created SlideshowService")
         self.slideshow_worker = slideshow_worker
@@ -38,7 +40,8 @@ class SlideshowService(ModeAbstract):
         logger.info("Attempting to start slideshow on the Inky display...")
         logger.info(
             f"Settings: {display_settings.type} ({display_settings.colour_palette}) - "
-            f"delay: {self.slideshow_configuration.change_delay} seconds")
+            f"delay: {self.slideshow_configuration.change_delay} seconds"
+        )
         self.slideshow_worker.start_slideshow(self.slideshow_configuration, display_settings)
         self.display_settings_service.active_worker = self.slideshow_worker
 
@@ -58,8 +61,7 @@ class SlideshowService(ModeAbstract):
         if display_has_changed:
             place_holder_image = generate_place_holder_image(self.display_settings_service.display_settings)
             logger.info("Display has changed, clearing slideshow configuration")
-            self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image],
-                                                                  change_delay=1800)
+            self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image], change_delay=1800)
             self.store_slideshow_configuration(self.slideshow_configuration)
 
         if settings.mode == DisplayMode.SLIDESHOW:
@@ -71,16 +73,14 @@ class SlideshowService(ModeAbstract):
 
     def store_slideshow_configuration(self, slideshow_configuration: SlideshowConfiguration):
         with open("slideshow.json", "w") as file:
-            json.dump(slideshow_configuration.model_dump(), file,
-                      ensure_ascii=False, indent=4)
+            json.dump(slideshow_configuration.model_dump(), file, ensure_ascii=False, indent=4)
         logger.info("Slideshow Configuration stored")
 
     def default_to_placeholder_image(self):
         place_holder_image = generate_place_holder_image(self.display_settings_service.display_settings)
         change_delay = self.slideshow_configuration.change_delay
         logger.info("Defaulting slideshow to placeholder image")
-        self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image],
-                                                              change_delay=change_delay)
+        self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image], change_delay=change_delay)
         self.store_slideshow_configuration(self.slideshow_configuration)
 
     def restore_slideshow(self) -> SlideshowConfiguration | None:

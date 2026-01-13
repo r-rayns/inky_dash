@@ -23,7 +23,7 @@ def get_slideshow(slideshow_service: SlideshowService = Provide[Container.slides
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to get existing slideshow configuration: {err}")
-        return error_response("Error retrieving existing slideshow configuration", [str(err)])
+        return error_response("Error retrieving existing slideshow configuration", err)
 
 
 @slideshow_api.route("/slideshow", methods=["POST"])
@@ -40,4 +40,4 @@ def set_slideshow(slideshow_service: SlideshowService = Provide[Container.slides
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to update slideshow: {err}")
-        return error_response("Failed to update slideshow", [str(err)])
+        return error_response("Failed to update slideshow", err)

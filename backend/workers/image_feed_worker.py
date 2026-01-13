@@ -5,7 +5,7 @@ from PIL import Image
 
 from backend.lib.image_utilis import pil_image_to_base64
 from backend.lib.logger_setup import logger
-from backend.models.display_model import DisplaySettings
+from backend.models.display_model import DetectionError, DisplaySettings
 from backend.models.image_feed_model import ImageFeedConfiguration
 from backend.workers.display_worker_abstract import DisplayWorkerAbstract
 
@@ -38,6 +38,12 @@ class ImageFeedWorker(DisplayWorkerAbstract):
         while not self.stop_event.is_set():
             image: Image.Image | None = None
             try:
+                if self.image_feed_url is None:
+                    raise ValueError("Image feed URL is not defined")
+
+                if self.display is None or self.display == DetectionError.UNSUPPORTED:
+                    raise ValueError(f"Display has not been setup or is unsupported: {self.display}")
+
                 image_data = requests.get(self.image_feed_url).content
 
                 previous_image_base64 = None

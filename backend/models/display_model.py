@@ -3,7 +3,7 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
-class DetectionError:
+class DetectionError(str, Enum):
     UNSUPPORTED = "unsupported"
 
 
@@ -42,20 +42,37 @@ class DisplayMode(str, Enum):
 
 class DisplaySettings(BaseModel):
     type: DisplayType = Field(
-        ..., description=f"Display type options: {', '.join([display for display in DisplayType])}")
+        ...,  # ... = required field
+        description=f"Display type options: {', '.join([display for display in DisplayType])}",
+    )
     colour_palette: ColourPalette = Field(
-        ..., description=f"Colour palette options: {', '.join([palette for palette in ColourPalette])}")
+        ...,
+        description=f"Colour palette options: {', '.join([palette for palette in ColourPalette])}",
+    )
     border_colour: BorderColour = Field(
-        ..., description=f"Border colour options: {', '.join([colour for colour in BorderColour])}")
+        ...,
+        description=f"Border colour options: {', '.join([colour for colour in BorderColour])}",
+    )
     mode: DisplayMode = Field(
-        DisplayMode.SLIDESHOW, description=f"Display mode options: {', '.join([mode for mode in DisplayMode])}")
+        DisplayMode.SLIDESHOW,  # Not required as defaults to slideshow
+        description=f"Display mode options: {', '.join([mode for mode in DisplayMode])}",
+    )
 
 
 class DisplaySettingsUpdate(BaseModel):
-    type: DisplayType = Field(
-        None, description=f"Display type options: {', '.join([display for display in DisplayType])}")
+    type: DisplayType | None = Field(
+        None,  # Not required and will not update if no value is supplied
+        description=f"Display type options: {', '.join([display for display in DisplayType])}",
+    )
     colour_palette: ColourPalette | None = Field(
-        None, description=f"Colour palette options: {', '.join([palette for palette in ColourPalette])}")
-    border_colour: BorderColour = Field(
-        None, description=f"Border colour options: {', '.join([colour for colour in BorderColour])}")
-    mode: DisplayMode = Field(None, description=f"Display mode options: {', '.join([mode for mode in DisplayMode])}")
+        None,
+        description=f"Colour palette options: {', '.join([palette for palette in ColourPalette])}",
+    )
+    border_colour: BorderColour | None = Field(
+        None,
+        description=f"Border colour options: {', '.join([colour for colour in BorderColour])}",
+    )
+    mode: DisplayMode | None = Field(
+        None,
+        description=f"Display mode options: {', '.join([mode for mode in DisplayMode])}",
+    )

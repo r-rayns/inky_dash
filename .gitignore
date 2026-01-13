@@ -27,3 +27,6 @@ placeholder_image.png
 # IDE
 .vscode
 .idea
+
+# AI
+CLAUDE.md

@@ -5,9 +5,13 @@ from abc import ABC, abstractmethod
 
 from PIL import Image
 
-from backend.lib.display_utilis import InkyDisplay, construct_palette_from_display_type, \
-    detect_inky_display, resolve_display_from_settings, \
-    resolve_display_type_from_inky_instance
+from backend.lib.display_utilis import (
+    InkyDisplay,
+    construct_palette_from_display_type,
+    detect_inky_display,
+    resolve_display_from_settings,
+    resolve_display_type_from_inky_instance,
+)
 from backend.lib.image_utilis import crop_image_width, crop_image_height, pad_image, dither
 from backend.lib.logger_setup import logger
 from backend.models.display_model import DisplaySettings, DetectionError, DisplayType, BorderColour
@@ -19,17 +23,17 @@ class DisplayWorkerAbstract(ABC):
     running: bool
     stop_event: threading.Event
     thread: threading.Thread | None
-    display: InkyDisplay | None
+    display: InkyDisplay | DetectionError | None
 
     def __init__(self, worker_name: str):
         self.worker_name = worker_name
         self.running = False
         self.thread = None
         self.stop_event = threading.Event()
-        self.display: InkyDisplay | DetectionError | None = None
+        self.display = None
 
     @abstractmethod
-    def get_current_image_in_base64(self):
+    def get_current_image_in_base64(self) -> str | None:
         pass
 
     @abstractmethod
@@ -81,7 +85,6 @@ class DisplayWorkerAbstract(ABC):
             self.thread = None
 
     def display_image(self, display: InkyDisplay, image: Image.Image) -> Image.Image:
-
         if image.mode != "P":
             logger.info(f"Image is not in palette mode ({image.mode}), attempt to dither it")
             display_type = resolve_display_type_from_inky_instance(display)

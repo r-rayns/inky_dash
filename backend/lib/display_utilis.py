@@ -1,21 +1,41 @@
 from typing import Union
-from inky import (auto, mock, InkyPHAT, InkyPHAT_SSD1608, Inky7Colour, Inky_Impressions_7, InkyWHAT, InkyWHAT_SSD1683,
-                  InkyE673, InkyEL133UF1)
+from inky import (
+    auto,
+    mock,
+    InkyPHAT,
+    InkyPHAT_SSD1608,
+    Inky7Colour,
+    Inky_Impressions_7,
+    InkyWHAT,
+    InkyWHAT_SSD1683,
+    InkyE673,
+    InkyEL133UF1,
+)
 
 from backend.lib.logger_setup import logger
 from backend.models.display_model import DisplaySettings, DisplayType, ColourPalette, DetectionError
 
-InkyDisplay = (InkyPHAT | InkyPHAT_SSD1608 | InkyWHAT |
-               Inky7Colour | InkyWHAT_SSD1683 | Inky_Impressions_7 |
-               mock.InkyMockWHAT | mock.InkyMockPHAT | mock.InkyMockImpression |
-               mock.InkyMockPHATSSD1608 | InkyE673 | InkyEL133UF1)
+InkyDisplay = (
+    InkyPHAT
+    | InkyPHAT_SSD1608
+    | InkyWHAT
+    | Inky7Colour
+    | InkyWHAT_SSD1683
+    | Inky_Impressions_7
+    | mock.InkyMockWHAT
+    | mock.InkyMockPHAT
+    | mock.InkyMockImpression
+    | mock.InkyMockPHATSSD1608
+    | InkyE673
+    | InkyEL133UF1
+)
 
 
 def detect_inky_display() -> InkyDisplay | DetectionError | None:
     display: InkyDisplay | DetectionError | None = None
     try:
         # Try to auto-detect the Inky display first
-        display: InkyDisplay = auto(ask_user=False)
+        display = auto(ask_user=False)
     except Exception as e:
         logger.error(f"Could not auto detect Inky Device: {e}")
 
@@ -47,7 +67,7 @@ def resolve_display_from_settings(display_settings: DisplaySettings) -> InkyDisp
         raise ValueError(f"Unsupported display type: {display_settings.type}")
 
 
-def resolve_display_type_from_inky_instance(inky_instance: InkyDisplay) -> DisplayType:
+def resolve_display_type_from_inky_instance(inky_instance: InkyDisplay | DetectionError) -> DisplayType:
     if isinstance(inky_instance, InkyPHAT) and inky_instance.resolution == (212, 104):
         return DisplayType.PHAT_104
     elif isinstance(inky_instance, InkyPHAT_SSD1608) and inky_instance.resolution == (250, 122):
@@ -62,13 +82,15 @@ def resolve_display_type_from_inky_instance(inky_instance: InkyDisplay) -> Displ
         return DisplayType.SPECTRA_480
     elif isinstance(inky_instance, InkyEL133UF1):
         return DisplayType.SPECTRA_1200
+    elif inky_instance == DetectionError.UNSUPPORTED:
+        logger.error("Unsupported Inky display instance")
+        raise ValueError("Unsupported Inky display instance")
     else:
         logger.error(f"Unknown Inky display instance: {inky_instance}")
         raise ValueError(f"Unknown Inky display instance: {inky_instance}")
 
 
 def resolve_supported_palette_from_inky_instance(inky_instance: InkyDisplay) -> ColourPalette:
-    palette: ColourPalette
     if inky_instance.colour == "red":
         palette = ColourPalette.RED
     elif inky_instance.colour == "yellow":
@@ -79,11 +101,15 @@ def resolve_supported_palette_from_inky_instance(inky_instance: InkyDisplay) -> 
         palette = ColourPalette.SEVEN_COLOUR
     elif isinstance(inky_instance, InkyE673) or isinstance(inky_instance, InkyEL133UF1):
         palette = ColourPalette.SPECTRA
+    else:
+        logger.error(f"Could not determine palette from Inky instance: {inky_instance}")
+        raise ValueError(f"Could not determine palette from Inky instance: {inky_instance}")
     return palette
 
 
-def construct_palette_from_display_type(display_type: DisplayType,
-                                        palette_source: Union[ColourPalette, InkyDisplay]) -> list[int]:
+def construct_palette_from_display_type(
+    display_type: DisplayType, palette_source: Union[ColourPalette, InkyDisplay]
+) -> list[int]:
     # Resolve the palette type, which is needed to determine the palette for Inky pHAT
     palette_type: ColourPalette
     if isinstance(palette_source, ColourPalette):
@@ -106,8 +132,12 @@ def construct_palette_from_display_type(display_type: DisplayType,
 def construct_phat_palette(supported_palette: ColourPalette) -> list[int]:
     # Palette must be ordered white, black, colour
     palette = [
-        255, 255, 255,
-        0, 0, 0,
+        255,
+        255,
+        255,
+        0,
+        0,
+        0,
     ]
 
     if supported_palette == ColourPalette.RED:
@@ -129,7 +159,7 @@ def construct_impression_palette(saturation=0.5) -> list[int]:
         [156, 72, 75],
         [208, 190, 71],
         [177, 106, 73],
-        [255, 255, 255]
+        [255, 255, 255],
     ]
     desaturated_palette = [
         [0, 0, 0],
@@ -139,7 +169,7 @@ def construct_impression_palette(saturation=0.5) -> list[int]:
         [255, 0, 0],
         [255, 255, 0],
         [255, 140, 0],
-        [255, 255, 255]
+        [255, 255, 255],
     ]
 
     saturation = float(saturation)
@@ -147,9 +177,11 @@ def construct_impression_palette(saturation=0.5) -> list[int]:
     for i in range(7):
         r_saturated, g_saturated, b_saturated = [colour * saturation for colour in saturated_palette[i]]
         r_desaturated, g_desaturated, b_desaturated = [colour * (1.0 - saturation) for colour in desaturated_palette[i]]
-        palette += [int(r_saturated + r_desaturated),
-                    int(g_saturated + g_desaturated),
-                    int(b_saturated + b_desaturated)]
+        palette += [
+            int(r_saturated + r_desaturated),
+            int(g_saturated + g_desaturated),
+            int(b_saturated + b_desaturated),
+        ]
 
     palette += [255, 255, 255]
     return palette
@@ -166,7 +198,8 @@ def construct_spectra_palette(saturation=0.5) -> list[int]:
         [156, 72, 75],
         [61, 59, 94],
         [58, 91, 70],
-        [255, 255, 255]]
+        [255, 255, 255],
+    ]
 
     desaturated_palette = [
         [0, 0, 0],
@@ -175,15 +208,18 @@ def construct_spectra_palette(saturation=0.5) -> list[int]:
         [255, 0, 0],
         [0, 0, 255],
         [0, 255, 0],
-        [255, 255, 255]]
+        [255, 255, 255],
+    ]
 
     saturation = float(saturation)
     palette = []
     for i in range(6):
         r_saturated, g_saturated, b_saturated = [colour * saturation for colour in saturated_palette[i]]
         r_desaturated, g_desaturated, b_desaturated = [colour * (1.0 - saturation) for colour in desaturated_palette[i]]
-        palette += [int(r_saturated + r_desaturated),
-                    int(g_saturated + g_desaturated),
-                    int(b_saturated + b_desaturated)]
+        palette += [
+            int(r_saturated + r_desaturated),
+            int(g_saturated + g_desaturated),
+            int(b_saturated + b_desaturated),
+        ]
 
     return palette

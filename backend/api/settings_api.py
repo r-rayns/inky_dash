@@ -24,7 +24,7 @@ def get_settings(display_settings_service: DisplaySettingsService = Provide[Cont
             return jsonify(message="No existing settings found", data=None), 200
     except Exception as err:
         logger.error(f"Failed to get existing display: {err}")
-        return error_response("Error retrieving existing display", [str(err)])
+        return error_response("Error retrieving existing display", err)
 
 
 @settings_api.route("/settings", methods=["PATCH"])
@@ -49,24 +49,26 @@ def apply_settings(display_settings_service: DisplaySettingsService = Provide[Co
 def detect_display():
     try:
         display = detect_inky_display()
-        if display:
+
+        if display == DetectionError.UNSUPPORTED:
+            ## Handle unsupported display first
+            return jsonify(message="Your display is not supported", data=dict(type=DetectionError.UNSUPPORTED)), 200
+        elif display:
             display_type = resolve_display_type_from_inky_instance(display)
             return jsonify(data=dict(type=display_type)), 200
-        elif display == DetectionError.UNSUPPORTED:
-            return jsonify(message="Your display is not supported", data=dict(type=DetectionError.UNSUPPORTED)), 200
         else:
             return jsonify(message="No display detected", data=dict(type=None)), 200
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to detect display: {err}")
-        return error_response("Failed to detect a valid display", [str(err)])
+        return error_response("Failed to detect a valid display", err)
 
 
 @settings_api.route("/current-image", methods=["GET"])
 @inject
 def get_current_image(display_settings_service: DisplaySettingsService = Provide[Container.display_settings_service]):
     try:
-        active_worker: DisplayWorkerAbstract = display_settings_service.active_worker
+        active_worker: DisplayWorkerAbstract | None = display_settings_service.active_worker
         if active_worker:
             current_image = active_worker.get_current_image_in_base64()
             return jsonify(data=dict(current_image=current_image)), 200
@@ -75,4 +77,4 @@ def get_current_image(display_settings_service: DisplaySettingsService = Provide
     except Exception as err:
         logger.exception(err)
         logger.error(f"Error attempting to get currently displayed image: {err}")
-        return error_response("Error attempting to get currently displayed image", [str(err)])
+        return error_response("Error attempting to get currently displayed image", err)

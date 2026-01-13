@@ -19,12 +19,14 @@ def pad_image(target_resolution: Tuple[int, int], image: Image.Image) -> Image.I
         # If the image is not palette based, convert it before padding
         image = image.convert("P")
 
+    image_palette = image.getpalette()
+
     # We must find the index of white in the palette to use as the padding colour
-    white_index = find_white_index(image.getpalette())
+    white_index = find_white_index(image_palette)
     # Create a new white image with the target dimensions, use the mode of the original image
-    padded_image = Image.new(
-        image.mode, (target_width, target_height), white_index)
-    padded_image.putpalette(image.getpalette())
+    padded_image = Image.new(image.mode, (target_width, target_height), white_index)
+    if image_palette:
+        padded_image.putpalette(image_palette)
 
     # Paste the original image onto the new image
     padded_image.paste(image, (pad_left, pad_top))
@@ -85,9 +87,7 @@ def dither(image: Image.Image, palette: list[int]) -> Image.Image:
     # Apply out palette and zero out all other colours
     palette_image.putpalette(palette + [0, 0, 0] * 248)
 
-    dithered_image = (image
-                      .convert("RGB")
-                      .quantize(palette=palette_image, dither=Image.Dither.FLOYDSTEINBERG))
+    dithered_image = image.convert("RGB").quantize(palette=palette_image, dither=Image.Dither.FLOYDSTEINBERG)
     dithered_image.format = image.format
 
     if os.getenv("DEV", "False").lower() == "true":

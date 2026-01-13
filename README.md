@@ -35,7 +35,7 @@ Inky Dash provides two different display modes.
 Slideshow mode automatically cycles through a collection of images at a chosen interval. You can select
 which images to display and set the transition timing.
 
-https://github.com/user-attachments/assets/68a7088d-d6e4-4474-94b9-65278ce625c9
+<https://github.com/user-attachments/assets/68a7088d-d6e4-4474-94b9-65278ce625c9>
 
 _Video of Slideshow mode in action_
 
@@ -51,7 +51,7 @@ displaying the latest version at your chosen interval.
 
 The display will only update when the downloaded image differs from the currently displayed image.
 
-https://github.com/user-attachments/assets/7950718a-322a-4d3b-8344-30b2bd62b36c
+<https://github.com/user-attachments/assets/7950718a-322a-4d3b-8344-30b2bd62b36c>
 
 _Video of Image Feed mode in action_
 
@@ -84,7 +84,7 @@ The best way to run Inky Dash on your Raspberry Pi is to download the relevant b
 
 ### 2. Enable I2C and SPI
 
-**You must ensure that you've [enabled I2C and SPI](#Enabling-I2C-and-SPI) on your Raspberry Pi for the display to
+**You must ensure that you've [enabled I2C and SPI](#enabling-i2c-and-spi) on your Raspberry Pi for the display to
 work.**
 
 ### 3. Create a systemd service
@@ -112,7 +112,7 @@ Alternatively you can perform the manual setup by following the steps outlined u
 
 These steps will guide you through downloading the project and transferring it to your Raspberry Pi.
 
-**Ensure you have [enabled I2C and SPI](#Enabling-I2C-and-SPI) on your RaspberryPi**
+**Ensure you have [enabled I2C and SPI](#enabling-i2c-and-spi) on your RaspberryPi**
 
 ### 1. Download the project
 
@@ -157,7 +157,24 @@ tar -xzf inky_dash.tar.gz inky_dash
 
 Next install the project dependencies.
 
-The best way to install dependencies is to create a new Python virtual environment:
+The best way to install dependencies is to use `uv`. Do follow the [official documentation](https://docs.astral.sh/uv/getting-started/installation/) for installing `uv` but typically this will involve running the following:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Once `uv` is setup, install the project dependencies:
+
+```bash
+# At the root of the project directory run the following
+uv synv
+```
+
+#### Alternative dependency installation method
+
+If `uv` does not work for you, dependencies can alternatively be installed using pip.
+
+To install using pip create a new Python virtual environment:
 
 ```bash
 # Create the virtual environment directory, if it doesn't already exist
@@ -168,14 +185,14 @@ python3 -m venv ~/venv/inky-dash
 source ~/venv/inky-dash/bin/activate
 ```
 
-then run the following, from the project root:
+Then run the following, from the project root:
 
 ```bash
 cd ~/inky_dash
 pip install -r requirements.txt
 ```
 
-**If you experience errors here check the [Trouble Shooting](#Trouble-Shooting-) section.**
+**If you experience errors here check the [Trouble Shooting](#trouble-shooting-) section.**
 
 ### 6. Open firewall port 8080
 
@@ -190,18 +207,25 @@ sudo ufw allow 8080/tcp comment INKY-DASH
 If you just want to quickly run Inky Dash then go to the project root and execute:
 
 ```bash
+uv run run.py
+```
+
+Or if you installed using pip:
+
+```bash
+# Activate the virtual environment (if you haven't already)
+source ~/venv/inky-dash/bin/activate
+
 python3 run.py
 ```
 
 **The recommended way to run this project is as a service. This ensures it starts automatically on boot and stays
-running
-in the background as a managed process.**
+running in the background as a managed process.**
 
 ### 8. Setting up a systemd service
 
 A systemd file can be used to run inky dash as a service. Follow the steps outline [here](#Running-as-a-service-),
-you'll
-want to follow the instructions for running the Python script as a service.
+you'll want to follow the instructions for running the Python script as a service.
 
 ## Building a binary 📦
 
@@ -211,7 +235,7 @@ want to follow the instructions for running the Python script as a service.
 PyInstaller can be used to create a single binary file that can be used to run Inky Dash.
 **Ensure that the build process is executed on the CPU architecture that matches the target environment.**
 
-From the project root run:
+Make sure the frontend is built so that there us a `backend/public` directory and then from the project root run:
 
 ```bash
 pyinstaller run.spec
@@ -226,7 +250,7 @@ To start Inky Dash run the binary e.g. `./dist/run`.
 
 ## Running as a service ⚙️
 
-### 1. Crate a `.service` file
+### 1. Create a `.service` file
 
 Change directories to:
 
@@ -270,7 +294,34 @@ WantedBy=multi-user.target
 
 Save the file.
 
-#### b) If you want to run the Python script as a service
+#### b) If you want to run the Python script as a service using uv
+
+Copy the example below into the new file.
+
+- `WorkingDirectory` points to the project directory.
+- `ExecStart` uses `uv run` to execute the script with the correct dependencies.
+- `your_username` should be replaced with the correct username.
+
+```bash
+[Unit]
+Description=Inky Dash Service
+After=network.target
+
+[Service]
+User=<your_username>
+WorkingDirectory=/home/<your_username>/inky_dash/
+ExecStart=/home/<your_username>/.local/bin/uv run run.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+**Note:** The default installation path for `uv` is `~/.local/bin/uv`. If you installed `uv` to a different location, you can find the path by running `which uv`.
+
+Save the file.
+
+#### c) If you want to run the Python script as a service using a virtual environment
 
 Copy the example below into the new file.
 
@@ -320,19 +371,8 @@ You may need to install additional dependencies if you are running into issues w
 To see additional logs run with the `--dev` flag:
 
 ```bash
-poetry run python3 run.py --dev
+uv run python3 run.py --dev
 ```
-
-### Poetry install errors
-
-If when running Poetry install, you see an AttributeError:
-
-```bash
-AttributeError
-module 'posixpath' has no attribute 'ALLOW_MISSING'
-```
-
-This could potentially be related to the following [issue](https://bugs.launchpad.net/ubuntu/+source/python3.13/+bug/2116293). If this happens try re-installing Poetry
 
 ## Flags
 
@@ -341,24 +381,41 @@ This could potentially be related to the following [issue](https://bugs.launchpa
 
 ## Development 🧑‍💻
 
-### Install dependencies using Poetry
+### Install dependencies using uv
 
-To install all the dependencies for the first time, using Poetry, run the following:
+Dependencies are managed using [uv](https://docs.astral.sh/uv/).
+
+To install all the dependencies for the first time, using uv, run the following:
 
 ```bash
-poetry install
+uv sync
 ```
 
 ### Updating dependencies
 
-Dependencies are managed using [Poetry](https://python-poetry.org/). The requirements.txt file has been generated using
-Poetry export:
+To add a new dependency:
 
 ```bash
-poetry export --without-hashes -f requirements.txt -o requirements.txt
+uv add <package-name>
 ```
 
-Poetry export is a plugin but is listed as a dependency of this project so it should not require additional setup outside of running `poetry install`.
+To add a development dependency:
+
+```bash
+uv add --dev <package-name>
+```
+
+To generate a requirements.txt file (includes dev dependencies):
+
+```bash
+uv export --no-hashes -o requirements.txt
+```
+
+To generate a requirements.txt file without dev dependencies:
+
+```bash
+uv export --no-hashes --no-dev -o requirements.txt
+```
 
 ### Testing
 
@@ -366,13 +423,7 @@ Pytest is the test runner for this project. Run the tests with:
 
 ```bash
 cd inky_dash
-pytest
-```
-
-Or if you are using Poetry:
-
-```bash
-poetry run pytest
+uv run pytest
 ```
 
 ## Attribution 🏷️

@@ -1,16 +1,16 @@
 #!/bin/bash
 # Ensure we are in the frontend directory where package.json is located
-cd frontend
+cd frontend || exit
 # Lint the frontend
 npm run lint
-# Lint the backend if flake8 returns a non-zero exit code we fail the pre-commit
-cd ../backend
-if command -v poetry &> /dev/null; then
-    poetry run flake8 . || exit 1
-    poetry run pytest
+# Lint the backend if ruff returns a non-zero exit code we fail the pre-commit
+cd ../backend || exit
+if command -v uv &>/dev/null; then
+  uv run ruff check . || exit 1
+  uv run pytest
 else
-    flake8 . || exit 1
-    pytest
+  ruff check . || exit 1
+  pytest
 fi
 
 echo "✅ Pre-commit checks passed"

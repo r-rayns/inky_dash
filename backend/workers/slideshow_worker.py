@@ -1,6 +1,6 @@
 from backend.lib.image_utilis import base64_to_pil_image
 from backend.lib.logger_setup import logger
-from backend.models.display_model import DisplaySettings
+from backend.models.display_model import DisplaySettings, DetectionError
 from backend.models.slideshow_model import SlideshowConfiguration
 from backend.workers.display_worker_abstract import DisplayWorkerAbstract
 
@@ -29,6 +29,9 @@ class SlideshowWorker(DisplayWorkerAbstract):
 
     def run(self):
         while not self.stop_event.is_set():
+            if self.display is None or self.display == DetectionError.UNSUPPORTED:
+                raise ValueError(f"Display has not been setup or is unsupported: {self.display}")
+
             self.current_image = self.images[self.next_image_index]
             logger.info(f"Displaying image number #{self.next_image_index}. Running is: {self.running}")
             image = base64_to_pil_image(self.current_image)
