@@ -59,7 +59,7 @@ def generate_place_holder_image(display_settings: DisplaySettings) -> str:
     draw_placeholder_text(draw, display)
     draw_placeholder_emoji(draw, display)
 
-    placeholder_image.save("placeholder_image.png", "PNG")
+    placeholder_image.save(os.path.join(os.getenv("DATA_DIR", ""), "placeholder_image.png"), "PNG")
 
     return pil_image_to_base64(placeholder_image)
 
