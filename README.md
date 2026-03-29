@@ -73,27 +73,35 @@ Image feed mode opens up the possibility of creating your own image feeds. Just 
 personal use) or on the web and then point Inky Dash to that location. If you do make your own image feed project,
 let me know and I can list it here for others to discover.
 
-## Running 🏃
+## Install 🫙
 
-### 1. Download the binary
+The best way to install Inky Dash on your Raspberry Pi is to download and run the installer:
 
-The best way to run Inky Dash on your Raspberry Pi is to download the relevant binary from the latest GitHub release.
+```bash
+curl -fsSL https://raw.githubusercontent.com/r-rayns/inky_dash/main/install.sh | sudo bash
+```
 
-- If you have a Raspberry Pi Zero or a Raspberry Pi 1 you'll want the ARMv6 binary.
-- If you have a Raspberry Pi Zero 2 or a Raspberry Pi 2, 3, 4 or 5 you'll want the ARMv8 binary.
+The install script will download the latest release binary, enable I2C and SPI (the hardware communication interfaces used by the Inky display), and create a systemd service so Inky Dash runs on boot.
 
-### 2. Enable I2C and SPI
+### Post-install steps
 
-**You must ensure that you've [enabled I2C and SPI](#enabling-i2c-and-spi) on your Raspberry Pi for the display to
-work.**
+After installation you will likely need to add `dtoverlay=spi0-0cs` to the end of `/boot/firmware/config.txt` and reboot, otherwise the display may not update. See the [Important](#important-📌) section for more details.
 
-### 3. Create a systemd service
+If you have a firewall enabled, allow port 8080 through:
 
-Follow the steps for running the binary as a service, outlined under [set up a systemd service](#Running-as-a-service-).
+```bash
+sudo ufw allow 8080/tcp comment INKY-DASH
+```
 
 ### Alternatively
 
-Alternatively you can perform the manual setup by following the steps outlined under [manual setup](#Manual-setup-).
+Alternatively you can perform the manual setup by following the steps outlined under [manual setup](#manual-setup-🛠️).
+
+## Manual setup 🛠️
+
+These steps will guide you through downloading the project and transferring it to your Raspberry Pi.
+
+**Ensure you have [enabled I2C and SPI](#enabling-i2c-and-spi) on your RaspberryPi**
 
 ### Enabling I2C and SPI
 
@@ -107,12 +115,6 @@ Alternatively you can perform the manual setup by following the steps outlined u
 3. Select I2C and enable it.
 4. Repeat for SPI and enable it.
 5. Select Finish and reboot the Pi.
-
-## Manual setup 🛠️
-
-These steps will guide you through downloading the project and transferring it to your Raspberry Pi.
-
-**Ensure you have [enabled I2C and SPI](#enabling-i2c-and-spi) on your RaspberryPi**
 
 ### 1. Download the project
 
@@ -167,7 +169,7 @@ Once `uv` is setup, install the project dependencies:
 
 ```bash
 # At the root of the project directory run the following
-uv synv
+uv sync
 ```
 
 #### Alternative dependency installation method
@@ -235,7 +237,7 @@ you'll want to follow the instructions for running the Python script as a servic
 PyInstaller can be used to create a single binary file that can be used to run Inky Dash.
 **Ensure that the build process is executed on the CPU architecture that matches the target environment.**
 
-Make sure the frontend is built so that there us a `backend/public` directory and then from the project root run:
+Make sure the frontend is built so that there is a `backend/public` directory and then from the project root run:
 
 ```bash
 uv run pyinstaller run.spec
@@ -265,7 +267,7 @@ Change directories to:
 cd /etc/systemd/system/
 ```
 
-and create a new `.service` file:
+And create a new `.service` file:
 
 ```bash
 touch inky_dash.service
@@ -276,49 +278,25 @@ touch inky_dash.service
 Choose from one of the following options, depending on if you want to run the binary as a service or the Python script
 as a service
 
-#### a) If you want to run the binary as a service
-
-Copy the example below into the new file
-
-- `WorkingDirectory` points to the directory containing your binary file.
-- `ExecStart` path to the binary file. Replace `binary_location` and `binary_name` with the correct path and name.
-- `your_username` should be replaced with the correct username.
-
-```bash
-[Unit]
-Description=Inky Dash Service
-After=network.target
-
-[Service]
-User=<your_username>
-WorkingDirectory=/home/<your_username>/<binary_location>
-ExecStart=/home/<your_username>/<binary_location>/<binary_name>
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Save the file.
-
-#### b) If you want to run the Python script as a service using uv
+#### a) If you want to run the Python script as a service using uv
 
 Copy the example below into the new file.
 
-- `WorkingDirectory` points to the project directory.
+- `WorkingDirectory` points to the project directory. Config files will be stored here.
 - `ExecStart` uses `uv run` to execute the script with the correct dependencies.
 - `your_username` should be replaced with the correct username.
 
 ```bash
 [Unit]
-Description=Inky Dash Service
+Description=Inky Dash - ePaper display interface
 After=network.target
 
 [Service]
 User=<your_username>
 WorkingDirectory=/home/<your_username>/inky_dash/
 ExecStart=/home/<your_username>/.local/bin/uv run run.py
-Restart=always
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
@@ -328,27 +306,59 @@ WantedBy=multi-user.target
 
 Save the file.
 
-#### c) If you want to run the Python script as a service using a virtual environment
+#### b) If you want to run the Python script as a service using a virtual environment
 
 Copy the example below into the new file.
 
-- `WorkingDirectory` points to the project directory.
+- `WorkingDirectory` points to the project directory. Config files will be stored here.
 - `ExecStart` path should use the Python binary in the virtual environment you set up, to run `run.py`.
 - `your_username` should be replaced with the correct username.
 
 ```bash
 [Unit]
-Description=Inky Dash Service
+Description=Inky Dash - ePaper display interface
 After=network.target
 
 [Service]
 User=<your_username>
 WorkingDirectory=/home/<your_username>/inky_dash/
 ExecStart=/home/<your_username>/venv/inky-dash/bin/python3 run.py
-Restart=always
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
+```
+
+Save the file.
+
+#### c) If you want to run the binary as a service
+
+This mirrors the service created by the install script. If you used the installer, this is already set up for you.
+
+Copy the example below into the new file, replacing `your_username` with the correct username.
+
+```bash
+[Unit]
+Description=Inky Dash - ePaper display interface
+After=network.target
+
+[Service]
+User=<your_username>
+WorkingDirectory=/opt/inky_dash
+ExecStart=/opt/inky_dash/inky_dash.bin
+StateDirectory=inky_dash
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+If you are creating the service manually without the install script, you will also need to create the state directory:
+
+```bash
+sudo mkdir /var/lib/inky_dash
 ```
 
 Save the file.
@@ -363,7 +373,7 @@ sudo systemctl daemon-reload
 # Enable your new service so it starts on boot
 sudo systemctl enable inky_dash
 # Start your new service
-sudo service inky_dash start
+sudo systemctl start inky_dash
 ```
 
 ## Trouble Shooting 🎯
@@ -378,7 +388,7 @@ You may need to install additional dependencies if you are running into issues w
 To see additional logs run with the `--dev` flag:
 
 ```bash
-uv run python3 run.py --dev
+uv run run.py --dev
 ```
 
 ## Flags

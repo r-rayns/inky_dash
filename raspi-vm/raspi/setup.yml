@@ -1,0 +1,13 @@
+---
+- hosts: raspi
+  gather_facts: no
+  tasks:
+    - name: Wait for machine startup
+      wait_for_connection:
+        timeout: 300
+
+    - name: Copy install script
+      copy:
+        src: "{{ playbook_dir }}/../../install.sh"
+        dest: /root/install.sh
+        mode: "0755"

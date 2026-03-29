@@ -1,0 +1,29 @@
+---
+- hosts: local
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Remove existing VM container for a fresh start
+      docker_container:
+        name: raspi
+        state: absent
+
+    - name: Start the QEMU container that will run Raspberry Pi VM
+      docker_container:
+        name: raspi
+        image: ptrsr/pi-ci
+        command: start
+        state: started
+        tls_hostname: localhost
+        published_ports:
+          - 2222:2222
+          - 8080:8080 # Inky UI
+        volumes:
+          - "{{ shared_vm_files_dir|default(omit) }}:/shared-vm-files"
+
+- hosts: raspi
+  gather_facts: no
+  tasks:
+    - name: Wait for machine startup
+      wait_for_connection:
+        timeout: 300 # (seconds)

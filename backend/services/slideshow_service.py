@@ -1,4 +1,5 @@
 import json
+import os
 
 from dependency_injector.wiring import inject, Provide
 
@@ -72,7 +73,7 @@ class SlideshowService(ModeAbstract):
             self.slideshow_worker.stop()
 
     def store_slideshow_configuration(self, slideshow_configuration: SlideshowConfiguration):
-        with open("slideshow.json", "w") as file:
+        with open(os.path.join(os.getenv("DATA_DIR", ""), "slideshow.json"), "w") as file:
             json.dump(slideshow_configuration.model_dump(), file, ensure_ascii=False, indent=4)
         logger.info("Slideshow Configuration stored")
 
@@ -92,7 +93,7 @@ class SlideshowService(ModeAbstract):
 
     def read_stored_slideshow_configuration(self):
         try:
-            with open("slideshow.json", "r") as file:
+            with open(os.path.join(os.getenv("DATA_DIR", ""), "slideshow.json"), "r") as file:
                 return json.load(file)
         except FileNotFoundError:
             logger.info("No slideshow configuration file found...")

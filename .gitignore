@@ -2,6 +2,7 @@
 backend/public
 ./frontend/out/
 dist
+raspi-vm/shared-vm-files
 build
 
 # dependencies

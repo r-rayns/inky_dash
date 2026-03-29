@@ -1,4 +1,5 @@
 import json
+import os
 
 from dependency_injector.wiring import inject, Provide
 
@@ -62,7 +63,7 @@ class ImageFeedService(ModeAbstract):
             self.image_feed_worker.stop()
 
     def store_image_feed(self, image_feed_configuration: ImageFeedConfiguration):
-        with open("feed.json", "w") as file:
+        with open(os.path.join(os.getenv("DATA_DIR", ""), "feed.json"), "w") as file:
             json.dump(image_feed_configuration.model_dump(), file,
                       ensure_ascii=False, indent=4)
         logger.info("Configuration stored")
@@ -76,7 +77,7 @@ class ImageFeedService(ModeAbstract):
 
     def read_stored_feed_configuration(self):
         try:
-            with open("feed.json", "r") as file:
+            with open(os.path.join(os.getenv("DATA_DIR", ""), "feed.json"), "r") as file:
                 return json.load(file)
         except FileNotFoundError:
             logger.info("No image feed configuration file found...")

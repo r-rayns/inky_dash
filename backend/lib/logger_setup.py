@@ -1,6 +1,5 @@
 import logging
 import os
-from logging.handlers import RotatingFileHandler
 from colorama import Fore, Style
 
 
@@ -8,11 +7,6 @@ def setup_inky_logger():
     # Setup the logger
     logger = logging.getLogger("inky_dash")
     logger.setLevel(logging.DEBUG)
-
-    # 5MB max file size
-    file_handler = RotatingFileHandler(
-        "inky_dash.log", maxBytes=5000000, backupCount=3)
-    file_handler.setLevel(logging.DEBUG)
 
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
@@ -26,23 +20,16 @@ def setup_inky_logger():
     console_formatter = ColourFormatter(log_format)
     console_handler.setFormatter(console_formatter)
 
-    # Create formatter for file output without color
-    file_formatter = logging.Formatter(log_format)
-    file_handler.setFormatter(file_formatter)
-
-    # Add the handlers to the logger
-    logger.addHandler(file_handler)
+    # Add the handler to the logger
     logger.addHandler(console_handler)
 
     gunicorn_logger = logging.getLogger('gunicorn')
     gunicorn_logger.handlers.clear()
-    gunicorn_logger.addHandler(file_handler)
     gunicorn_logger.addHandler(console_handler)
 
     # Flask's request logs are picked up by Gunicorn's error logger
     gunicorn_error_logger = logging.getLogger('gunicorn.error')
     gunicorn_error_logger.handlers.clear()
-    gunicorn_error_logger.addHandler(file_handler)
     gunicorn_error_logger.addHandler(console_handler)
 
 

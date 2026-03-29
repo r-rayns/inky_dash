@@ -1,6 +1,7 @@
 import argparse
 import multiprocessing
 import signal
+import sys
 import gunicorn.app.base
 import os
 from gunicorn.config import Config
@@ -30,6 +31,12 @@ if args.desktop:
     os.environ["DESKTOP"] = "True"
 else:
     os.environ["DESKTOP"] = "False"
+
+# sys.frozen is set by PyInstaller when running as a compiled binary
+if getattr(sys, 'frozen', False):
+    os.environ["DATA_DIR"] = "/var/lib/inky_dash"
+else:
+    os.environ["DATA_DIR"] = ""
 
 
 def number_of_workers():

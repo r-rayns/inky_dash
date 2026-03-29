@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Callable
 
 from backend.lib.display_utilis import (
@@ -81,7 +82,7 @@ class DisplaySettingsService:
         )
         # Write the settings to file
         logger.info("Attempting to store settings to file...")
-        with open("settings.json", "w") as file:
+        with open(os.path.join(os.getenv("DATA_DIR", ""), "settings.json"), "w") as file:
             json.dump(self.display_settings.model_dump(), file, ensure_ascii=False, indent=4)
         logger.info("Settings stored")
 
@@ -102,7 +103,7 @@ class DisplaySettingsService:
     @staticmethod
     def retrieve_settings_from_file():
         try:
-            with open("settings.json", "r") as file:
+            with open(os.path.join(os.getenv("DATA_DIR", ""), "settings.json"), "r") as file:
                 return json.load(file)
         except FileNotFoundError:
             logger.info("No settings found...")
