@@ -1,6 +1,6 @@
 [project]
 name = "inky-dash"
-version = "4.2.2"
+version = "4.3.0"
 description = "Inky dash is an interface for Inky displays, a line of e-paper displays for the Raspberry Pi, that can be accessed from a browser via a local web server."
 authors = [{ name = "Robert", email = "<robert@rrayns.co.uk>" }]
 readme = "README.md"

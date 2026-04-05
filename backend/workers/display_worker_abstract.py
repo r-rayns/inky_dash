@@ -24,6 +24,7 @@ class DisplayWorkerAbstract(ABC):
     stop_event: threading.Event
     thread: threading.Thread | None
     display: InkyDisplay | DetectionError | None
+    _lock: threading.RLock
 
     def __init__(self, worker_name: str):
         self.worker_name = worker_name
@@ -31,6 +32,7 @@ class DisplayWorkerAbstract(ABC):
         self.thread = None
         self.stop_event = threading.Event()
         self.display = None
+        self._lock = threading.RLock()
 
     @abstractmethod
     def get_current_image_in_base64(self) -> str | None:
@@ -41,30 +43,31 @@ class DisplayWorkerAbstract(ABC):
         pass
 
     def start(self, display_settings: DisplaySettings):
-        if self.running:
-            logger.info(f"{self.worker_name} is already running, restarting with latest settings...")
-            self.stop()
+        with self._lock:
+            if self.running:
+                logger.info(f"{self.worker_name} is already running, restarting with latest settings...")
+                self.stop()
 
-        self.display = detect_inky_display()
-        if not isinstance(self.display, InkyDisplay):
-            logger.info("Manual initialisation of Inky Device will be attempted")
-            self.display = resolve_display_from_settings(display_settings)
+            self.display = detect_inky_display()
+            if not isinstance(self.display, InkyDisplay):
+                logger.info("Manual initialisation of Inky Device will be attempted")
+                self.display = resolve_display_from_settings(display_settings)
 
-        if display_settings.type in (DisplayType.PHAT_104, DisplayType.PHAT_122):
-            selected_border_colour = 1 if display_settings.border_colour == BorderColour.BLACK else 0
-        else:
-            selected_border_colour = 0 if display_settings.border_colour == BorderColour.BLACK else 1
+            if display_settings.type in (DisplayType.PHAT_104, DisplayType.PHAT_122):
+                selected_border_colour = 1 if display_settings.border_colour == BorderColour.BLACK else 0
+            else:
+                selected_border_colour = 0 if display_settings.border_colour == BorderColour.BLACK else 1
 
-        logger.debug(f"Setting border colour to {display_settings.border_colour}({selected_border_colour})")
-        self.display.set_border(selected_border_colour)
+            logger.debug(f"Setting border colour to {display_settings.border_colour}({selected_border_colour})")
+            self.display.set_border(selected_border_colour)
 
-        logger.info(f"Starting {self.worker_name}...")
-        self.running = True
-        # reset the stop event
-        self.stop_event.clear()
-        # create and start the thread
-        self.thread = threading.Thread(target=self.run)
-        self.thread.start()
+            logger.info(f"Starting {self.worker_name}...")
+            self.running = True
+            # reset the stop event
+            self.stop_event.clear()
+            # create and start the thread
+            self.thread = threading.Thread(target=self.run)
+            self.thread.start()
 
     def shutdown(self, signum, frame):
         if self.running:
@@ -72,19 +75,26 @@ class DisplayWorkerAbstract(ABC):
             self.stop()
 
     def stop(self):
-        logger.info(f"Stopping {self.worker_name} thread...")
-        logger.info(f"Delete display instance for {self.worker_name} and run garbage collection to free up GPIO pins")
-        # If we do not clear the display instance, the GPIO pins will not be released for the next worker
-        self.display = None
-        gc.collect()
-        # Stop the thread
-        self.stop_event.set()
-        self.running = False
-        if self.thread:
-            self.thread.join()  # wait for thread to close
-            self.thread = None
+        # WARNING: _lock is held for the entire duration of this method, including thread.join().
+        # Subclass run() methods should not acquire _lock, as doing so causes a deadlock
+        # Use a separate lock (e.g. _slideshow_lock) in run() for protecting worker state.
+        with self._lock:
+            logger.info(f"Stopping {self.worker_name} thread...")
+            logger.info(
+                f"Delete display instance for {self.worker_name} and run garbage collection to free up GPIO pins"
+            )
+            # Signal first, then join — only clear display after the thread has fully exited
+            self.stop_event.set()
+            if self.thread:
+                self.thread.join()  # wait for thread to close
+                self.thread = None
+            # If we do not clear the display instance, the GPIO pins will not be released for the next worker
+            self.display = None
+            gc.collect()
+            self.running = False
 
-    def display_image(self, display: InkyDisplay, image: Image.Image) -> Image.Image:
+    @staticmethod
+    def display_image(display: InkyDisplay, image: Image.Image) -> Image.Image:
         if image.mode != "P":
             logger.info(f"Image is not in palette mode ({image.mode}), attempt to dither it")
             display_type = resolve_display_type_from_inky_instance(display)
