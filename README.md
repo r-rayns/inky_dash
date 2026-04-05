@@ -93,6 +93,18 @@ If you have a firewall enabled, allow port 8080 through:
 sudo ufw allow 8080/tcp comment INKY-DASH
 ```
 
+### Uninstall
+
+If you have installed Inky Dash using the install script you can uninstall it by running the install script again and passing a `-u` flag.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/r-rayns/inky_dash/main/install.sh -u | sudo bash
+```
+
+### Update
+
+If you have installed Inky Dash using the install script you perform an update by running the install script again.
+
 ### Alternatively
 
 Alternatively you can perform the manual setup by following the steps outlined under [manual setup](#manual-setup-🛠️).
