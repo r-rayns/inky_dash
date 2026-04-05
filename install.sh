@@ -357,7 +357,7 @@ update() {
   echo
 
   if systemctl is-active --quiet "$SERVICE_NAME"; then
-    success_bold "=== Inky Dash has been updated successfully ==="
+    success_bold "=== Success! Inky Dash has been updated to $LATEST_VERSION ==="
   else
     error "Failed to start Inky Dash after update. Please check service log for errors"
   fi
