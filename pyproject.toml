@@ -12,7 +12,7 @@ dependencies = [
   "flask-cors>=6.0.2",
   "gunicorn>=23.0.0",
   "inky>=2.2.1",
-  "pillow>=12.1.0",
+  "pillow>=12.2.0",
   "pydantic>=2.12.5",
   "requests>=2.32.5",
   "werkzeug>=3.1.7",
@@ -22,7 +22,7 @@ dependencies = [
 dev = [
   "pyinstaller>=6.17.0",
   "pyright>=1.1.408",
-  "pytest>=8.2.0",
+  "pytest>=9.0.3",
   "ruff>=0.14.11",
 ]
 
