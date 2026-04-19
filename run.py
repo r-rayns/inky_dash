@@ -13,11 +13,12 @@ application
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Start the Gunicorn server.")
-parser.add_argument("--dev", action="store_true",
-                    help="Enable development mode")
-parser.add_argument("--desktop", action="store_true",
-                    help="When running in a desktop environment, actions to update the "
-                         "Inky display will not be attempted")
+parser.add_argument("--dev", action="store_true", help="Enable development mode")
+parser.add_argument(
+    "--desktop",
+    action="store_true",
+    help="When running in a desktop environment, actions to update the Inky display will not be attempted",
+)
 
 args = parser.parse_args()
 
@@ -33,14 +34,10 @@ else:
     os.environ["DESKTOP"] = "False"
 
 # sys.frozen is set by PyInstaller when running as a compiled binary
-if getattr(sys, 'frozen', False):
+if getattr(sys, "frozen", False):
     os.environ["DATA_DIR"] = "/var/lib/inky_dash"
 else:
     os.environ["DATA_DIR"] = ""
-
-
-def number_of_workers():
-    return (multiprocessing.cpu_count() * 2) + 1
 
 
 def worker_exit(server, worker):
@@ -63,8 +60,9 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
     def load_config(self):
         if isinstance(self.cfg, Config):
             # filter, so only options supported by gunicorn are present
-            config = {key: value for key, value in self.options.items()
-                      if key in self.cfg.settings and value is not None}
+            config = {
+                key: value for key, value in self.options.items() if key in self.cfg.settings and value is not None
+            }
             for key, value in config.items():
                 self.cfg.set(key.lower(), value)
         else:
@@ -79,12 +77,13 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
 if __name__ == "__main__":
     options = {
         "bind": "%s:%s" % ("0.0.0.0", "8080"),
-        "workers": 1,  # number_of_workers(),
+        "workers": 1,
+        "threads": 4,
         "timeout": 120,
-        "loglevel":  "debug" if args.dev else "info",
+        "loglevel": "debug" if args.dev else "info",
         # Enable auto-reload in development mode
         "reload": True if args.dev else False,
-        "worker_exit": worker_exit
+        "worker_exit": worker_exit,
     }
 
     # backend.app module will be dynamically imported for each worker

@@ -1,5 +1,6 @@
 import json
 import os
+import threading
 
 from dependency_injector.wiring import inject, Provide
 
@@ -11,31 +12,50 @@ from backend.workers.image_feed_worker import ImageFeedWorker
 
 
 class ImageFeedService(ModeAbstract):
-    image_feed_configuration: ImageFeedConfiguration | None = None
+    _image_feed_configuration: ImageFeedConfiguration | None
     image_feed_worker: ImageFeedWorker
+    _lock: threading.RLock
 
     @inject
-    def __init__(self, image_feed_worker: ImageFeedWorker = Provide["image_feed_worker"], ):
+    def __init__(
+        self,
+        image_feed_worker: ImageFeedWorker = Provide["image_feed_worker"],
+    ):
         super().__init__()
         logger.info("Created ImageFeedService")
+        self._image_feed_configuration = None
         self.image_feed_worker = image_feed_worker
+        self._lock = threading.RLock()
 
         stored_image_feed_configuration = self.restore_image_feed()
         if stored_image_feed_configuration:
-            self.image_feed_configuration = stored_image_feed_configuration
+            self._image_feed_configuration = stored_image_feed_configuration
             logger.info("Image feed configuration was restored from file")
 
         if self.display_settings_service.display_settings.mode == DisplayMode.IMAGE_FEED:
             self.start_image_feed()
 
+    @property
+    def image_feed_configuration(self) -> ImageFeedConfiguration | None:
+        with self._lock:
+            return self._image_feed_configuration
+
+    @image_feed_configuration.setter
+    def image_feed_configuration(self, value: ImageFeedConfiguration | None) -> None:
+        with self._lock:
+            self._image_feed_configuration = value
+
     def start_image_feed(self):
         display_settings = self.display_settings_service.display_settings
         logger.info("Attempting to start image feed on the Inky display...")
-        if self.image_feed_configuration is not None:
+        image_feed_configuration = self.image_feed_configuration
+
+        if image_feed_configuration is not None:
             logger.info(
                 f"Settings: {display_settings.type} ({display_settings.colour_palette})"
-                f" - interval: {self.image_feed_configuration.polling_interval} seconds")
-            self.image_feed_worker.start_image_feed(self.image_feed_configuration, display_settings)
+                f" - interval: {image_feed_configuration.polling_interval} seconds"
+            )
+            self.image_feed_worker.start_image_feed(image_feed_configuration, display_settings)
             self.display_settings_service.active_worker = self.image_feed_worker
         else:
             logger.info("Image feed could not be started, no image feed configuration found")
@@ -52,10 +72,12 @@ class ImageFeedService(ModeAbstract):
 
     def on_settings_update(self, settings: DisplaySettings, display_has_changed: bool = False):
         logger.info("Settings have changed")
-        if settings.mode == DisplayMode.IMAGE_FEED and self.image_feed_configuration is not None:
+        image_feed_configuration = self.image_feed_configuration
+
+        if settings.mode == DisplayMode.IMAGE_FEED and image_feed_configuration is not None:
             logger.info("Image feed mode is active, restart image feed")
             self.start_image_feed()
-        elif settings.mode == DisplayMode.IMAGE_FEED and self.image_feed_configuration is None:
+        elif settings.mode == DisplayMode.IMAGE_FEED and image_feed_configuration is None:
             logger.info("Image feed mode is active but no configuration found")
             self.image_feed_worker.stop()
         elif self.image_feed_worker.running:
@@ -63,10 +85,10 @@ class ImageFeedService(ModeAbstract):
             self.image_feed_worker.stop()
 
     def store_image_feed(self, image_feed_configuration: ImageFeedConfiguration):
-        with open(os.path.join(os.getenv("DATA_DIR", ""), "feed.json"), "w") as file:
-            json.dump(image_feed_configuration.model_dump(), file,
-                      ensure_ascii=False, indent=4)
-        logger.info("Configuration stored")
+        with self._lock:
+            with open(os.path.join(os.getenv("DATA_DIR", ""), "feed.json"), "w") as file:
+                json.dump(image_feed_configuration.model_dump(), file, ensure_ascii=False, indent=4)
+            logger.info("Configuration stored")
 
     def restore_image_feed(self) -> ImageFeedConfiguration | None:
         feed_configuration_json = self.read_stored_feed_configuration()

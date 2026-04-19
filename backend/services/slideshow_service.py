@@ -1,5 +1,6 @@
 import json
 import os
+import threading
 
 from dependency_injector.wiring import inject, Provide
 
@@ -12,8 +13,9 @@ from backend.workers.slideshow_worker import SlideshowWorker
 
 
 class SlideshowService(ModeAbstract):
-    slideshow_configuration: SlideshowConfiguration = SlideshowConfiguration(images=[], change_delay=1800)
+    _slideshow_configuration: SlideshowConfiguration
     slideshow_worker: SlideshowWorker
+    _lock: threading.RLock
 
     @inject
     def __init__(
@@ -23,10 +25,12 @@ class SlideshowService(ModeAbstract):
         super().__init__()
         logger.info("Created SlideshowService")
         self.slideshow_worker = slideshow_worker
+        self._slideshow_configuration = SlideshowConfiguration(images=[], change_delay=1800)
+        self._lock = threading.RLock()
 
         stored_slideshow_configuration = self.restore_slideshow()
         if stored_slideshow_configuration:
-            self.slideshow_configuration = stored_slideshow_configuration
+            self._slideshow_configuration = stored_slideshow_configuration
             logger.info("Slideshow configuration was restored from file")
 
         if len(self.slideshow_configuration.images) < 1:
@@ -36,20 +40,29 @@ class SlideshowService(ModeAbstract):
         if self.display_settings_service.display_settings.mode == DisplayMode.SLIDESHOW:
             self.start_slideshow()
 
+    @property
+    def slideshow_configuration(self) -> SlideshowConfiguration:
+        with self._lock:
+            return self._slideshow_configuration
+
+    @slideshow_configuration.setter
+    def slideshow_configuration(self, value: SlideshowConfiguration) -> None:
+        with self._lock:
+            self._slideshow_configuration = value
+
     def start_slideshow(self):
+        slideshow_configuration = self.slideshow_configuration
         display_settings = self.display_settings_service.display_settings
         logger.info("Attempting to start slideshow on the Inky display...")
         logger.info(
             f"Settings: {display_settings.type} ({display_settings.colour_palette}) - "
-            f"delay: {self.slideshow_configuration.change_delay} seconds"
+            f"delay: {slideshow_configuration.change_delay} seconds"
         )
-        self.slideshow_worker.start_slideshow(self.slideshow_configuration, display_settings)
+        self.slideshow_worker.start_slideshow(slideshow_configuration, display_settings)
         self.display_settings_service.active_worker = self.slideshow_worker
 
     def update_slideshow(self, configuration: SlideshowConfiguration):
-        # Update the slideshow configuration attribute
         self.slideshow_configuration = configuration
-        # Write the configuration to file
         logger.info("Attempting to store slideshow configuration to slideshow.json...")
         self.store_slideshow_configuration(configuration)
 
@@ -62,8 +75,10 @@ class SlideshowService(ModeAbstract):
         if display_has_changed:
             place_holder_image = generate_place_holder_image(self.display_settings_service.display_settings)
             logger.info("Display has changed, clearing slideshow configuration")
-            self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image], change_delay=1800)
-            self.store_slideshow_configuration(self.slideshow_configuration)
+            with self._lock:
+                # Reset config and persist together
+                self._slideshow_configuration = SlideshowConfiguration(images=[place_holder_image], change_delay=1800)
+                self.store_slideshow_configuration(self._slideshow_configuration)
 
         if settings.mode == DisplayMode.SLIDESHOW:
             logger.info("Slideshow mode is active, restart slideshow")
@@ -73,16 +88,21 @@ class SlideshowService(ModeAbstract):
             self.slideshow_worker.stop()
 
     def store_slideshow_configuration(self, slideshow_configuration: SlideshowConfiguration):
-        with open(os.path.join(os.getenv("DATA_DIR", ""), "slideshow.json"), "w") as file:
-            json.dump(slideshow_configuration.model_dump(), file, ensure_ascii=False, indent=4)
+        with self._lock:
+            with open(os.path.join(os.getenv("DATA_DIR", ""), "slideshow.json"), "w") as file:
+                json.dump(slideshow_configuration.model_dump(), file, ensure_ascii=False, indent=4)
         logger.info("Slideshow Configuration stored")
 
     def default_to_placeholder_image(self):
         place_holder_image = generate_place_holder_image(self.display_settings_service.display_settings)
-        change_delay = self.slideshow_configuration.change_delay
-        logger.info("Defaulting slideshow to placeholder image")
-        self.slideshow_configuration = SlideshowConfiguration(images=[place_holder_image], change_delay=change_delay)
-        self.store_slideshow_configuration(self.slideshow_configuration)
+        with self._lock:
+            # Read change_delay, write new config, and persist together
+            change_delay = self._slideshow_configuration.change_delay
+            logger.info("Defaulting slideshow to placeholder image")
+            self._slideshow_configuration = SlideshowConfiguration(
+                images=[place_holder_image], change_delay=change_delay
+            )
+            self.store_slideshow_configuration(self._slideshow_configuration)
 
     def restore_slideshow(self) -> SlideshowConfiguration | None:
         slideshow_configuration_json = self.read_stored_slideshow_configuration()

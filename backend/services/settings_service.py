@@ -1,5 +1,6 @@
 import json
 import os
+import threading
 from typing import Callable
 
 from backend.lib.display_utilis import (
@@ -21,16 +22,21 @@ from backend.workers.display_worker_abstract import DisplayWorkerAbstract
 
 
 class DisplaySettingsService:
-    display_settings: DisplaySettings = DisplaySettings(
-        type=DisplayType.PHAT_104,
-        colour_palette=ColourPalette.RED,
-        border_colour=BorderColour.WHITE,
-        mode=DisplayMode.SLIDESHOW,
-    )
-    settings_update_callbacks: list[Callable[[DisplaySettings, bool], None]] = []
-    active_worker: DisplayWorkerAbstract | None = None
+    _display_settings: DisplaySettings
+    settings_update_callbacks: list[Callable[[DisplaySettings, bool], None]]
+    _active_worker: DisplayWorkerAbstract | None
+    _lock: threading.RLock
 
     def __init__(self):
+        self._display_settings = DisplaySettings(
+            type=DisplayType.PHAT_104,
+            colour_palette=ColourPalette.RED,
+            border_colour=BorderColour.WHITE,
+            mode=DisplayMode.SLIDESHOW,
+        )
+        self.settings_update_callbacks = []
+        self._active_worker = None
+        self._lock = threading.RLock()
         logger.info("Created DisplaySettingsService")
         detected_display = detect_inky_display()
 
@@ -38,8 +44,8 @@ class DisplaySettingsService:
         stored_settings = self.restore_settings()
         logger.info(f"Stored settings: {stored_settings}")
         if stored_settings:
-            self.display_settings = stored_settings
-            logger.info("Settings where restored from file")
+            self._display_settings = stored_settings
+            logger.info("Settings were restored from file")
 
         if isinstance(detected_display, InkyDisplay):
             display_type = resolve_display_type_from_inky_instance(detected_display)
@@ -66,31 +72,50 @@ class DisplaySettingsService:
             # No display was detected and no setting exist so use default settings
             logger.info("Unable to detect display, using default settings")
 
+    @property
+    def display_settings(self) -> DisplaySettings:
+        with self._lock:
+            return self._display_settings
+
+    @display_settings.setter
+    def display_settings(self, value: DisplaySettings) -> None:
+        with self._lock:
+            self._display_settings = value
+
     def subscribe(self, callback: Callable[[DisplaySettings, bool], None]):
-        self.settings_update_callbacks.append(callback)
+        with self._lock:
+            self.settings_update_callbacks.append(callback)
 
     def update_settings(self, settings: DisplaySettings | DisplaySettingsUpdate, emit_update: bool = True):
         display_has_changed = False
-        current_display_type = self.display_settings.type
-        if current_display_type != settings.type:
-            logger.info(f"Display type has changed from {current_display_type} to {settings.type}.")
-            display_has_changed = True
 
-        # Update the display settings, merge existing settings with the updated settings
-        self.display_settings = DisplaySettings(
-            **{**self.display_settings.model_dump(), **settings.model_dump(exclude_unset=True)}
-        )
-        # Write the settings to file
-        logger.info("Attempting to store settings to file...")
-        with open(os.path.join(os.getenv("DATA_DIR", ""), "settings.json"), "w") as file:
-            json.dump(self.display_settings.model_dump(), file, ensure_ascii=False, indent=4)
-        logger.info("Settings stored")
+        with self._lock:
+            current_display_type = self._display_settings.type
+
+            if current_display_type != settings.type:
+                logger.info(f"Display type has changed from {current_display_type} to {settings.type}.")
+                display_has_changed = True
+
+            # Update the display settings, merge existing settings with the updated settings
+            self._display_settings = DisplaySettings(
+                **{**self._display_settings.model_dump(), **settings.model_dump(exclude_unset=True)}
+            )
+            # Take snapshot for use outside lock
+            updated_settings = self._display_settings
+            # Write the settings to file
+            logger.info("Attempting to store settings to file...")
+            with open(os.path.join(os.getenv("DATA_DIR", ""), "settings.json"), "w") as file:
+                json.dump(updated_settings.model_dump(), file, ensure_ascii=False, indent=4)
+            logger.info("Settings stored")
 
         if emit_update:
-            self.emit_settings_update(self.display_settings, display_has_changed)
+            self.emit_settings_update(updated_settings, display_has_changed)
 
     def emit_settings_update(self, settings: DisplaySettings, display_has_changed: bool = False):
-        for callback in self.settings_update_callbacks:
+        with self._lock:
+            # Snapshot callback list under lock to prevent new subscribers added mid-iteration from affecting this emit
+            callbacks = list(self.settings_update_callbacks)
+        for callback in callbacks:
             callback(settings, display_has_changed)
 
     def restore_settings(self) -> DisplaySettings | None:
@@ -99,6 +124,16 @@ class DisplaySettingsService:
             logger.info("Existing settings detected, attempting to restore settings...")
             settings = DisplaySettings(**settings_json)
             return settings
+
+    @property
+    def active_worker(self) -> DisplayWorkerAbstract | None:
+        with self._lock:
+            return self._active_worker
+
+    @active_worker.setter
+    def active_worker(self, worker: DisplayWorkerAbstract) -> None:
+        with self._lock:
+            self._active_worker = worker
 
     @staticmethod
     def retrieve_settings_from_file():
