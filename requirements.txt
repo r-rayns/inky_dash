@@ -85,7 +85,7 @@ pyright==1.1.408
 pytest==9.0.3
 pywin32-ctypes==0.2.3 ; sys_platform == 'win32'
     # via pyinstaller
-requests==2.33.1
+requests==2.34.2
     # via inky-dash
 ruff==0.14.11
 setuptools==80.9.0
@@ -107,7 +107,7 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
 werkzeug==3.1.7
     # via

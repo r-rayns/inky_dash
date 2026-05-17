@@ -14,7 +14,7 @@ dependencies = [
   "inky>=2.4.0",
   "pillow>=12.2.0",
   "pydantic>=2.12.5",
-  "requests>=2.32.5",
+  "requests>=2.34.2",
   "werkzeug>=3.1.7",
 ]
 
