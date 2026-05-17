@@ -10,7 +10,7 @@ export default function MockDisplay({
                                       value,
                                       onChange,
                                     }: MockDisplayProps) {
-  // Use prop directly as source of truth - avoids state synchronization complexity
+  // Use prop directly as source of truth - avoids state synchronisation complexity
   const images: Array<string> = value;
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [actualDimensions, setActualDimensions] = useState<{

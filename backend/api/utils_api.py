@@ -1,7 +1,7 @@
 from dependency_injector.wiring import inject, Provide
 from flask import Blueprint, jsonify, request
 
-from backend.lib.display_utilis import construct_palette_from_display_type
+from backend.lib.display_utilis import construct_palette, resolve_display_from_settings
 from backend.lib.error_response import error_response
 from backend.lib.image_utilis import base64_to_pil_image, dither, pil_image_to_base64
 from backend.lib.logger_setup import logger
@@ -21,9 +21,9 @@ def dither_image(display_settings_service: DisplaySettingsService = Provide["dis
 
         # Extract the display type and its supported palette from the display settings
         display_settings = display_settings_service.display_settings
-        display_type, supported_palette = (display_settings.type, display_settings.colour_palette)
+        display = resolve_display_from_settings(display_settings)
         # Construct a palette to apply in the dithering process
-        palette: list[int] = construct_palette_from_display_type(display_type, supported_palette)
+        palette: list[int] = construct_palette(display)
 
         base64_image = ImageDither(**req).image
         image_to_dither = base64_to_pil_image(base64_image)

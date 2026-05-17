@@ -68,11 +68,10 @@ function PrepareImagePage() {
   const cropUpload = () => {
     if (b64Image && croppedAreaPixels && displayClass) {
       setCropPending(true);
-      const b64ImageRaw = stripDataUriFromBase64(b64Image);
       // Use a web worker to resize and crop the image, this prevents it from blocking the main thread and freezing the UI
       const imageCropWorker = new ImageCropWorker();
 
-      imageCropWorker.postMessage({b64ImageRaw, croppedAreaPixels, displayClass});
+      imageCropWorker.postMessage({b64Image, croppedAreaPixels, displayClass});
 
       imageCropWorker.onmessage = async (event: { data: { pngBase64: string, error: string } }) => {
         const {pngBase64, error} = event.data;
@@ -94,6 +93,7 @@ function PrepareImagePage() {
         imageCropWorker.terminate();
       }
 
+      imageCropWorker.onerror = (error )=> console.error('ImageCropWorker error', error);
     }
   }
 

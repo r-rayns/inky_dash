@@ -7,10 +7,9 @@ from PIL import Image
 
 from backend.lib.display_utilis import (
     InkyDisplay,
-    construct_palette_from_display_type,
+    construct_palette,
     detect_inky_display,
     resolve_display_from_settings,
-    resolve_display_type_from_inky_instance,
 )
 from backend.lib.image_utilis import crop_image_width, crop_image_height, pad_image, dither
 from backend.lib.logger_setup import logger
@@ -97,9 +96,8 @@ class DisplayWorkerAbstract(ABC):
     def display_image(display: InkyDisplay, image: Image.Image) -> Image.Image:
         if image.mode != "P":
             logger.info(f"Image is not in palette mode ({image.mode}), attempt to dither it")
-            display_type = resolve_display_type_from_inky_instance(display)
             # Construct a palette to apply in the dithering process
-            palette: list[int] = construct_palette_from_display_type(display_type, display)
+            palette: list[int] = construct_palette(display)
             # Dither the image
             image = dither(image, palette)
 

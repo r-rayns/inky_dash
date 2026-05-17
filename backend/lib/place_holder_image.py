@@ -5,11 +5,11 @@ from backend.lib.image_utilis import pil_image_to_base64
 from backend.lib.logger_setup import logger
 from backend.lib.display_utilis import (
     InkyDisplay,
-    construct_palette_from_display_type,
+    is_small_display,
+    construct_palette,
     resolve_display_from_settings,
-    resolve_display_type_from_inky_instance,
 )
-from backend.models.display_model import DisplaySettings, DisplayType
+from backend.models.display_model import DisplaySettings
 
 
 place_holder_image = (
@@ -46,65 +46,56 @@ noto_emoji = os.path.abspath(os.path.join(os.path.dirname(__file__), "../assets/
 """
 
 
+PLACEHOLDER_TEXT = "Inky Dash"
+PLACEHOLDER_EMOJI = "🐙"
+
+
 def generate_place_holder_image(display_settings: DisplaySettings) -> str:
     logger.info("Generating a placeholder image")
     display = resolve_display_from_settings(display_settings)
 
-    # Create a new placeholder image with the same dimensions as the display
+    logger.info(f"width: {display.width} height: {display.height}")
     placeholder_image = Image.new("P", (display.width, display.height), display.WHITE)
-    palette = construct_palette_from_display_type(display_settings.type, display_settings.colour_palette)
+    palette = construct_palette(display)
+    logger.info(f"palette {palette}")
     placeholder_image.putpalette(palette)
 
     draw = ImageDraw.Draw(placeholder_image)
-    draw_placeholder_text(draw, display)
-    draw_placeholder_emoji(draw, display)
+    draw_placeholder_content(draw, display)
 
     placeholder_image.save(os.path.join(os.getenv("DATA_DIR", ""), "placeholder_image.png"), "PNG")
 
     return pil_image_to_base64(placeholder_image)
 
 
-def draw_placeholder_text(draw: ImageDraw.ImageDraw, display: InkyDisplay):
-    display_type = resolve_display_type_from_inky_instance(display)
-    is_small_display = display_type in (DisplayType.PHAT_104, DisplayType.PHAT_122)
+def draw_placeholder_content(draw: ImageDraw.ImageDraw, display: InkyDisplay):
+    small = is_small_display(display)
 
-    text_font_size = 24 if is_small_display else 64
-
+    text_font_size = 24 if small else 64
     text_font = ImageFont.truetype(silkscreen_pixel, text_font_size)
-    text = "Inky Dash"
-    text_width, text_height = text_dimensions(text, text_font, draw)
 
-    text_x = (display.width - text_width) / 2
-    text_y = (display.height - text_height * 2) / 2
-
-    if is_small_display:
-        text_y = 10
-
-    draw.text((text_x, text_y), text, fill=display.BLACK, font=text_font)
-
-
-def draw_placeholder_emoji(draw: ImageDraw.ImageDraw, display: InkyDisplay):
-    display_type = resolve_display_type_from_inky_instance(display)
-    is_small_display = display_type in (DisplayType.PHAT_104, DisplayType.PHAT_122)
-
-    emoji_font_size = 78 if not is_small_display else 48
-
+    emoji_font_size = 48 if small else 120
     emoji_font = ImageFont.truetype(noto_emoji, emoji_font_size)
-    emoji = "🐙"
-    emoji_width, emoji_height = text_dimensions(emoji, emoji_font, draw)
 
+    gap = 15 if small else 30
+
+    text_width, text_height = text_dimensions(PLACEHOLDER_TEXT, text_font, draw)
+    emoji_width, emoji_height = text_dimensions(PLACEHOLDER_EMOJI, emoji_font, draw)
+
+    # Calculate x and y positions to center content on the display
+    total_height = text_height + gap + emoji_height
+    text_x = (display.width - text_width) / 2
+    text_y = (display.height - total_height) / 2
     emoji_x = (display.width - emoji_width) / 2
-    emoji_y = (display.height + emoji_height) / 2
-    emoji_fill_colour = getattr(display, "RED", 1)
+    emoji_y = text_y + text_height + gap
 
-    if is_small_display:
-        emoji_y = 50
-        emoji_fill_colour = getattr(display, "BLACK", 1)
+    draw.text((text_x, text_y), PLACEHOLDER_TEXT, fill=display.BLACK, font=text_font)
 
-    draw.text((emoji_x, emoji_y), emoji, fill=emoji_fill_colour, font=emoji_font)
+    emoji_fill = getattr(display, "BLACK" if small else "RED", 1)
+    draw.text((emoji_x, emoji_y), PLACEHOLDER_EMOJI, fill=emoji_fill, font=emoji_font)
 
 
-def text_dimensions(text: str, text_font, draw: ImageDraw.ImageDraw) -> Tuple[float, float]:
+def text_dimensions(text: str, text_font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw) -> Tuple[float, float]:
     text_bbox = draw.textbbox((0, 0), text, font=text_font)
     text_width = text_bbox[2] - text_bbox[0]  # right minus left
     text_height = text_bbox[3] - text_bbox[1]  # bottom minus top

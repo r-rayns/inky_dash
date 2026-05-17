@@ -289,7 +289,7 @@ wheels = [
 
 [[package]]
 name = "inky"
-version = "2.2.1"
+version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gpiodevice" },
@@ -299,9 +299,9 @@ dependencies = [
     { name = "smbus2" },
     { name = "spidev" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/39/8b/adecf5aeeb9b554b0c083d2e93bab08c687439d4fefe924d0a0cdb1f4996/inky-2.2.1.tar.gz", hash = "sha256:4333f1e9bacf0f5d087cbfd21d74b082dd9434b7c8540d625076c8f6750599dc", size = 16157989, upload-time = "2025-08-15T10:36:50.717Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/52/083b6e1b90396e2b8d07ad977e669a6fb18f6514edc8c2f873743abd78ca/inky-2.4.0.tar.gz", hash = "sha256:325822feaae9a6c9613e53e9cb3ed34b8a7f655561cdc0a43a9e37d149f30821", size = 16158715, upload-time = "2026-04-14T15:02:37.832Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/b8/85902e7fe931aad7e4c0dec94490f14681843459248f02f9dfa586882ea2/inky-2.2.1-py3-none-any.whl", hash = "sha256:28c3a10cf3b1d828ed05de87438eb74ced65510410a68bea6532599f74fdd7d4", size = 59593, upload-time = "2025-08-15T10:36:38.601Z" },
+    { url = "https://files.pythonhosted.org/packages/27/e4/286711aaf7b9ab51a1874daae3d5ddd97df3f7dd60b8b8d4660fcb4aa4f0/inky-2.4.0-py3-none-any.whl", hash = "sha256:3471f6838b35825317ff63ff9687f758e37ca64a64888d1ca79d8457049058e0", size = 64041, upload-time = "2026-04-14T15:02:34.972Z" },
 ]
 
 [[package]]
@@ -336,7 +336,7 @@ requires-dist = [
     { name = "flask", specifier = ">=3.1.2" },
     { name = "flask-cors", specifier = ">=6.0.2" },
     { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "inky", specifier = ">=2.2.1" },
+    { name = "inky", specifier = ">=2.4.0" },
     { name = "pillow", specifier = ">=12.2.0" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "requests", specifier = ">=2.32.5" },

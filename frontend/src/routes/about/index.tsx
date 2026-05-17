@@ -27,20 +27,22 @@ function AboutPage() {
         The following displays are supported:
       </p>
       <ul>
-        <li><a href="https://shop.pimoroni.com/products/inky-phat?variant=12549254217811" target="_blank"
-                  rel="noopener noreferrer">Inky pHAT (212 x 104)</a></li>
+        <li>Inky pHAT (212 x 104)</li>
         <li><a href="https://shop.pimoroni.com/products/inky-phat?variant=12549254217811" target="_blank"
                   rel="noopener noreferrer">Inky pHAT (250 x 122)</a></li>
+        <li><a href="https://shop.pimoroni.com/products/inky-what?variant=55696156885371" target="_blank" 
+                  rel="noopener noreferrer">Inky wHAT (400x300)</a></li>
         <li><a href="https://shop.pimoroni.com/products/inky-impression-4?variant=39599238807635" target="_blank"
                   rel="noopener noreferrer">Inky Impression 4&#34;</a></li>
         <li><a href="https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371" target="_blank"
                   rel="noopener noreferrer">Inky Impression 5.7&#34;</a></li>
-        <li><a href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723" target="_blank"
-                  rel="noopener noreferrer">Inky Impression 7.3&#34;</a></li>
-        <li><a href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435244411" target="_blank"
-                  rel="noopener noreferrer">Inky Impression 7.3&#34; (2025 Edition)</a></li>
-        <li><a href="https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435277179" target="_blank"
-                  rel="noopener noreferrer">Inky Impression 13.3&#34;</a></li>
+        <li>Inky Impression 7.3&#34;</li>
+        <li><a href="https://shop.pimoroni.com/products/inky-impression?variant=56039376912763" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 4&#34; (Spectra)</a></li>
+        <li><a href="https://shop.pimoroni.com/products/inky-impression?variant=55186435244411" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 7.3&#34; (Spectra)</a></li>
+        <li><a href="https://shop.pimoroni.com/products/inky-impression?variant=55186435277179" target="_blank"
+                  rel="noopener noreferrer">Inky Impression 13.3&#34; (Spectra)</a></li>
       </ul>
       <h3>Links</h3>
       <ul>

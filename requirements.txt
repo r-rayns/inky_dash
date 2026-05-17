@@ -39,7 +39,7 @@ idna==3.11
     # via requests
 iniconfig==2.0.0
     # via pytest
-inky==2.2.1
+inky==2.4.0
     # via inky-dash
 itsdangerous==2.2.0
     # via flask

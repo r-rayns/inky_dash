@@ -68,8 +68,10 @@ function DisplaySettingsPage() {
   )
   const displayClass = displayClassByType[typeValue]
   // ".includes" will re-evaluate on each render such as a form value changing
+  const hasBlackPalette = displayClass.palettes.includes(Palette.BLACK)
   const hasRedPalette = displayClass.palettes.includes(Palette.RED)
   const hasYellowPalette = displayClass.palettes.includes(Palette.YELLOW)
+  const hasRedYellowPalette = displayClass.palettes.includes(Palette.RED_YELLOW)
   const hasSevenColourPalette = displayClass.palettes.includes(
     Palette.SEVEN_COLOUR,
   )
@@ -134,6 +136,18 @@ function DisplaySettingsPage() {
                     <SelectItem value={DisplayType.PHAT_122}>
                       Inky pHAT (250x122)
                     </SelectItem>
+                    <SelectItem value={DisplayType.PHAT_RED_YELLOW_122}>
+                      Inky pHAT Red/Yellow (250x122)
+                    </SelectItem>
+                    <SelectItem value={DisplayType.WHAT_300}>
+                      Inky wHAT (400x300)
+                    </SelectItem>
+                    <SelectItem value={DisplayType.WHAT_V2_300}>
+                      Inky wHAT v2 (400x300)
+                    </SelectItem>
+                    <SelectItem value={DisplayType.WHAT_RED_YELLOW_300}>
+                      Inky wHAT Red/Yellow (400x300)
+                    </SelectItem>
                     <SelectItem value={DisplayType.IMPRESSION_400}>
                       Inky Impression 4&quot; (640x400)
                     </SelectItem>
@@ -143,11 +157,14 @@ function DisplaySettingsPage() {
                     <SelectItem value={DisplayType.IMPRESSION_480}>
                       Inky Impression 7.3&quot; (800x480)
                     </SelectItem>
+                    <SelectItem value={DisplayType.SPECTRA_400}>
+                      Inky Impression 4&quot; Spectra (600x400)
+                    </SelectItem>
                     <SelectItem value={DisplayType.SPECTRA_480}>
-                      Inky Impression 7.3&quot; 2025 ed. (800x480)
+                      Inky Impression 7.3&quot; Spectra (800x480)
                     </SelectItem>
                     <SelectItem value={DisplayType.SPECTRA_1200}>
-                      Inky Impression 13.3&quot; (1600x1200)
+                      Inky Impression 13.3&quot; Spectra (1600x1200)
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -171,6 +188,9 @@ function DisplaySettingsPage() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
+                    <SelectItem value={Palette.BLACK} disabled={!hasBlackPalette}>
+                      Black 🖤
+                    </SelectItem>
                     <SelectItem value={Palette.RED} disabled={!hasRedPalette}>
                       Red ❤️
                     </SelectItem>
@@ -179,6 +199,12 @@ function DisplaySettingsPage() {
                       disabled={!hasYellowPalette}
                     >
                       Yellow 💛
+                    </SelectItem>
+                    <SelectItem
+                      value={Palette.RED_YELLOW}
+                      disabled={!hasRedYellowPalette}
+                    >
+                      Red/Yellow ❤️/💛
                     </SelectItem>
                     <SelectItem
                       value={Palette.SEVEN_COLOUR}
