@@ -1,162 +1,178 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import clsx from "clsx";
-import Cropper from "react-easy-crop";
-import type { ChangeEvent } from "react";
-import type { Area } from "react-easy-crop";
-import type { DitherResponse } from "@/types/image-dither";
-import { useSettings } from "@/providers/settings-provider";
-import { useSlideshow } from "@/providers/slideshow-provider";
-import { useToast } from "@/providers/toast-provider";
-import { useSubmit } from "@/hooks/useSubmit";
-import { ditherImage } from "@/api/image-dither-api";
-import { ToastType } from "@/types/toast";
-import { displayClassByType } from "@/lib/display-types";
-import { blobToBase64, prependImageDataUri, stripDataUriFromBase64 } from "@/lib/utils";
-import { SpinnerIcon } from '@/components/icons/spinner.tsx';
-import { Button } from "@/components/ui/button";
-import { Skeleton } from '@/components/ui/skeleton.tsx';
-import ImageCropWorker from '@/workers/image-crop.worker?worker';
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useRef, useState } from 'react'
+import clsx from 'clsx'
+import Cropper from 'react-easy-crop'
+import type { ChangeEvent } from 'react'
+import type { Area } from 'react-easy-crop'
+import type { DitherResponse } from '@/types/image-dither'
+import { useSettings } from '@/providers/settings-provider'
+import { useSlideshow } from '@/providers/slideshow-provider'
+import { useToast } from '@/providers/toast-provider'
+import { useSubmit } from '@/hooks/useSubmit'
+import { ditherImage } from '@/api/image-dither-api'
+import { ToastType } from '@/types/toast'
+import { displayClassByType } from '@/lib/display-types'
+import {
+  blobToBase64,
+  prependImageDataUri,
+  stripDataUriFromBase64,
+} from '@/lib/utils'
+import { SpinnerIcon } from '@/components/icons/spinner.tsx'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton.tsx'
+import ImageCropWorker from '@/workers/image-crop.worker?worker'
 
-export const Route = createFileRoute('/slideshow-configuration/prepare-image/')({
-  component: PrepareImagePage,
-  head: () => {
-    return {
-      meta: [
-        {
-          title: 'Inky Dash - Prepare Image',
-        }
-      ]
-    }
+export const Route = createFileRoute('/slideshow-configuration/prepare-image/')(
+  {
+    component: PrepareImagePage,
+    head: () => {
+      return {
+        meta: [
+          {
+            title: 'Inky Dash - Prepare Image',
+          },
+        ],
+      }
+    },
+    loader: () => ({
+      crumb: 'Prepare Image',
+    }),
   },
-  loader: () => ( {
-    crumb: 'Prepare Image'
-  } )
-})
+)
 
 function PrepareImagePage() {
   const navigate = useNavigate()
-  const {displaySettings} = useSettings();
-  const {slideshowForm, submitSlideshowConfiguration} = useSlideshow();
-  const {addToast} = useToast();
+  const { displaySettings } = useSettings()
+  const { slideshowForm, submitSlideshowConfiguration } = useSlideshow()
+  const { addToast } = useToast()
 
-  const [crop, setCrop] = useState({x: 0, y: 0});
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [zoom, setZoom] = useState(1);
-  const [b64Image, setB64Image] = useState<string | null>(null);
-  const [cropPending, setCropPending] = useState<boolean>(false);
-  const [finishEnabled, setFinishEnabled] = useState<boolean>(false);
-  const [isDownloadReady, setIsDownloadReady] = useState(false);
-  const {submit, responsePending, setResponsePending} = useSubmit<DitherResponse | null | void, [string]>(
-    (image: string) =>
-      ditherImage(image, (message: string) =>
-        addToast(`Error dithering image - ${message}`, {
-          type: ToastType.ERROR,
-        })
-      )
-  );
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
+  const [zoom, setZoom] = useState(1)
+  const [b64Image, setB64Image] = useState<string | null>(null)
+  const [cropPending, setCropPending] = useState<boolean>(false)
+  const [finishEnabled, setFinishEnabled] = useState<boolean>(false)
+  const [isDownloadReady, setIsDownloadReady] = useState(false)
+  const { submit, responsePending, setResponsePending } = useSubmit<
+    DitherResponse | null | void,
+    [string]
+  >((image: string) =>
+    ditherImage(image, (message: string) =>
+      addToast(`Error dithering image - ${message}`, {
+        type: ToastType.ERROR,
+      }),
+    ),
+  )
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const imgRef = useRef<HTMLImageElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const imgRef = useRef<HTMLImageElement | null>(null)
 
-  const displayClass = displaySettings?.type && displayClassByType[displaySettings.type];
+  const displayClass =
+    displaySettings?.type && displayClassByType[displaySettings.type]
 
   const onCropComplete = (_croppedArea: Area, croppedAreaInPixels: Area) => {
-    setCroppedAreaPixels(croppedAreaInPixels);
+    setCroppedAreaPixels(croppedAreaInPixels)
   }
 
   const cropUpload = () => {
     if (b64Image && croppedAreaPixels && displayClass) {
-      setCropPending(true);
+      setCropPending(true)
       // Use a web worker to resize and crop the image, this prevents it from blocking the main thread and freezing the UI
-      const imageCropWorker = new ImageCropWorker();
+      const imageCropWorker = new ImageCropWorker()
 
-      imageCropWorker.postMessage({b64Image, croppedAreaPixels, displayClass});
+      imageCropWorker.postMessage({ b64Image, croppedAreaPixels, displayClass })
 
-      imageCropWorker.onmessage = async (event: { data: { pngBase64: string, error: string } }) => {
-        const {pngBase64, error} = event.data;
+      imageCropWorker.onmessage = async (event: {
+        data: { pngBase64: string; error: string }
+      }) => {
+        const { pngBase64, error } = event.data
         if (error) {
-          console.error(error);
-          setCropPending(false);
-          addToast('Unable to crop the image. Try another one.', {type: ToastType.ERROR})
-          imageCropWorker.terminate();
-          return;
+          console.error(error)
+          setCropPending(false)
+          addToast('Unable to crop the image. Try another one.', {
+            type: ToastType.ERROR,
+          })
+          imageCropWorker.terminate()
+          return
         }
 
-        setCropPending(false);
+        setCropPending(false)
         const ditherRes = await submit(stripDataUriFromBase64(pngBase64))
 
         if (imgRef.current && ditherRes?.image) {
-          imgRef.current.src = prependImageDataUri(ditherRes.image);
-          setIsDownloadReady(true);
+          imgRef.current.src = prependImageDataUri(ditherRes.image)
+          setIsDownloadReady(true)
         }
-        imageCropWorker.terminate();
+        imageCropWorker.terminate()
       }
 
-      imageCropWorker.onerror = (error )=> console.error('ImageCropWorker error', error);
+      imageCropWorker.onerror = (error) =>
+        console.error('ImageCropWorker error', error)
     }
   }
 
   const download = () => {
     if (imgRef.current) {
-      const url = imgRef.current.src;
+      const url = imgRef.current.src
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "image.png";
-      a.click();
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'image.png'
+      a.click()
     }
   }
 
   const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
-    const inputElement: HTMLInputElement = event.currentTarget;
-    let file: File | null = null;
+    const inputElement: HTMLInputElement = event.currentTarget
+    let file: File | null = null
     if (inputElement.files?.length) {
-      setCropPending(true);
-      file = inputElement.files[0];
+      setCropPending(true)
+      file = inputElement.files[0]
       if (file.size > 15 * 1024 ** 2) {
         // Max file size 15MB
-        addToast("Image too large, max file size is 15MB", {
+        addToast('Image too large, max file size is 15MB', {
           type: ToastType.ERROR,
-        });
-        console.error("Image too large", file.size);
-        return;
+        })
+        console.error('Image too large', file.size)
+        return
       }
 
       await blobToBase64(file, false)
         .then((base64) => {
           // Update the base64 image
-          setB64Image(prependImageDataUri(base64));
+          setB64Image(prependImageDataUri(base64))
         })
         .catch(() => {
-          console.error("Error converting image to base64");
+          console.error('Error converting image to base64')
         })
         .finally(() => {
-          setCropPending(false);
+          setCropPending(false)
         })
     }
   }
 
   const addToSlideshow = () => {
-    const currentImages = slideshowForm?.getValues('images') ?? [];
+    const currentImages = slideshowForm?.getValues('images') ?? []
     if (imgRef.current) {
-      slideshowForm?.setValue('images', [stripDataUriFromBase64(imgRef.current.src), ...currentImages]);
-      addToast("Image added to slideshow", {type: ToastType.INFO});
-      setFinishEnabled(true);
+      slideshowForm?.setValue('images', [
+        stripDataUriFromBase64(imgRef.current.src),
+        ...currentImages,
+      ])
+      addToast('Image added to slideshow', { type: ToastType.INFO })
+      setFinishEnabled(true)
     }
-
   }
 
   const finish = async () => {
-    setResponsePending(true);
+    setResponsePending(true)
     await submitSlideshowConfiguration()
-    setResponsePending(false);
-    await navigate({to: '/slideshow-configuration'})
+    setResponsePending(false)
+    await navigate({ to: '/slideshow-configuration' })
   }
 
   const simulateFileInputClick = () => {
     // Simulates a click on the file input to bring up the file browser dialog
-    fileInputRef.current?.click();
+    fileInputRef.current?.click()
   }
 
   return (
@@ -194,10 +210,13 @@ function PrepareImagePage() {
             <span>Upload An Image ⬆️</span>
           </div>
         )}
-        {cropPending ?
+        {cropPending ? (
           <div className="absolute top-0 w-full h-[300px] bg-black/50">
-            <SpinnerIcon className="absolute top-1/2 left-1/2 w-[32px] h-[32px] mt-[-16px] ml-[-16px]"/>
-          </div> : ""}
+            <SpinnerIcon className="absolute top-1/2 left-1/2 w-[32px] h-[32px] mt-[-16px] ml-[-16px]" />
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       {b64Image ? (
         <div
@@ -221,23 +240,29 @@ function PrepareImagePage() {
         </Button>
       </div>
       {/* Show a skeleton while awaiting the first response */}
-      {( responsePending && !isDownloadReady )
-        && <Skeleton className="m-auto max-w-full mb-2"
-                     style={{width: displayClass?.width, height: displayClass?.height}}/>}
+      {responsePending && !isDownloadReady && (
+        <Skeleton
+          className="m-auto max-w-full mb-2"
+          style={{ width: displayClass?.width, height: displayClass?.height }}
+        />
+      )}
       <div
-        className={clsx("flex flex-col", {
+        className={clsx('flex flex-col', {
           hidden: !isDownloadReady,
-          "cursor-progress": responsePending
+          'cursor-progress': responsePending,
         })}
       >
         <h3>Result</h3>
         <div className="relative flex flex-col items-center">
-          {responsePending ?
-            <SpinnerIcon className="absolute top-1/2 left-1/2 w-[32px] h-[32px] mt-[-16px] ml-[-16px]"/> : ""}
+          {responsePending ? (
+            <SpinnerIcon className="absolute top-1/2 left-1/2 w-[32px] h-[32px] mt-[-16px] ml-[-16px]" />
+          ) : (
+            ''
+          )}
           <img
             ref={imgRef}
             src="data:image/png;base64,"
-            className={clsx({"opacity-30": responsePending})}
+            className={clsx({ 'opacity-30': responsePending })}
             width={displayClass?.width ?? 0}
             height={displayClass?.height ?? 0}
             alt="The dithered output of the image"
@@ -264,9 +289,11 @@ function PrepareImagePage() {
             onClick={finish}
             disabled={responsePending || !finishEnabled}
             aria-label="Finish adding images to the slideshow"
-          >Finish</Button>
+          >
+            Finish
+          </Button>
         </div>
       </div>
     </section>
-  );
+  )
 }

@@ -7,7 +7,7 @@ import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
-import Loading from '@/components/loading.tsx';
+import Loading from '@/components/loading.tsx'
 
 // Create a new router instance
 const router = createRouter({

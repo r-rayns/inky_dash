@@ -1,9 +1,16 @@
-import clsx from "clsx";
+import clsx from 'clsx'
 
-export const SpinnerIcon = ({className = "w-8 h-8"}: { className?: string }) => (
+export const SpinnerIcon = ({
+  className = 'w-8 h-8',
+}: {
+  className?: string
+}) => (
   <svg
     aria-hidden="true"
-    className={clsx("inline text-slate-200 animate-spin dark:text-slate-100 fill-orange-500", className)}
+    className={clsx(
+      'inline text-slate-200 animate-spin dark:text-slate-100 fill-orange-500',
+      className,
+    )}
     viewBox="0 0 100 101"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -17,4 +24,4 @@ export const SpinnerIcon = ({className = "w-8 h-8"}: { className?: string }) => 
       fill="currentFill"
     />
   </svg>
-);
+)

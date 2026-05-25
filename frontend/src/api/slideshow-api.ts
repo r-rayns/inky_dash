@@ -1,10 +1,13 @@
-import type { SetSlideshowResponse, SlideshowConfiguration } from "@/types/slideshow";
-import { fetchWithErrorHandling } from '@/lib/fetcher.ts';
-import { constructUrl } from '@/lib/utils.ts';
+import type {
+  SetSlideshowResponse,
+  SlideshowConfiguration,
+} from '@/types/slideshow'
+import { fetchWithErrorHandling } from '@/lib/fetcher.ts'
+import { constructUrl } from '@/lib/utils.ts'
 
 export async function updateSlideshow(
   configuration: SlideshowConfiguration,
-  alertFn: (message: string) => void
+  alertFn: (message: string) => void,
 ): Promise<SetSlideshowResponse | null | void> {
   return fetchWithErrorHandling<SetSlideshowResponse>(
     constructUrl('slideshow'),
@@ -15,11 +18,11 @@ export async function updateSlideshow(
       },
       body: JSON.stringify({
         change_delay: configuration.changeDelay,
-        images: configuration.images
+        images: configuration.images,
       }),
     },
-    alertFn
+    alertFn,
   ).catch((error: Error) => {
-    console.error('Error updating slideshow configuration', error);
-  });
+    console.error('Error updating slideshow configuration', error)
+  })
 }

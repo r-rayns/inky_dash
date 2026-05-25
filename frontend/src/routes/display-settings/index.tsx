@@ -188,7 +188,10 @@ function DisplaySettingsPage() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={Palette.BLACK} disabled={!hasBlackPalette}>
+                    <SelectItem
+                      value={Palette.BLACK}
+                      disabled={!hasBlackPalette}
+                    >
                       Black 🖤
                     </SelectItem>
                     <SelectItem value={Palette.RED} disabled={!hasRedPalette}>
