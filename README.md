@@ -105,6 +105,11 @@ curl -fsSL https://raw.githubusercontent.com/r-rayns/inky_dash/main/install.sh -
 
 If you have installed Inky Dash using the install script you perform an update by running the install script again.
 
+### Build
+
+The easiest way to produce a build is to run `build.sh`. This script uses Docker Buildx and QEMU to build the project inside a platform-native Docker image (defined in the Dockerfile), producing a binary for the target architecture.
+Usage: `./build.sh [arm64|armv7]` (default: build both)
+
 ### Alternatively
 
 Alternatively you can perform the manual setup by following the steps outlined under [manual setup](#manual-setup-🛠️).

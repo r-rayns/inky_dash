@@ -4,6 +4,7 @@ backend/public
 dist
 raspi-vm/shared-vm-files
 build
+*.bin
 
 # dependencies
 node_modules/

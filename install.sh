@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#==============================================================================
+# Logger
+#==============================================================================
+
 # Reset
 Colour_Off=''
 
@@ -96,7 +100,7 @@ APP_PORT="8080"                                    # Port Inky runs on
 LATEST_VERSION=""                                  # Latest release version
 
 #==============================================================================
-#
+# Functions
 #==============================================================================
 
 # The script will exit with an error if not run as root.
@@ -167,11 +171,11 @@ download_binary() {
 
   # Set the binary_arcitecture variable depending on the detected CPU arcitecture
   if [[ $arcitecture == "aarch64" ]]; then
-    info "ARMv8 arcitecture detected"
-    binary_arcitecture="armv8"
-  elif [[ $arcitecture == "armv6l" ]]; then
-    info "ARMv6 arcitecture detected"
-    binary_arcitecture="armv6"
+    info "ARMv8 (64bit) arcitecture detected"
+    binary_arcitecture="arm64"
+  elif [[ $arcitecture == "armv7l" ]]; then
+    info "ARMv7 (32bit) arcitecture detected"
+    binary_arcitecture="armv7"
   else
     error "Unsupported arcitecture"
   fi
