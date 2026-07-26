@@ -57,11 +57,8 @@ _Video of Image Feed mode in action_
 
 #### Image Feed Projects
 
-While image feed mode can be used with any hosted image, such as webcam feeds, the following projects are specifically
+While image feed mode can be used with any hosted image, such as webcam feeds, the [Inky Dash Feeds](https://github.com/r-rayns/inky_dash_feeds) repository contains services specifically
 designed to generate images that can be easily integrated with this mode.
-
-- [Inky Dash Energy Mix Image Feed](https://github.com/r-rayns/inky_uk_energy)
-- [Inky Dash YouTube Live Image Feed](https://github.com/r-rayns/inky_yt_capture)
 
 ![Inky Impression 4" displaying the energy mix image feed](examples/impression-4-image-feed.png)
 
@@ -82,6 +79,8 @@ curl -fsSL https://raw.githubusercontent.com/r-rayns/inky_dash/main/install.sh |
 ```
 
 The install script will download the latest release binary, enable I2C and SPI (the hardware communication interfaces used by the Inky display), and create a systemd service so Inky Dash runs on boot.
+
+Configuration files used by Inky Dash are written to: `/var/lib/inky_dash`.
 
 ### Post-install steps
 
