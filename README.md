@@ -5,13 +5,15 @@ a Raspberry Pi and accessed from a browser.
 
 The following displays are supported:
 
-- [Inky pHAT (212 x 104)](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811)
+- Inky pHAT (212 x 104)
 - [Inky pHAT (250 x 122)](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811)
+- [Inky wHAT (400 x 300)](https://shop.pimoroni.com/products/inky-what?variant=55696156885371)
 - [Inky Impression 4"](https://shop.pimoroni.com/products/inky-impression-4?variant=39599238807635)
+- [Inky Impression 4" (Spectra)](https://shop.pimoroni.com/products/inky-impression?variant=56039376912763)
 - [Inky Impression 5.7"](https://shop.pimoroni.com/products/inky-impression-5-7?variant=32298701324371)
-- [Inky Impression 7.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=40512683376723)
-- [Inky Impression 7.3 2025 ed."](https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435244411)
-- [Inky Impression 13.3"](https://shop.pimoroni.com/products/inky-impression-7-3?variant=55186435277179)
+- Inky Impression 7.3"
+- [Inky Impression 7.3 (Spectra)"](https://shop.pimoroni.com/products/inky-impression?variant=55186435244411)
+- [Inky Impression 13.3 (Spectra)"](https://shop.pimoroni.com/products/inky-impression?variant=55186435277179)
 
 ## Important 📌
 
