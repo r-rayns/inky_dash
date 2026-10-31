@@ -1,17 +1,17 @@
-import type { second } from "./branded-types";
+import type { second } from './branded-types'
 
 export interface SlideshowConfiguration {
-  changeDelay: second;
-  images: Array<string>;
+  changeDelay: second
+  images: Array<string>
 }
 
 export interface SlideshowConfigurationResponse {
-  change_delay: number;
-  images: Array<string>;
+  change_delay: number
+  images: Array<string>
 }
 
 export interface SetSlideshowResponse {
-  message: string;
+  message: string
 }
 
 export const defaultSlideshowConfiguration: SlideshowConfiguration = {

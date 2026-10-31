@@ -33,7 +33,7 @@ def get_settings(display_settings_service: DisplaySettingsService = Provide[Cont
 def apply_settings(display_settings_service: DisplaySettingsService = Provide[Container.display_settings_service]):
     try:
         req = request.get_json()
-        logger.debug(f"POST /display: {req}")
+        logger.debug(f"PATCH /display: {req}")
         # req is a valid set of settings for setting the display
         # unpack and pass to SetDisplay constructor
         display_settings_update = DisplaySettingsUpdate(**req)

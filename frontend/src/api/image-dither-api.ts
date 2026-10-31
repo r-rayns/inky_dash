@@ -1,10 +1,10 @@
-import type { DitherResponse } from "@/types/image-dither";
-import { fetchWithErrorHandling } from "@/lib/fetcher";
-import { constructUrl } from '@/lib/utils.ts';
+import type { DitherResponse } from '@/types/image-dither'
+import { fetchWithErrorHandling } from '@/lib/fetcher'
+import { constructUrl } from '@/lib/utils.ts'
 
 export async function ditherImage(
   image: string,
-  alertFn: (message: string) => void
+  alertFn: (message: string) => void,
 ): Promise<DitherResponse | null | void> {
   return fetchWithErrorHandling<DitherResponse>(
     constructUrl('utils/dither'),
@@ -17,8 +17,8 @@ export async function ditherImage(
         image,
       }),
     },
-    alertFn
+    alertFn,
   ).catch((error: Error) => {
-    console.error('Error dithering image', error);
-  });
+    console.error('Error dithering image', error)
+  })
 }

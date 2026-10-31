@@ -8,9 +8,14 @@ export interface DisplaySettings {
 export enum DisplayType {
   PHAT_104 = 'phat104',
   PHAT_122 = 'phat122',
+  PHAT_RED_YELLOW_122 = 'phatRedYellow122',
+  WHAT_300 = 'what300',
+  WHAT_V2_300 = 'what300v2',
+  WHAT_RED_YELLOW_300 = 'whatRedYellow300',
   IMPRESSION_400 = 'impression400',
   IMPRESSION_448 = 'impression448',
   IMPRESSION_480 = 'impression480',
+  SPECTRA_400 = 'spectra400',
   SPECTRA_480 = 'spectra480',
   SPECTRA_1200 = 'spectra1200',
 }
@@ -20,8 +25,10 @@ export enum DetectionError {
 }
 
 export enum Palette {
+  BLACK = 'black',
   RED = 'red',
   YELLOW = 'yellow',
+  RED_YELLOW = 'red/yellow',
   SEVEN_COLOUR = '7Colour',
   SPECTRA = 'spectra',
 }
@@ -38,8 +45,10 @@ export enum DisplayMode {
 
 export type RGB = [number, number, number]
 export type ValidPaletteColours =
+  | Palette.BLACK
   | Palette.RED
   | Palette.YELLOW
+  | Palette.RED_YELLOW
   | Palette.SEVEN_COLOUR
   | Palette.SPECTRA
 export type ValidBorderColours = BorderColour.WHITE | BorderColour.BLACK

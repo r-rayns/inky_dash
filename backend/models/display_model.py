@@ -7,18 +7,27 @@ class DetectionError(str, Enum):
     UNSUPPORTED = "unsupported"
 
 
+# <NAME>_<HEIGHT>
 class DisplayType(str, Enum):
+    # pHAT
     PHAT_104 = "phat104"
     PHAT_122 = "phat122"
+    PHAT_RED_YELLOW_122 = "phatRedYellow122"
+    # wHAT
+    WHAT_300 = "what300"
+    WHAT_V2_300 = "what300v2"
+    WHAT_RED_YELLOW_300 = "whatRedYellow300"
     # 4"
     IMPRESSION_400 = "impression400"
     # 5.7"
     IMPRESSION_448 = "impression448"
     # 7.3"
     IMPRESSION_480 = "impression480"
-    # 7.3" 2025 ed.
+    # 4" Spectra
+    SPECTRA_400 = "spectra400"
+    # 7.3" Spectra
     SPECTRA_480 = "spectra480"
-    # 13.3"
+    # 13.3" Spectra
     SPECTRA_1200 = "spectra1200"
 
 
@@ -26,6 +35,7 @@ class ColourPalette(str, Enum):
     RED = "red"
     YELLOW = "yellow"
     BLACK = "black"
+    RED_YELLOW = "red/yellow"
     SEVEN_COLOUR = "7Colour"
     SPECTRA = "spectra"
 

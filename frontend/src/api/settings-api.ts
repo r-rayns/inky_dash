@@ -1,11 +1,11 @@
-import type { DisplaySettings } from '@/types/display';
-import type { SetDisplayResponse } from '@/types/settings.ts';
-import { fetchWithErrorHandling } from '@/lib/fetcher.ts';
-import { constructUrl } from '@/lib/utils';
+import type { DisplaySettings } from '@/types/display'
+import type { SetDisplayResponse } from '@/types/settings.ts'
+import { fetchWithErrorHandling } from '@/lib/fetcher.ts'
+import { constructUrl } from '@/lib/utils'
 
 export async function updateSettings(
   displaySettings: Partial<DisplaySettings>,
-  alertFn: (message: string) => void
+  alertFn: (message: string) => void,
 ): Promise<SetDisplayResponse | null | void> {
   return fetchWithErrorHandling<SetDisplayResponse>(
     constructUrl('settings'),
@@ -18,11 +18,11 @@ export async function updateSettings(
         type: displaySettings.type,
         colour_palette: displaySettings.colourPalette,
         border_colour: displaySettings.borderColour,
-        mode: displaySettings.mode
+        mode: displaySettings.mode,
       }),
     },
-    alertFn
+    alertFn,
   ).catch((error: Error) => {
-    console.error('Error updating display settings', error);
-  });
+    console.error('Error updating display settings', error)
+  })
 }

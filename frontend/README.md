@@ -1,7 +1,8 @@
 # `Inky Dash Frontend`
+
 This frontend was bootstrapped using `npx create-tsrouter-app@latest --add-ons shadcn`
 
-## Running 
+## Running
 
 To run this application:
 

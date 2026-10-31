@@ -1,0 +1,32 @@
+---
+- hosts: local
+  connection: local
+  gather_facts: false
+  tasks:
+    - set_fact:
+        main_dir: "{{ playbook_dir }}"
+        shared_vm_files_dir: "{{ playbook_dir }}/shared-vm-files"
+
+    - name: Clear shared VM files from previous runs
+      file:
+        path: "{{ shared_vm_files_dir }}"
+        state: absent
+
+    - name: Create fresh shared VM files directory
+      file:
+        path: "{{ shared_vm_files_dir }}"
+        state: directory
+
+# Start the Raspberry Pi VM
+- import_playbook: host/start.yml
+
+# Setup the VM
+- import_playbook: raspi/setup.yml
+
+- hosts: local
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Display access instructions
+      debug:
+        msg: "VM is now running. To access it run: ssh root@localhost -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
