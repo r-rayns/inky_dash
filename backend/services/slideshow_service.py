@@ -2,11 +2,11 @@ import json
 import os
 import threading
 
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 
 from backend.lib.logger_setup import logger
 from backend.lib.place_holder_image import generate_place_holder_image
-from backend.models.display_model import DisplaySettings, DisplayMode
+from backend.models.display_model import DisplayMode, DisplaySettings
 from backend.models.slideshow_model import SlideshowConfiguration
 from backend.services.display_mode_abstract import ModeAbstract
 from backend.workers.slideshow_worker import SlideshowWorker
@@ -88,9 +88,8 @@ class SlideshowService(ModeAbstract):
             self.slideshow_worker.stop()
 
     def store_slideshow_configuration(self, slideshow_configuration: SlideshowConfiguration):
-        with self._lock:
-            with open(os.path.join(os.getenv("DATA_DIR", ""), "slideshow.json"), "w") as file:
-                json.dump(slideshow_configuration.model_dump(), file, ensure_ascii=False, indent=4)
+        with self._lock, open(os.path.join(os.getenv("DATA_DIR", ""), "slideshow.json"), "w") as file:
+            json.dump(slideshow_configuration.model_dump(), file, ensure_ascii=False, indent=4)
         logger.info("Slideshow Configuration stored")
 
     def default_to_placeholder_image(self):

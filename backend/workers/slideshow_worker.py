@@ -2,7 +2,7 @@ import threading
 
 from backend.lib.image_utilis import base64_to_pil_image
 from backend.lib.logger_setup import logger
-from backend.models.display_model import DisplaySettings, DetectionError
+from backend.models.display_model import DetectionError, DisplaySettings
 from backend.models.slideshow_model import SlideshowConfiguration
 from backend.workers.display_worker_abstract import DisplayWorkerAbstract
 

@@ -1,4 +1,4 @@
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, jsonify, request
 
 from backend.lib.display_utilis import construct_palette, resolve_display_from_settings
@@ -34,7 +34,7 @@ def dither_image(display_settings_service: DisplaySettingsService = Provide["dis
         logger.info(f"dithered_image format {dithered_image.format}")
         dithered_image_base64 = pil_image_to_base64(dithered_image)
 
-        return jsonify(message="Dither done", data=dict(image=dithered_image_base64)), 200
+        return jsonify(message="Dither done", data={"image": dithered_image_base64}), 200
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to dither image: {err}")

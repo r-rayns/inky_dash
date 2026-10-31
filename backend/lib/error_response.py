@@ -1,11 +1,12 @@
-from typing import List, Union
+
+from flask import jsonify
 from pydantic import ValidationError
 from pydantic_core import ErrorDetails
+
 from backend.lib.logger_setup import logger
-from flask import jsonify
 
 
-def error_response(message: str, errors: Union[Exception, ValidationError], response_code=400):
+def error_response(message: str, errors: Exception | ValidationError, response_code=400):
     if isinstance(errors, ValidationError):
         formatted_errors = formatValidationErrors(errors.errors())
         logger.error(f"Validation Errors: {formatted_errors}")
@@ -17,7 +18,7 @@ def error_response(message: str, errors: Union[Exception, ValidationError], resp
     return jsonify(message=message, errors=formatted_errors, data=None), response_code
 
 
-def formatValidationErrors(validationErrors: List[ErrorDetails]) -> List[str]:
+def formatValidationErrors(validationErrors: list[ErrorDetails]) -> list[str]:
     formatted_errors = []
     # Loop over the errors and put them into the format <field_name> <error_message>
     for error in validationErrors:

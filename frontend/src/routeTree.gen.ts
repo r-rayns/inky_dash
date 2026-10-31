@@ -8,177 +8,62 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as SlideshowConfigurationRouteRouteImport } from './routes/slideshow-configuration/route'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
+import { Route as DisplaySettingsIndexRouteImport } from './routes/display-settings/index'
+import { Route as HelpIndexRouteImport } from './routes/help/index'
+import { Route as ImageFeedConfigurationIndexRouteImport } from './routes/image-feed-configuration/index'
+import { Route as SlideshowConfigurationIndexRouteImport } from './routes/slideshow-configuration/index'
+import { Route as SlideshowConfigurationPrepareImageIndexRouteImport } from './routes/slideshow-configuration/prepare-image/index'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as SlideshowConfigurationRouteImport } from './routes/slideshow-configuration/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as SlideshowConfigurationIndexImport } from './routes/slideshow-configuration/index'
-import { Route as ImageFeedConfigurationIndexImport } from './routes/image-feed-configuration/index'
-import { Route as HelpIndexImport } from './routes/help/index'
-import { Route as DisplaySettingsIndexImport } from './routes/display-settings/index'
-import { Route as AboutIndexImport } from './routes/about/index'
-import { Route as SlideshowConfigurationPrepareImageIndexImport } from './routes/slideshow-configuration/prepare-image/index'
-
-// Create/Update Routes
-
-const SlideshowConfigurationRouteRoute =
-  SlideshowConfigurationRouteImport.update({
-    id: '/slideshow-configuration',
-    path: '/slideshow-configuration',
-    getParentRoute: () => rootRoute,
-  } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
+const SlideshowConfigurationRouteRoute =
+  SlideshowConfigurationRouteRouteImport.update({
+    id: '/slideshow-configuration',
+    path: '/slideshow-configuration',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisplaySettingsIndexRoute = DisplaySettingsIndexRouteImport.update({
+  id: '/display-settings/',
+  path: '/display-settings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpIndexRoute = HelpIndexRouteImport.update({
+  id: '/help/',
+  path: '/help/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImageFeedConfigurationIndexRoute =
+  ImageFeedConfigurationIndexRouteImport.update({
+    id: '/image-feed-configuration/',
+    path: '/image-feed-configuration/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SlideshowConfigurationIndexRoute =
-  SlideshowConfigurationIndexImport.update({
+  SlideshowConfigurationIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => SlideshowConfigurationRouteRoute,
   } as any)
-
-const ImageFeedConfigurationIndexRoute =
-  ImageFeedConfigurationIndexImport.update({
-    id: '/image-feed-configuration/',
-    path: '/image-feed-configuration/',
-    getParentRoute: () => rootRoute,
-  } as any)
-
-const HelpIndexRoute = HelpIndexImport.update({
-  id: '/help/',
-  path: '/help/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DisplaySettingsIndexRoute = DisplaySettingsIndexImport.update({
-  id: '/display-settings/',
-  path: '/display-settings/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AboutIndexRoute = AboutIndexImport.update({
-  id: '/about/',
-  path: '/about/',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const SlideshowConfigurationPrepareImageIndexRoute =
-  SlideshowConfigurationPrepareImageIndexImport.update({
+  SlideshowConfigurationPrepareImageIndexRouteImport.update({
     id: '/prepare-image/',
     path: '/prepare-image/',
     getParentRoute: () => SlideshowConfigurationRouteRoute,
   } as any)
 
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/slideshow-configuration': {
-      id: '/slideshow-configuration'
-      path: '/slideshow-configuration'
-      fullPath: '/slideshow-configuration'
-      preLoaderRoute: typeof SlideshowConfigurationRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/about/': {
-      id: '/about/'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/display-settings/': {
-      id: '/display-settings/'
-      path: '/display-settings'
-      fullPath: '/display-settings'
-      preLoaderRoute: typeof DisplaySettingsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/help/': {
-      id: '/help/'
-      path: '/help'
-      fullPath: '/help'
-      preLoaderRoute: typeof HelpIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/image-feed-configuration/': {
-      id: '/image-feed-configuration/'
-      path: '/image-feed-configuration'
-      fullPath: '/image-feed-configuration'
-      preLoaderRoute: typeof ImageFeedConfigurationIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/slideshow-configuration/': {
-      id: '/slideshow-configuration/'
-      path: '/'
-      fullPath: '/slideshow-configuration/'
-      preLoaderRoute: typeof SlideshowConfigurationIndexImport
-      parentRoute: typeof SlideshowConfigurationRouteImport
-    }
-    '/slideshow-configuration/prepare-image/': {
-      id: '/slideshow-configuration/prepare-image/'
-      path: '/prepare-image'
-      fullPath: '/slideshow-configuration/prepare-image'
-      preLoaderRoute: typeof SlideshowConfigurationPrepareImageIndexImport
-      parentRoute: typeof SlideshowConfigurationRouteImport
-    }
-  }
-}
-
-// Create and export the route tree
-
-interface SlideshowConfigurationRouteRouteChildren {
-  SlideshowConfigurationIndexRoute: typeof SlideshowConfigurationIndexRoute
-  SlideshowConfigurationPrepareImageIndexRoute: typeof SlideshowConfigurationPrepareImageIndexRoute
-}
-
-const SlideshowConfigurationRouteRouteChildren: SlideshowConfigurationRouteRouteChildren =
-  {
-    SlideshowConfigurationIndexRoute: SlideshowConfigurationIndexRoute,
-    SlideshowConfigurationPrepareImageIndexRoute:
-      SlideshowConfigurationPrepareImageIndexRoute,
-  }
-
-const SlideshowConfigurationRouteRouteWithChildren =
-  SlideshowConfigurationRouteRoute._addFileChildren(
-    SlideshowConfigurationRouteRouteChildren,
-  )
-
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/slideshow-configuration': typeof SlideshowConfigurationRouteRouteWithChildren
-  '/about': typeof AboutIndexRoute
-  '/display-settings': typeof DisplaySettingsIndexRoute
-  '/help': typeof HelpIndexRoute
-  '/image-feed-configuration': typeof ImageFeedConfigurationIndexRoute
-  '/slideshow-configuration/': typeof SlideshowConfigurationIndexRoute
-  '/slideshow-configuration/prepare-image': typeof SlideshowConfigurationPrepareImageIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutIndexRoute
-  '/display-settings': typeof DisplaySettingsIndexRoute
-  '/help': typeof HelpIndexRoute
-  '/image-feed-configuration': typeof ImageFeedConfigurationIndexRoute
-  '/slideshow-configuration': typeof SlideshowConfigurationIndexRoute
-  '/slideshow-configuration/prepare-image': typeof SlideshowConfigurationPrepareImageIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/slideshow-configuration': typeof SlideshowConfigurationRouteRouteWithChildren
   '/about/': typeof AboutIndexRoute
@@ -188,18 +73,37 @@ export interface FileRoutesById {
   '/slideshow-configuration/': typeof SlideshowConfigurationIndexRoute
   '/slideshow-configuration/prepare-image/': typeof SlideshowConfigurationPrepareImageIndexRoute
 }
-
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/about': typeof AboutIndexRoute
+  '/display-settings': typeof DisplaySettingsIndexRoute
+  '/help': typeof HelpIndexRoute
+  '/image-feed-configuration': typeof ImageFeedConfigurationIndexRoute
+  '/slideshow-configuration': typeof SlideshowConfigurationIndexRoute
+  '/slideshow-configuration/prepare-image': typeof SlideshowConfigurationPrepareImageIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/slideshow-configuration': typeof SlideshowConfigurationRouteRouteWithChildren
+  '/about/': typeof AboutIndexRoute
+  '/display-settings/': typeof DisplaySettingsIndexRoute
+  '/help/': typeof HelpIndexRoute
+  '/image-feed-configuration/': typeof ImageFeedConfigurationIndexRoute
+  '/slideshow-configuration/': typeof SlideshowConfigurationIndexRoute
+  '/slideshow-configuration/prepare-image/': typeof SlideshowConfigurationPrepareImageIndexRoute
+}
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/slideshow-configuration'
-    | '/about'
-    | '/display-settings'
-    | '/help'
-    | '/image-feed-configuration'
+    | '/about/'
+    | '/display-settings/'
+    | '/help/'
+    | '/image-feed-configuration/'
     | '/slideshow-configuration/'
-    | '/slideshow-configuration/prepare-image'
+    | '/slideshow-configuration/prepare-image/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -221,7 +125,6 @@ export interface FileRouteTypes {
     | '/slideshow-configuration/prepare-image/'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlideshowConfigurationRouteRoute: typeof SlideshowConfigurationRouteRouteWithChildren
@@ -230,6 +133,84 @@ export interface RootRouteChildren {
   HelpIndexRoute: typeof HelpIndexRoute
   ImageFeedConfigurationIndexRoute: typeof ImageFeedConfigurationIndexRoute
 }
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/slideshow-configuration': {
+      id: '/slideshow-configuration'
+      path: '/slideshow-configuration'
+      fullPath: '/slideshow-configuration'
+      preLoaderRoute: typeof SlideshowConfigurationRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/display-settings/': {
+      id: '/display-settings/'
+      path: '/display-settings'
+      fullPath: '/display-settings/'
+      preLoaderRoute: typeof DisplaySettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help/': {
+      id: '/help/'
+      path: '/help'
+      fullPath: '/help/'
+      preLoaderRoute: typeof HelpIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/image-feed-configuration/': {
+      id: '/image-feed-configuration/'
+      path: '/image-feed-configuration'
+      fullPath: '/image-feed-configuration/'
+      preLoaderRoute: typeof ImageFeedConfigurationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/slideshow-configuration/': {
+      id: '/slideshow-configuration/'
+      path: '/'
+      fullPath: '/slideshow-configuration/'
+      preLoaderRoute: typeof SlideshowConfigurationIndexRouteImport
+      parentRoute: typeof SlideshowConfigurationRouteRoute
+    }
+    '/slideshow-configuration/prepare-image/': {
+      id: '/slideshow-configuration/prepare-image/'
+      path: '/prepare-image'
+      fullPath: '/slideshow-configuration/prepare-image/'
+      preLoaderRoute: typeof SlideshowConfigurationPrepareImageIndexRouteImport
+      parentRoute: typeof SlideshowConfigurationRouteRoute
+    }
+  }
+}
+
+interface SlideshowConfigurationRouteRouteChildren {
+  SlideshowConfigurationIndexRoute: typeof SlideshowConfigurationIndexRoute
+  SlideshowConfigurationPrepareImageIndexRoute: typeof SlideshowConfigurationPrepareImageIndexRoute
+}
+
+const SlideshowConfigurationRouteRouteChildren: SlideshowConfigurationRouteRouteChildren =
+  {
+    SlideshowConfigurationIndexRoute: SlideshowConfigurationIndexRoute,
+    SlideshowConfigurationPrepareImageIndexRoute:
+      SlideshowConfigurationPrepareImageIndexRoute,
+  }
+
+const SlideshowConfigurationRouteRouteWithChildren =
+  SlideshowConfigurationRouteRoute._addFileChildren(
+    SlideshowConfigurationRouteRouteChildren,
+  )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -240,55 +221,6 @@ const rootRouteChildren: RootRouteChildren = {
   HelpIndexRoute: HelpIndexRoute,
   ImageFeedConfigurationIndexRoute: ImageFeedConfigurationIndexRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/slideshow-configuration",
-        "/about/",
-        "/display-settings/",
-        "/help/",
-        "/image-feed-configuration/"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/slideshow-configuration": {
-      "filePath": "slideshow-configuration/route.tsx",
-      "children": [
-        "/slideshow-configuration/",
-        "/slideshow-configuration/prepare-image/"
-      ]
-    },
-    "/about/": {
-      "filePath": "about/index.tsx"
-    },
-    "/display-settings/": {
-      "filePath": "display-settings/index.tsx"
-    },
-    "/help/": {
-      "filePath": "help/index.tsx"
-    },
-    "/image-feed-configuration/": {
-      "filePath": "image-feed-configuration/index.tsx"
-    },
-    "/slideshow-configuration/": {
-      "filePath": "slideshow-configuration/index.tsx",
-      "parent": "/slideshow-configuration"
-    },
-    "/slideshow-configuration/prepare-image/": {
-      "filePath": "slideshow-configuration/prepare-image/index.tsx",
-      "parent": "/slideshow-configuration"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

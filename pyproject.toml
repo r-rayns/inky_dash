@@ -1,6 +1,6 @@
 [project]
 name = "inky-dash"
-version = "4.4.0"
+version = "4.4.1"
 description = "Inky dash is an interface for Inky displays, a line of e-paper displays for the Raspberry Pi, that can be accessed from a browser via a local web server."
 authors = [{ name = "Robert", email = "<robert@rrayns.co.uk>" }]
 readme = "README.md"
@@ -19,12 +19,12 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-  "pyinstaller>=6.17.0",
-  "pyright>=1.1.408",
-  "pytest>=9.0.3",
-  "ruff>=0.14.11",
-]
+dev = ["pyinstaller>=6.17.0", "pyright>=1.1.408", "pytest>=9.0.3", "ruff>=0.14.11"]
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.lint]
+# BLE001: Ignored because API route handlers and workers deliberately catch Exception
+# so a failure returns a JSON. Nothing is swallowed as we log the error
+ignore = ["BLE001"]

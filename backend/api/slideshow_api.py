@@ -1,4 +1,4 @@
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, jsonify, request
 
 from backend.lib.container import Container
@@ -36,7 +36,7 @@ def set_slideshow(slideshow_service: SlideshowService = Provide[Container.slides
         # req is a valid slideshow configuration
         slideshow_configuration = SlideshowConfiguration(**req)
         slideshow_service.update_slideshow(slideshow_configuration)
-        return jsonify(message="Slideshow should now be updating", data=dict(success=True)), 200
+        return jsonify(message="Slideshow should now be updating", data={"success": True}), 200
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to update slideshow: {err}")

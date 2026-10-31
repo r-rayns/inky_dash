@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 
-from backend.lib.image_validation import is_valid_base64, is_valid_png, is_valid_jpg, is_valid_file_size
+from backend.lib.image_validation import is_valid_base64, is_valid_file_size, is_valid_jpg, is_valid_png
 
 
 class ImageDither(BaseModel):
@@ -15,5 +15,5 @@ class ImageDither(BaseModel):
                 raise ValueError("Image is not in PNG or JPG/JPEG format")
             is_valid_file_size(base64_image, 15100, True)
         except (TypeError, ValueError) as e:
-            raise ValueError(f"Invalid base64 string: {str(e)}")
+            raise ValueError(f"Invalid base64 string: {e!s}")
         return base64_image

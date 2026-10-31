@@ -127,7 +127,7 @@ main() {
   # Default to building both platforms if no argument is provided
   local target="${1:-all}"
 
-  # Extract version from pyproject.toml e.g. 4.4.0
+  # Extract version from pyproject.toml e.g. x.x.x
   local version
   version=$(grep '^version' pyproject.toml | sed 's/version = "\(.*\)"/\1/' | tr '.' '-')
 

@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, field_validator, AnyUrl
+from pydantic import AnyUrl, BaseModel, Field, field_validator
+
 from backend.lib.logger_setup import logger
 
 

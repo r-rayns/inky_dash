@@ -1,14 +1,13 @@
 import base64
 import io
 import os
-from typing import Tuple
 
 from PIL import Image
 
 from backend.lib.logger_setup import logger
 
 
-def pad_image(target_resolution: Tuple[int, int], image: Image.Image) -> Image.Image:
+def pad_image(target_resolution: tuple[int, int], image: Image.Image) -> Image.Image:
     logger.info("Image is below target resolution, padding image")
     target_width, target_height = target_resolution
     # Calculate the padding needed
@@ -34,13 +33,13 @@ def pad_image(target_resolution: Tuple[int, int], image: Image.Image) -> Image.I
     return padded_image
 
 
-def crop_image_width(image: Image.Image, target_resolution: Tuple[int, int]) -> Image.Image:
+def crop_image_width(image: Image.Image, target_resolution: tuple[int, int]) -> Image.Image:
     left_crop = (image.width - target_resolution[0]) // 2
     right_crop = left_crop + target_resolution[0]
     return image.crop((left_crop, 0, right_crop, image.height))
 
 
-def crop_image_height(image: Image.Image, target_resolution: Tuple[int, int]) -> Image.Image:
+def crop_image_height(image: Image.Image, target_resolution: tuple[int, int]) -> Image.Image:
     top_crop = (image.height - target_resolution[1]) // 2
     bottom_crop = top_crop + target_resolution[1]
     return image.crop((0, top_crop, image.width, bottom_crop))

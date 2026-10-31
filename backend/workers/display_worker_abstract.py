@@ -1,6 +1,6 @@
+import gc
 import os
 import threading
-import gc
 from abc import ABC, abstractmethod
 
 from PIL import Image
@@ -11,9 +11,9 @@ from backend.lib.display_utilis import (
     detect_inky_display,
     resolve_display_from_settings,
 )
-from backend.lib.image_utilis import crop_image_width, crop_image_height, pad_image, dither
+from backend.lib.image_utilis import crop_image_height, crop_image_width, dither, pad_image
 from backend.lib.logger_setup import logger
-from backend.models.display_model import DisplaySettings, DetectionError, DisplayType, BorderColour
+from backend.models.display_model import BorderColour, DetectionError, DisplaySettings, DisplayType
 
 
 class DisplayWorkerAbstract(ABC):

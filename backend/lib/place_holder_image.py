@@ -1,16 +1,16 @@
 import os
-from typing import Tuple
+
 from PIL import Image, ImageDraw, ImageFont
-from backend.lib.image_utilis import pil_image_to_base64
-from backend.lib.logger_setup import logger
+
 from backend.lib.display_utilis import (
     InkyDisplay,
-    is_small_display,
     construct_palette,
+    is_small_display,
     resolve_display_from_settings,
 )
+from backend.lib.image_utilis import pil_image_to_base64
+from backend.lib.logger_setup import logger
 from backend.models.display_model import DisplaySettings
-
 
 place_holder_image = (
     "iVBORw0KGgoAAAANSUhEUgAAANQAAABoCAYAAACJ1t4WAAAFyklEQVR4Ae3BC5LiAHYAwSoF979yeWQH6xkWuvkIAd0v0/5gj"
@@ -95,7 +95,7 @@ def draw_placeholder_content(draw: ImageDraw.ImageDraw, display: InkyDisplay):
     draw.text((emoji_x, emoji_y), PLACEHOLDER_EMOJI, fill=emoji_fill, font=emoji_font)
 
 
-def text_dimensions(text: str, text_font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw) -> Tuple[float, float]:
+def text_dimensions(text: str, text_font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw) -> tuple[float, float]:
     text_bbox = draw.textbbox((0, 0), text, font=text_font)
     text_width = text_bbox[2] - text_bbox[0]  # right minus left
     text_height = text_bbox[3] - text_bbox[1]  # bottom minus top

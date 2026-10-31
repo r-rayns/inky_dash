@@ -1,4 +1,4 @@
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, jsonify, request
 
 from backend.lib.container import Container
@@ -40,7 +40,7 @@ def set_image_feed(
         # Request is a valid image feed configuration
         image_feed_configuration = ImageFeedConfiguration(**req)
         image_feed_service.update_image_feed(image_feed_configuration)
-        return jsonify(message="Image feed should now be updating", data=dict(success=True)), 200
+        return jsonify(message="Image feed should now be updating", data={"success": True}), 200
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to update image feed: {err}")

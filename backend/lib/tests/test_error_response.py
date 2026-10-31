@@ -1,6 +1,6 @@
 import pytest
 from flask import Flask
-from pydantic import BaseModel, ValidationError, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from backend.lib.error_response import error_response
 

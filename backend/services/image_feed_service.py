@@ -2,7 +2,7 @@ import json
 import os
 import threading
 
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 
 from backend.lib.logger_setup import logger
 from backend.models.display_model import DisplayMode, DisplaySettings

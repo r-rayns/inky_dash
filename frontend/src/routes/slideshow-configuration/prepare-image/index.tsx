@@ -185,7 +185,7 @@ function PrepareImagePage() {
         className="!hidden"
         name="image-to-prepare"
         accept="image/*"
-        onInput={uploadImage}
+        onChange={uploadImage}
       />
       <div className="relative w-full h-[300px] bg-muted/80">
         {b64Image && displayClass ? (

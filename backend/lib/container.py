@@ -1,10 +1,13 @@
-from backend.services.image_feed_service import ImageFeedService
-from backend.workers.image_feed_worker import ImageFeedWorker
-from backend.workers.slideshow_worker import SlideshowWorker
+from typing import ClassVar
+
 from dependency_injector import containers, providers
+
+from backend.lib.logger_setup import logger
+from backend.services.image_feed_service import ImageFeedService
 from backend.services.settings_service import DisplaySettingsService
 from backend.services.slideshow_service import SlideshowService
-from backend.lib.logger_setup import logger
+from backend.workers.image_feed_worker import ImageFeedWorker
+from backend.workers.slideshow_worker import SlideshowWorker
 
 
 # Used for DI, keeps all the application components and their dependencies
@@ -22,7 +25,7 @@ class Container(containers.DeclarativeContainer):
     slideshow_service = providers.ThreadSafeSingleton(SlideshowService)
     image_feed_service = providers.ThreadSafeSingleton(ImageFeedService)
 
-    services_to_initialize_on_startup = {
+    services_to_initialize_on_startup: ClassVar[dict[str, providers.ThreadSafeSingleton]] = {
         "display_settings_service": display_settings_service,
         "slideshow_service": slideshow_service,
         "image_feed_service": image_feed_service
@@ -30,7 +33,7 @@ class Container(containers.DeclarativeContainer):
 
     @classmethod
     def initialise_singletons(cls, container):
-        for name, provider in cls.services_to_initialize_on_startup.items():
+        for name in cls.services_to_initialize_on_startup:
             logger.info(f"Initialising singleton service: {name}")
             """
             We must get the service from the container,

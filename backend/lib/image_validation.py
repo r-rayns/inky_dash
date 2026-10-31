@@ -10,9 +10,9 @@ def is_valid_base64(base64_image: str, throw_exception: bool = False) -> bool:
     try:
         base64.b64decode(base64_image, validate=True)
         is_base64 = True
-    except (TypeError, ValueError) as e:
+    except (TypeError, ValueError):
         if throw_exception:
-            raise e
+            raise
 
     return is_base64
 

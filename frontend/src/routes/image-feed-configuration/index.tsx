@@ -81,7 +81,7 @@ function ImageFeedConfigurationPage() {
   useEffect(() => {
     if (imageFeedData) {
       imageFeedForm.reset({
-        pollingInterval: imageFeedData.polling_interval as second,
+        pollingInterval: imageFeedData.polling_interval,
         imageFeedUrl: imageFeedData.image_feed_url,
       })
     }
@@ -161,7 +161,7 @@ function ImageFeedConfigurationPage() {
                       value={[field.value]}
                       name={field.name}
                       onValueChange={([value]) => {
-                        field.onChange(value as second)
+                        field.onChange(value)
                       }}
                       onIncrement={() => stepPollingInterval()}
                       onDecrement={() => stepPollingInterval(false)}

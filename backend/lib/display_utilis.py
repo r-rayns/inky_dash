@@ -1,20 +1,20 @@
 from inky import (
-    auto,
-    InkyPHAT,
-    InkyPHAT_SSD1608,
     Inky7Colour,
     Inky_Impressions_7,
-    InkyWHAT,
-    InkyWHAT_SSD1683,
     InkyE673,
     InkyEL133UF1,
+    InkyPHAT,
+    InkyPHAT_SSD1608,
+    InkyWHAT,
+    InkyWHAT_SSD1683,
+    auto,
 )
-
 from inky.inky_e640 import Inky as InkyE640
 from inky.inky_jd79661 import Inky as InkyPHAT_JD79661  # red/yellow wHAT
 from inky.inky_jd79668 import Inky as InkyWHAT_JD79668  # red/yellow wHAT
+
 from backend.lib.logger_setup import logger
-from backend.models.display_model import DisplaySettings, DisplayType, ColourPalette, DetectionError
+from backend.models.display_model import ColourPalette, DetectionError, DisplaySettings, DisplayType
 
 InkyDisplay = (
     InkyPHAT  # Original pHAT (212 x 104)
@@ -114,7 +114,7 @@ def resolve_supported_palette_from_inky_instance(inky_instance: InkyDisplay) -> 
         palette = ColourPalette.BLACK
     elif inky_instance.colour == "red/yellow":
         palette = ColourPalette.RED_YELLOW
-    elif isinstance(inky_instance, Inky7Colour) or isinstance(inky_instance, Inky_Impressions_7):
+    elif isinstance(inky_instance, (Inky7Colour, Inky_Impressions_7)):
         palette = ColourPalette.SEVEN_COLOUR
     elif isinstance(inky_instance, InkyE673 | InkyEL133UF1 | InkyE640):
         palette = ColourPalette.SPECTRA

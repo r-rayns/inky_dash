@@ -1,9 +1,9 @@
 import argparse
-import multiprocessing
+import os
 import signal
 import sys
+
 import gunicorn.app.base
-import os
 from gunicorn.config import Config
 
 """
@@ -48,11 +48,12 @@ def worker_exit(server, worker):
     """
 
     os.kill(worker.pid, signal.SIGTERM)
-    pass
 
 
 class StandaloneApplication(gunicorn.app.base.BaseApplication):
-    def __init__(self, app_module, options={}):
+    def __init__(self, app_module, options=None):
+        if options is None:
+            options = {}
         self.options = options | {}
         self.app_module = app_module
         super().__init__()
@@ -76,13 +77,13 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
 
 if __name__ == "__main__":
     options = {
-        "bind": "%s:%s" % ("0.0.0.0", "8080"),
+        "bind": "{}:{}".format("0.0.0.0", "8080"),
         "workers": 1,
         "threads": 4,
         "timeout": 120,
         "loglevel": "debug" if args.dev else "info",
         # Enable auto-reload in development mode
-        "reload": True if args.dev else False,
+        "reload": bool(args.dev),
         "worker_exit": worker_exit,
     }
 

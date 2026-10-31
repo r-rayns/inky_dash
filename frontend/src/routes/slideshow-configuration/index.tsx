@@ -91,9 +91,7 @@ function SlideshowConfigurationPage() {
                         min={minChangeDelay}
                         max={maxChangeDelay}
                         step={60}
-                        onValueChange={([value]) =>
-                          field.onChange(value as second)
-                        }
+                        onValueChange={([value]) => field.onChange(value)}
                       />
                     </FormControl>
                     <FormDescription>

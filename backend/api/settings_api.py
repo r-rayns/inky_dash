@@ -1,4 +1,4 @@
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, jsonify, request
 
 from backend.lib.container import Container
@@ -38,7 +38,7 @@ def apply_settings(display_settings_service: DisplaySettingsService = Provide[Co
         # unpack and pass to SetDisplay constructor
         display_settings_update = DisplaySettingsUpdate(**req)
         display_settings_service.update_settings(display_settings_update)
-        return jsonify(message="Display settings updated", data=dict(success=True)), 200
+        return jsonify(message="Display settings updated", data={"success": True}), 200
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to update display: {err}")
@@ -52,12 +52,12 @@ def detect_display():
 
         if display == DetectionError.UNSUPPORTED:
             ## Handle unsupported display first
-            return jsonify(message="Your display is not supported", data=dict(type=DetectionError.UNSUPPORTED)), 200
+            return jsonify(message="Your display is not supported", data={"type": DetectionError.UNSUPPORTED}), 200
         elif display:
             display_type = resolve_display_type_from_inky_instance(display)
-            return jsonify(data=dict(type=display_type)), 200
+            return jsonify(data={"type": display_type}), 200
         else:
-            return jsonify(message="No display detected", data=dict(type=None)), 200
+            return jsonify(message="No display detected", data={"type": None}), 200
     except Exception as err:
         logger.exception(err)
         logger.error(f"Failed to detect display: {err}")
@@ -71,9 +71,9 @@ def get_current_image(display_settings_service: DisplaySettingsService = Provide
         active_worker: DisplayWorkerAbstract | None = display_settings_service.active_worker
         if active_worker:
             current_image = active_worker.get_current_image_in_base64()
-            return jsonify(data=dict(current_image=current_image)), 200
+            return jsonify(data={"current_image": current_image}), 200
         else:
-            return jsonify(message="Unable to get currently displayed image", data=dict(current_image=None)), 200
+            return jsonify(message="Unable to get currently displayed image", data={"current_image": None}), 200
     except Exception as err:
         logger.exception(err)
         logger.error(f"Error attempting to get currently displayed image: {err}")

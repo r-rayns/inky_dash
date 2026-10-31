@@ -1,5 +1,7 @@
 import logging
 import os
+from typing import ClassVar
+
 from colorama import Fore, Style
 
 
@@ -37,7 +39,7 @@ logger = logging.getLogger("inky_dash")
 
 
 class ColourFormatter(logging.Formatter):
-    FILENAME_COLOURS = {
+    FILENAME_COLOURS: ClassVar[dict[str, str]] = {
         "app.py": Fore.GREEN,
         "slideshow_service.py": Fore.CYAN,
         "slideshow_worker.py": Fore.CYAN + Style.BRIGHT,
@@ -46,7 +48,7 @@ class ColourFormatter(logging.Formatter):
         "image_feed_worker.py": Fore.MAGENTA + Style.BRIGHT,
         "display_worker_abstract.py": Fore.BLUE,
     }
-    LEVEL_COLORS = {
+    LEVEL_COLORS: ClassVar[dict[str, str]] = {
         "DEBUG": Fore.BLUE,
         "INFO": Fore.WHITE,
         "WARNING": Fore.YELLOW,

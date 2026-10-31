@@ -1,22 +1,22 @@
 import json
 import os
 import threading
-from typing import Callable
+from collections.abc import Callable
 
 from backend.lib.display_utilis import (
-    detect_inky_display,
     InkyDisplay,
+    detect_inky_display,
     resolve_display_type_from_inky_instance,
     resolve_supported_palette_from_inky_instance,
 )
 from backend.lib.logger_setup import logger
 from backend.models.display_model import (
-    DisplaySettings,
-    DisplayType,
-    ColourPalette,
     BorderColour,
+    ColourPalette,
     DisplayMode,
+    DisplaySettings,
     DisplaySettingsUpdate,
+    DisplayType,
 )
 from backend.workers.display_worker_abstract import DisplayWorkerAbstract
 

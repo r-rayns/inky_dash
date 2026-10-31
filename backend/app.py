@@ -10,8 +10,7 @@ from backend.api.slideshow_api import slideshow_api
 from backend.api.utils_api import utils_api
 from backend.lib.ascii import print_logo
 from backend.lib.container import Container
-from backend.lib.logger_setup import setup_inky_logger, logger
-
+from backend.lib.logger_setup import logger, setup_inky_logger
 
 setup_inky_logger()
 # Initialise the Container class for Dependency Injection to work

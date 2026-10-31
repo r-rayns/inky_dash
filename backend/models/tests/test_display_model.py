@@ -2,11 +2,11 @@ import pytest
 from pydantic import ValidationError
 
 from backend.models.display_model import (
-    DisplaySettings,
-    ColourPalette,
     BorderColour,
-    DisplayType,
+    ColourPalette,
     DisplayMode,
+    DisplaySettings,
+    DisplayType,
 )
 
 
